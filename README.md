@@ -1,2 +1,2 @@
 # SymPIC
-The Symplectic Structure Preserving Particle-in-Cell Code
+The Symplectic Particle-in-Cell Code
