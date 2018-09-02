@@ -21,6 +21,7 @@ three files (tmpEB tmpEN and tmpJ) will be generated. We can use the
 matplotlib to show the spectrum of the electromagnetic field.
 
 Ey_field=reshape(GAPS_IO_Load("tmpEB"),[512,2,512,3])[:,0,:,1]
+
 contour(abs(fftn(Ey_field))[:60,:256])
 
 
