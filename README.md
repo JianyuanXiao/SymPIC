@@ -19,7 +19,9 @@ cd example
 STDLIB=../stdlib.scm mpirun -n 4 ../sympic x_ebw.ss
 
 three files (tmpEB tmpEN and tmpJ) will be generated. We can use the 
-matplotlib to show the spectrum of the electromagnetic field.
+matplotlib to show the spectrum of the X and EBW.
+
+execfile("../cgapsio/pygapsio.py")
 
 Ey_field=reshape(GAPS_IO_Load("tmpEB"),[512,2,512,3])[:,0,:,1]
 
