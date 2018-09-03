@@ -19,7 +19,7 @@ cd example
 STDLIB=../stdlib.scm mpirun -n 4 ../sympic x_ebw.ss
 
 three files (tmpEB tmpEN and tmpJ) will be generated. We can use the 
-matplotlib to show the spectrum of the X and EBW.
+matplotlib to show the spectrum of the extraordinary and electron Bernstein wave.
 
 execfile("../cgapsio/pygapsio.py")
 
