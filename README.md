@@ -7,9 +7,10 @@ of invariants such as the total energy and momentum will be bounded within
 a small value during the whole simulation.
 
 This is a precompiled x86-64 binary MPI implemention of the parallel 
-explicit 2nd-order non-canonical symplectic PIC scheme introduced in 
-Ref. [1] and the 1st-order relativistic symplectic PIC scheme [2]. 
-Source code will be opened in the near future.
+explicit 2nd-order charge conservative non-canonical symplectic PIC 
+scheme introduced in Ref. [1] and the 1st-order relativistic charge 
+conservative symplectic PIC scheme in Ref. [2]. Source code will be 
+opened in the near future.
 
 To build the program, just use make.
 
@@ -20,8 +21,9 @@ cd example
 
 STDLIB=../stdlib.scm mpirun -n 4 ../sympic x_ebw.ss
 
-three files (tmpEB tmpEN and tmpJ) will be generated. We can use the 
-matplotlib to show the spectrum of the extraordinary and electron Bernstein wave.
+three files (tmpEB tmpEN and tmpJ) will be generated. These files are in 
+the GAPS-IO format, We can use the matplotlib (ipython) to show the 
+spectrum of the extraordinary and electron Bernstein wave.
 
 execfile("../cgapsio/pygapsio.py")
 
