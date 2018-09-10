@@ -34,6 +34,9 @@ contour(abs(fftn(Ey_field))[:60,:256])
 There is also a GUI based on Tkinter(python2) for generating and 
 modifying the configuration files, it is located at gui/gui.py
 
+cd gui
+python2 gui.py
+
 
 [1] Physics of Plasmas 22, 112504 (2015); https://doi.org/10.1063/1.4935904
 
