@@ -22,7 +22,7 @@ cd example
 STDLIB=../stdlib.scm mpirun -n 4 ../sympic x_ebw.ss
 
 three files (tmpEB tmpEN and tmpJ) will be generated. These files are in 
-the GAPS-IO format, We can use the matplotlib (ipython) to show the 
+the GAPS-IO format. We can use the matplotlib (ipython) to show the 
 spectrum of the extraordinary and electron Bernstein wave.
 
 execfile("../cgapsio/pygapsio.py")
@@ -31,6 +31,10 @@ Ey_field=reshape(GAPS_IO_Load("tmpEB"),[512,2,512,3])[:,0,:,1]
 
 contour(abs(fftn(Ey_field))[:60,:256])
 
+There is also a GUI based on Tkinter(python2) for generating and 
+modifying the configuration files, it is located at gui/gui.py
+
 
 [1] Physics of Plasmas 22, 112504 (2015); https://doi.org/10.1063/1.4935904
+
 [2] Plasma Science and Technology 20, 110501 (2018); https://iopscience.iop.org/article/10.1088/2058-6272/aac3d1
