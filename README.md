@@ -35,6 +35,7 @@ There is also a GUI based on Tkinter(python2) for generating and
 modifying the configuration files, it is located at gui/gui.py
 
 cd gui
+
 python2 gui.py
 
 
