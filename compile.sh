@@ -1,5 +1,5 @@
-export CPATH=$CPATH:`pwd`:`pwd`/cgapsio
-export LIBRARY_PATH=$LIBRARY_PATH:`pwd`
+export CPATH=$CPATH:`pwd`:`pwd`/cgapsio/
+export LIBRARY_PATH=$LIBRARY_PATH:`pwd`:`pwd`/cgapsio/
 for dirs in smallmpi c_ openmp_
 do
 	(cd $dirs ;make -j8;)
