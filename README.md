@@ -21,6 +21,8 @@ To build the program, run the following command:
 
 ./compile.sh
 
+We have only tested the clang5.0/6.0 compiler.
+
 Configuration files are executable scheme (a dialect of lisp) codes. To run
 the example, 
 
@@ -43,7 +45,9 @@ is 2Nt * Nz * Ny * Nx * 3, where for 0, 2, 4, ... time step the
 electric field is stored, and for 1, 3, 5, ... time step the 
 magnetic field is stored. The tmpEN file stores some particle
 informations, currently its shape is Nt * Nz * Ny * Nx * (7NUM_SPEC), 
-where first 3 components are \sum m_i [vx^2,vy^2,vz^2]/2, 
+where 7 components are 
+
+\sum_{i \in grid} [m_i vx^2/2,m_i vy^2/2,m_i vz^2/2, vx, vy, vz, 1].
 
 There is also a GUI based on Tkinter(python2) for generating and 
 modifying the configuration files, it is located at gui/gui.py
