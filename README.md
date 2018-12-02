@@ -47,7 +47,7 @@ magnetic field is stored. The tmpEN file stores some particle
 informations, currently its shape is Nt * Nz * Ny * Nx * (7NUM_SPEC), 
 where 7 components are 
 
-\sum_{i \in grid} [m_i vx^2/2,m_i vy^2/2,m_i vz^2/2, vx, vy, vz, 1].
+\sum_{p \in grid} [m_i vx_p^2/2,m_i vy_p^2/2,m_i vz_p^2/2, vx_p, vy_p, vz_p, 1].
 
 There is also a GUI based on Tkinter(python2) for generating and 
 modifying the configuration files, it is located at gui/gui.py
