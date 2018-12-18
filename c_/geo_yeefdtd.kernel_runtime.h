@@ -6,6 +6,8 @@ void  c_GEO_YEE_CURL_L_get_struct_len (size_t *  len )
 ;
 int  c_GEO_YEE_CURL_L_get_xlen ()
 ;
+int  c_GEO_YEE_CURL_L_get_num_compute_units (c_GEO_YEE_CURL_L_struct *  kerstr )
+;
 int  c_GEO_YEE_CURL_L_exec (c_GEO_YEE_CURL_L_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;
 int  c_GEO_YEE_CURL_L_scmc_set_parameter_inoutE1 (c_GEO_YEE_CURL_L_struct *  kerstr ,c_pscmc_mem *  pm )

@@ -4,6 +4,8 @@ int  openmp_GEO_YEE_CURL_L_init (openmp_pscmc_env *  pe ,openmp_GEO_YEE_CURL_L_s
 ;
 void  openmp_GEO_YEE_CURL_L_get_struct_len (size_t *  len )
 ;
+int  openmp_GEO_YEE_CURL_L_get_num_compute_units (openmp_GEO_YEE_CURL_L_struct *  kerstr )
+;
 int  openmp_GEO_YEE_CURL_L_get_xlen ()
 ;
 int  openmp_GEO_YEE_CURL_L_exec (openmp_GEO_YEE_CURL_L_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )

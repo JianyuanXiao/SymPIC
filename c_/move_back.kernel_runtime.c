@@ -10,6 +10,8 @@ void  c_move_back_kernel_get_struct_len (size_t *  len ){
 }
 int  c_move_back_kernel_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_move_back_kernel_get_num_compute_units (c_move_back_kernel_struct *  kerstr ){
+	return  1 ;}
 int  c_move_back_kernel_exec (c_move_back_kernel_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;

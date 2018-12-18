@@ -4,6 +4,8 @@
 #include <stdio.h>
 #define IDX_OPT_MAX 1
 void  c_Yee_FDTD_Curl_E_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -70,6 +72,8 @@ void  c_Yee_FDTD_Curl_E_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cp
 	 }
 }}}}}}}}}}
 void  c_Yee_FDTD_Curl_E_4th_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -136,6 +140,8 @@ void  c_Yee_FDTD_Curl_E_4th_scmc_kernel (double *  outEB ,double *  inEB ,long  
 	 }
 }}}}}}}}}}
 void  c_Yee_FDTD_Curl_B_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -202,6 +208,8 @@ void  c_Yee_FDTD_Curl_B_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cp
 	 }
 }}}}}}}}}}
 void  c_Yee_FDTD_Curl_B_4th_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -268,6 +276,8 @@ void  c_Yee_FDTD_Curl_B_4th_scmc_kernel (double *  outEB ,double *  inEB ,long  
 	 }
 }}}}}}}}}}
 void  c_Yee_FDTD_Grad_BWD_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -334,6 +344,8 @@ void  c_Yee_FDTD_Grad_BWD_scmc_kernel (double *  outEB ,double *  inEB ,long  y_
 	 }
 }}}}}}}}}}
 void  c_Yee_FDTD_Grad_BWD_4th_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -400,6 +412,8 @@ void  c_Yee_FDTD_Grad_BWD_4th_scmc_kernel (double *  outEB ,double *  inEB ,long
 	 }
 }}}}}}}}}}
 void  c_Yee_FDTD_Grad_FWD_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -466,6 +480,8 @@ void  c_Yee_FDTD_Grad_FWD_scmc_kernel (double *  outEB ,double *  inEB ,long  y_
 	 }
 }}}}}}}}}}
 void  c_Yee_FDTD_Grad_FWD_4th_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -532,6 +548,8 @@ void  c_Yee_FDTD_Grad_FWD_4th_scmc_kernel (double *  outEB ,double *  inEB ,long
 	 }
 }}}}}}}}}}
 void  c_Yee_FDTD_Curl_BWD_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -598,6 +616,8 @@ void  c_Yee_FDTD_Curl_BWD_scmc_kernel (double *  outEB ,double *  inEB ,long  y_
 	 }
 }}}}}}}}}}
 void  c_Yee_FDTD_Curl_BWD_4th_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -664,6 +684,8 @@ void  c_Yee_FDTD_Curl_BWD_4th_scmc_kernel (double *  outEB ,double *  inEB ,long
 	 }
 }}}}}}}}}}
 void  c_Yee_FDTD_Curl_FWD_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -730,6 +752,8 @@ void  c_Yee_FDTD_Curl_FWD_scmc_kernel (double *  outEB ,double *  inEB ,long  y_
 	 }
 }}}}}}}}}}
 void  c_Yee_FDTD_Curl_FWD_4th_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -796,6 +820,8 @@ void  c_Yee_FDTD_Curl_FWD_4th_scmc_kernel (double *  outEB ,double *  inEB ,long
 	 }
 }}}}}}}}}}
 void  c_Yee_FDTD_Div_BWD_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -843,6 +869,8 @@ void  c_Yee_FDTD_Div_BWD_scmc_kernel (double *  outEB ,double *  inEB ,long  y_c
 ((outEB)[	(  blk_offset + realidx )] = 	(  	(  (	(  inEB + blk_offset_t1 ))[	(  0 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + -1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  0 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) + 	(  	(  (	(  inEB + blk_offset_t1 ))[	(  1 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  -1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  1 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) + 	(  (	(  inEB + blk_offset_t1 ))[	(  2 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  -1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  2 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) ));
 }}}}}}}}}}
 void  c_Yee_FDTD_Div_BWD_4th_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -890,6 +918,8 @@ void  c_Yee_FDTD_Div_BWD_4th_scmc_kernel (double *  outEB ,double *  inEB ,long 
 ((outEB)[	(  blk_offset + realidx )] = 	(  	(  1.12500000000000000e+00 * 	(  	(  (	(  inEB + blk_offset_t1 ))[	(  0 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + -1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  0 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) + 	(  	(  (	(  inEB + blk_offset_t1 ))[	(  1 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  -1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  1 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) + 	(  (	(  inEB + blk_offset_t1 ))[	(  2 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  -1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  2 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) ) ) - 	(  	(  	(  (	(  inEB + blk_offset_t1 ))[	(  0 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + -2 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  0 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) + 	(  	(  (	(  inEB + blk_offset_t1 ))[	(  1 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  -2 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  1 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) + 	(  (	(  inEB + blk_offset_t1 ))[	(  2 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  -2 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  2 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) ) / 24 ) ));
 }}}}}}}}}}
 void  c_Yee_FDTD_Div_FWD_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -937,6 +967,8 @@ void  c_Yee_FDTD_Div_FWD_scmc_kernel (double *  outEB ,double *  inEB ,long  y_c
 ((outEB)[	(  blk_offset + realidx )] = 	(  	(  (	(  inEB + blk_offset_t1 ))[	(  0 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  0 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) + 	(  	(  (	(  inEB + blk_offset_t1 ))[	(  1 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  1 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) + 	(  (	(  inEB + blk_offset_t1 ))[	(  2 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  2 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) ));
 }}}}}}}}}}
 void  c_Yee_FDTD_Div_FWD_4th_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -983,7 +1015,64 @@ void  c_Yee_FDTD_Div_FWD_4th_scmc_kernel (double *  outEB ,double *  inEB ,long 
 (realidx = 	(  realidx * num_ele ));
 ((outEB)[	(  blk_offset + realidx )] = 	(  	(  1.12500000000000000e+00 * 	(  	(  (	(  inEB + blk_offset_t1 ))[	(  0 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  0 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) + 	(  	(  (	(  inEB + blk_offset_t1 ))[	(  1 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  1 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) + 	(  (	(  inEB + blk_offset_t1 ))[	(  2 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  2 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) ) ) - 	(  	(  	(  (	(  inEB + blk_offset_t1 ))[	(  0 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 2 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  0 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + -1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) + 	(  	(  (	(  inEB + blk_offset_t1 ))[	(  1 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  2 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  1 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  -1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) + 	(  (	(  inEB + blk_offset_t1 ))[	(  2 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  2 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + blk_offset_t1 ))[	(  2 + 	(  num_ele * 	(  	(  	(  xidx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  -1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) ) / 24 ) ));
 }}}}}}}}}}
+void  c_merge_current_2_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
+	const long  idx = 0 ;
+	const long  idy = scmc_internal_g_idy ;
+	const long  xlen = 1 ;
+	const long  ylen = scmc_internal_g_ylen ;
+	const long  global_idx = 	(  idx + 	(  idy * xlen ) ) ;
+	long  local_ynum = 	(  	(  	(  numvec - 1 ) / y_cpu_core ) + 1 ) ;
+	long  local_ymin = 	(  idy * local_ynum ) ;
+	long  local_ymax = 	(  	(  1 + idy ) * local_ynum ) ;
+	if (  	(  local_ymax >= numvec )  ){  
+		(local_ymax = numvec);
+
+	}else{
+		0;
+
+	 }
+	long  ori_num_ele = 	(  num_ele * pscmc_num_compute_units ) ;
+	long  blk_all_len = 	(  xblock * 	(  yblock * 	(  zblock * ori_num_ele ) ) ) ;
+	long  blk_len = 	(  xblock * 	(  yblock * zblock ) ) ;
+{
+	long  i ;
+	for ((i = local_ymin) ; 	(  i < local_ymax ) ; (i = 	(  i + 1 )))
+	{
+	long  lg = 0 ;
+	if (  	(  idx == 0 )  ){  
+		{
+	long  lg ;
+	for ((lg = 0) ; 	(  lg < blk_len ) ; (lg = 	(  lg + 1 )))
+	{
+	long  g = lg ;
+	long  xx = 	(  g % xblock ) ;
+	long  xy = 	(  	(  g / xblock ) % yblock ) ;
+	long  xz = 	(  g / 	(  xblock * yblock ) ) ;
+	long  blk_offset = 	(  blk_all_len * i ) ;
+{
+	long  ig ;
+	for ((ig = 0) ; 	(  ig < num_ele ) ; (ig = 	(  ig + 1 )))
+	{
+	double  lst_n0 = 0 ;
+	long  new_allid = 	(  ig + 	(  num_ele * 	(  xx + 	(  xblock * 	(  xy + 	(  yblock * xz ) ) ) ) ) ) ;
+{
+	long  il ;
+	for ((il = 0) ; 	(  il < pscmc_num_compute_units ) ; (il = 	(  il + 1 )))
+	{
+	long  ori_allid = 	(  new_allid + 	(  il * 	(  blk_len * num_ele ) ) ) ;
+(lst_n0 = 	(  lst_n0 + (inEB)[	(  ori_allid + blk_offset )] ));
+}}((outEB)[	(  new_allid + 	(  blk_len * 	(  i * num_ele ) ) )] = lst_n0);
+}}}}
+	}else{
+		0;
+
+	 }
+}}}
 void  c_merge_current_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -1053,7 +1142,9 @@ void  c_merge_current_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_
 
 	 }
 }}}
-void  c_kgm_eqn_core_scmc_kernel (double *  outEB ,double *  inEB ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,double  M ,double  Q ,double  DX ,double  GEXT ,double  rfz0 ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+void  c_PML_FDTD_CURL_FWD_scmc_kernel (double *  outEB ,double *  inEB ,double *  outPMLEB ,double *  inPMLEB ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,double  M ,double  Q ,double  DX ,double  DY ,double  DZ ,int  abc_dir ,int  level ,int  pml_m ,double  max_sigma ,long  allxmax ,long  allymax ,long  allzmax ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -1076,13 +1167,456 @@ void  c_kgm_eqn_core_scmc_kernel (double *  outEB ,double *  inEB ,int *  xoffse
 	{
 	long  allmax = 	(  XLEN * 	(  YLEN * ZLEN ) ) ;
 	long  g = 0 ;
-	for ((g = 0) ; 	(  g < allmax ) ; (g = 	(  g + xlen )))
+	int  xoffi = (xoffset)[i] ;
+	int  yoffi = (yoffset)[i] ;
+	int  zoffi = (zoffset)[i] ;
+	int  x_use_abc = 	(  abc_dir % 2 ) ;
+	int  y_use_abc = 	(  	(  abc_dir / 2 ) % 2 ) ;
+	int  z_use_abc = 	(  	(  abc_dir / 4 ) % 2 ) ;
+	for ((g = 0) ; 	(  g < allmax ) ; (g = 	(  g + 1 )))
 	{
 	long  xyzx = 	(  g % XLEN ) ;
 	long  xyzy = 	(  	(  g / XLEN ) % YLEN ) ;
 	long  xyzz = 	(  g / 	(  XLEN * YLEN ) ) ;
 	long  blk_offset = 	(  blk_all_len * i ) ;
-	double  vA0000_1 = (	(  inEB + blk_offset ))[	(  	(  1 + 	(  -1 + 5 ) ) + 	(  num_ele * 	(  	(  	(  0 + 	(  xyzx + -1 ) ) + ovlp ) + 	(  xblock * 	(  	(  	(  0 + 	(  xyzy + -1 ) ) + ovlp ) + 	(  yblock * 	(  	(  0 + 	(  xyzz + -1 ) ) + ovlp ) ) ) ) ) ) )] ;
+	if (  	(  idx == 0 )  ){  
+			long  use_pml_calc = 0 ;
+	long  inner_pec = 0 ;
+	double  sigma_Ex = 0.00000000000000000e+00 ;
+	double  sigma_Ey = 0.00000000000000000e+00 ;
+	double  sigma_Ez = 0.00000000000000000e+00 ;
+	long  cur_x = 	(  xoffi + xyzx ) ;
+	long  cur_y = 	(  yoffi + xyzy ) ;
+	long  cur_z = 	(  zoffi + xyzz ) ;
+	long  xb = xblock ;
+	long  yb = yblock ;
+	long  zb = zblock ;
+	if (  	(  x_use_abc && 	(  	(  cur_x < level ) || 	(  cur_x >= 	(  allxmax - level ) ) ) )  ){  
+			double  ocs = 	(  	(  1.00000000000000000e+00 * ((	(  cur_x < level ))?(	(  	(  level - 1 ) - cur_x )):(	(  cur_x - 	(  allxmax - level ) ))) ) / level ) ;
+(sigma_Ex = 	(  max_sigma * 	pow ( ocs , pml_m ) ));
+(use_pml_calc = 1);
+	if (  	(  cur_x == 0 )  ){  
+		(inner_pec = 1);
+
+	}else{
+		0;
+
+	 }
+
+	}else{
+		0;
+
+	 }
+	if (  	(  y_use_abc && 	(  	(  cur_y < level ) || 	(  cur_y >= 	(  allymax - level ) ) ) )  ){  
+			double  ocs = 	(  	(  1.00000000000000000e+00 * ((	(  cur_y < level ))?(	(  	(  level - 1 ) - cur_y )):(	(  cur_y - 	(  allymax - level ) ))) ) / level ) ;
+(sigma_Ey = 	(  max_sigma * 	pow ( ocs , pml_m ) ));
+(use_pml_calc = 1);
+	if (  	(  cur_y == 0 )  ){  
+		(inner_pec = 1);
+
+	}else{
+		0;
+
+	 }
+
+	}else{
+		0;
+
+	 }
+	if (  	(  z_use_abc && 	(  	(  cur_z < level ) || 	(  cur_z >= 	(  allzmax - level ) ) ) )  ){  
+			double  ocs = 	(  	(  1.00000000000000000e+00 * ((	(  cur_z < level ))?(	(  	(  level - 1 ) - cur_z )):(	(  cur_z - 	(  allzmax - level ) ))) ) / level ) ;
+(sigma_Ez = 	(  max_sigma * 	pow ( ocs , pml_m ) ));
+(use_pml_calc = 1);
+	if (  	(  cur_z == 0 )  ){  
+		(inner_pec = 1);
+
+	}else{
+		0;
+
+	 }
+
+	}else{
+		0;
+
+	 }
+	if (  use_pml_calc  ){  
+			if (  inner_pec  ){  
+		((	(  outEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 0);
+
+	}else{
+		{
+	double  sgmB = sigma_Ey ;
+	double  expsgmBt = 	exp ( 	- ( 	(  DT * sgmB ) ) ) ;
+	double  mesgbosgbdb = ((	(  sgmB == 0 ))?(	(  DT / DY )):(	(  	(  1 - expsgmBt ) / 	(  sgmB * DY ) ))) ;
+	double  dceb_A = 	(  (	(  inEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 1 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+	double  dceb_B = 	(  (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 1 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+((	(  outEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 	(  1.00000000000000000e+00 * 	(  	(  expsgmBt * (	(  outEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) + 	(  1 * 	(  -1 * 	(  mesgbosgbdb * 	(  dceb_A + dceb_B ) ) ) ) ) ));
+}
+	 }
+	if (  inner_pec  ){  
+		((	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] = 0);
+
+	}else{
+		{
+	double  sgmB = sigma_Ez ;
+	double  expsgmBt = 	exp ( 	- ( 	(  DT * sgmB ) ) ) ;
+	double  mesgbosgbdb = ((	(  sgmB == 0 ))?(	(  DT / DZ )):(	(  	(  1 - expsgmBt ) / 	(  sgmB * DZ ) ))) ;
+	double  dceb_A = 	(  (	(  inEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 1 ) + ovlp ) ) ) ) ) ) )] - (	(  inEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] ) ;
+	double  dceb_B = 	(  (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 1 ) + ovlp ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] ) ;
+((	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] = 	(  1.00000000000000000e+00 * 	(  	(  expsgmBt * (	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] ) + 	(  -1 * 	(  -1 * 	(  mesgbosgbdb * 	(  dceb_A + dceb_B ) ) ) ) ) ));
+}
+	 }
+	if (  inner_pec  ){  
+		((	(  outEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] = 0);
+
+	}else{
+		{
+	double  sgmB = sigma_Ez ;
+	double  expsgmBt = 	exp ( 	- ( 	(  DT * sgmB ) ) ) ;
+	double  mesgbosgbdb = ((	(  sgmB == 0 ))?(	(  DT / DZ )):(	(  	(  1 - expsgmBt ) / 	(  sgmB * DZ ) ))) ;
+	double  dceb_A = 	(  (	(  inEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 1 ) + ovlp ) ) ) ) ) ) )] - (	(  inEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] ) ;
+	double  dceb_B = 	(  (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 1 ) + ovlp ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] ) ;
+((	(  outEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] = 	(  1.00000000000000000e+00 * 	(  	(  expsgmBt * (	(  outEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] ) + 	(  1 * 	(  -1 * 	(  mesgbosgbdb * 	(  dceb_A + dceb_B ) ) ) ) ) ));
+}
+	 }
+	if (  inner_pec  ){  
+		((	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 0);
+
+	}else{
+		{
+	double  sgmB = sigma_Ex ;
+	double  expsgmBt = 	exp ( 	- ( 	(  DT * sgmB ) ) ) ;
+	double  mesgbosgbdb = ((	(  sgmB == 0 ))?(	(  DT / DX )):(	(  	(  1 - expsgmBt ) / 	(  sgmB * DX ) ))) ;
+	double  dceb_A = 	(  (	(  inEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 1 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+	double  dceb_B = 	(  (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 1 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+((	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 	(  1.00000000000000000e+00 * 	(  	(  expsgmBt * (	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) + 	(  -1 * 	(  -1 * 	(  mesgbosgbdb * 	(  dceb_A + dceb_B ) ) ) ) ) ));
+}
+	 }
+	if (  inner_pec  ){  
+		((	(  outEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 0);
+
+	}else{
+		{
+	double  sgmB = sigma_Ex ;
+	double  expsgmBt = 	exp ( 	- ( 	(  DT * sgmB ) ) ) ;
+	double  mesgbosgbdb = ((	(  sgmB == 0 ))?(	(  DT / DX )):(	(  	(  1 - expsgmBt ) / 	(  sgmB * DX ) ))) ;
+	double  dceb_A = 	(  (	(  inEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 1 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+	double  dceb_B = 	(  (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 1 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+((	(  outEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 	(  1.00000000000000000e+00 * 	(  	(  expsgmBt * (	(  outEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) + 	(  1 * 	(  -1 * 	(  mesgbosgbdb * 	(  dceb_A + dceb_B ) ) ) ) ) ));
+}
+	 }
+	if (  inner_pec  ){  
+		((	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 0);
+
+	}else{
+		{
+	double  sgmB = sigma_Ey ;
+	double  expsgmBt = 	exp ( 	- ( 	(  DT * sgmB ) ) ) ;
+	double  mesgbosgbdb = ((	(  sgmB == 0 ))?(	(  DT / DY )):(	(  	(  1 - expsgmBt ) / 	(  sgmB * DY ) ))) ;
+	double  dceb_A = 	(  (	(  inEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 1 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+	double  dceb_B = 	(  (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 1 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+((	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 	(  1.00000000000000000e+00 * 	(  	(  expsgmBt * (	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) + 	(  -1 * 	(  -1 * 	(  mesgbosgbdb * 	(  dceb_A + dceb_B ) ) ) ) ) ));
+}
+	 }
+
+	}else{
+			(  (	(  outEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] -= 	(  DT * 	(  	(  	(  (	(  inEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) - 	(  (	(  inEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) + 	(  	(  (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) - 	(  (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) ) ) );
+	(  (	(  outEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] -= 	(  DT * 	(  	(  	(  (	(  inEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) - 	(  (	(  inEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) + 	(  	(  (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) - 	(  (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) ) ) );
+	(  (	(  outEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] -= 	(  DT * 	(  	(  	(  (	(  inEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) - 	(  (	(  inEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) + 	(  	(  (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) - 	(  (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) ) ) );
+
+	 }
+
+	}else{
+		0;
+
+	 }
+}}}}
+void  c_PML_FDTD_CURL_BWD_scmc_kernel (double *  outEB ,double *  inEB ,double *  outPMLEB ,double *  inPMLEB ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,double  M ,double  Q ,double  DX ,double  DY ,double  DZ ,int  abc_dir ,int  level ,int  pml_m ,double  max_sigma ,long  allxmax ,long  allymax ,long  allzmax ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
+	const long  idx = 0 ;
+	const long  idy = scmc_internal_g_idy ;
+	const long  xlen = 1 ;
+	const long  ylen = scmc_internal_g_ylen ;
+	const long  global_idx = 	(  idx + 	(  idy * xlen ) ) ;
+	long  local_ynum = 	(  	(  	(  numvec - 1 ) / y_cpu_core ) + 1 ) ;
+	long  local_ymin = 	(  idy * local_ynum ) ;
+	long  local_ymax = 	(  	(  1 + idy ) * local_ynum ) ;
+	if (  	(  local_ymax >= numvec )  ){  
+		(local_ymax = numvec);
+
+	}else{
+		0;
+
+	 }
+	long  blk_all_len = 	(  xblock * 	(  yblock * 	(  zblock * num_ele ) ) ) ;
+{
+	long  i ;
+	for ((i = local_ymin) ; 	(  i < local_ymax ) ; (i = 	(  i + 1 )))
+	{
+	long  allmax = 	(  XLEN * 	(  YLEN * ZLEN ) ) ;
+	long  g = 0 ;
+	int  xoffi = (xoffset)[i] ;
+	int  yoffi = (yoffset)[i] ;
+	int  zoffi = (zoffset)[i] ;
+	int  x_use_abc = 	(  abc_dir % 2 ) ;
+	int  y_use_abc = 	(  	(  abc_dir / 2 ) % 2 ) ;
+	int  z_use_abc = 	(  	(  abc_dir / 4 ) % 2 ) ;
+	for ((g = 0) ; 	(  g < allmax ) ; (g = 	(  g + 1 )))
+	{
+	long  xyzx = 	(  g % XLEN ) ;
+	long  xyzy = 	(  	(  g / XLEN ) % YLEN ) ;
+	long  xyzz = 	(  g / 	(  XLEN * YLEN ) ) ;
+	long  blk_offset = 	(  blk_all_len * i ) ;
+	if (  	(  idx == 0 )  ){  
+			long  use_pml_calc = 0 ;
+	long  inner_pec = 0 ;
+	double  sigma_Ex = 0.00000000000000000e+00 ;
+	double  sigma_Ey = 0.00000000000000000e+00 ;
+	double  sigma_Ez = 0.00000000000000000e+00 ;
+	long  cur_x = 	(  xoffi + xyzx ) ;
+	long  cur_y = 	(  yoffi + xyzy ) ;
+	long  cur_z = 	(  zoffi + xyzz ) ;
+	long  xb = xblock ;
+	long  yb = yblock ;
+	long  zb = zblock ;
+	if (  	(  x_use_abc && 	(  	(  cur_x < level ) || 	(  cur_x >= 	(  allxmax - level ) ) ) )  ){  
+			double  ocs = 	(  	(  1.00000000000000000e+00 * ((	(  cur_x < level ))?(	(  	(  level - 1 ) - cur_x )):(	(  cur_x - 	(  allxmax - level ) ))) ) / level ) ;
+(sigma_Ex = 	(  max_sigma * 	pow ( ocs , pml_m ) ));
+(use_pml_calc = 1);
+	if (  	(  cur_x == 0 )  ){  
+		(inner_pec = 1);
+
+	}else{
+		0;
+
+	 }
+
+	}else{
+		0;
+
+	 }
+	if (  	(  y_use_abc && 	(  	(  cur_y < level ) || 	(  cur_y >= 	(  allymax - level ) ) ) )  ){  
+			double  ocs = 	(  	(  1.00000000000000000e+00 * ((	(  cur_y < level ))?(	(  	(  level - 1 ) - cur_y )):(	(  cur_y - 	(  allymax - level ) ))) ) / level ) ;
+(sigma_Ey = 	(  max_sigma * 	pow ( ocs , pml_m ) ));
+(use_pml_calc = 1);
+	if (  	(  cur_y == 0 )  ){  
+		(inner_pec = 1);
+
+	}else{
+		0;
+
+	 }
+
+	}else{
+		0;
+
+	 }
+	if (  	(  z_use_abc && 	(  	(  cur_z < level ) || 	(  cur_z >= 	(  allzmax - level ) ) ) )  ){  
+			double  ocs = 	(  	(  1.00000000000000000e+00 * ((	(  cur_z < level ))?(	(  	(  level - 1 ) - cur_z )):(	(  cur_z - 	(  allzmax - level ) ))) ) / level ) ;
+(sigma_Ez = 	(  max_sigma * 	pow ( ocs , pml_m ) ));
+(use_pml_calc = 1);
+	if (  	(  cur_z == 0 )  ){  
+		(inner_pec = 1);
+
+	}else{
+		0;
+
+	 }
+
+	}else{
+		0;
+
+	 }
+	if (  use_pml_calc  ){  
+			if (  inner_pec  ){  
+		((	(  outEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 0);
+
+	}else{
+		{
+	double  sgmB = sigma_Ey ;
+	double  expsgmBt = 	exp ( 	- ( 	(  DT * sgmB ) ) ) ;
+	double  mesgbosgbdb = ((	(  sgmB == 0 ))?(	(  DT / DY )):(	(  	(  1 - expsgmBt ) / 	(  sgmB * DY ) ))) ;
+	double  dceb_A = 	(  (	(  inEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + -1 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+	double  dceb_B = 	(  (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + -1 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+((	(  outEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 	(  1.00000000000000000e+00 * 	(  	(  expsgmBt * (	(  outEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) + 	(  1 * 	(  -1 * 	(  mesgbosgbdb * 	(  dceb_A + dceb_B ) ) ) ) ) ));
+}
+	 }
+	if (  inner_pec  ){  
+		((	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] = 0);
+
+	}else{
+		{
+	double  sgmB = sigma_Ez ;
+	double  expsgmBt = 	exp ( 	- ( 	(  DT * sgmB ) ) ) ;
+	double  mesgbosgbdb = ((	(  sgmB == 0 ))?(	(  DT / DZ )):(	(  	(  1 - expsgmBt ) / 	(  sgmB * DZ ) ))) ;
+	double  dceb_A = 	(  (	(  inEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + -1 ) + ovlp ) ) ) ) ) ) )] - (	(  inEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] ) ;
+	double  dceb_B = 	(  (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + -1 ) + ovlp ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] ) ;
+((	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] = 	(  1.00000000000000000e+00 * 	(  	(  expsgmBt * (	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] ) + 	(  -1 * 	(  -1 * 	(  mesgbosgbdb * 	(  dceb_A + dceb_B ) ) ) ) ) ));
+}
+	 }
+	if (  inner_pec  ){  
+		((	(  outEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] = 0);
+
+	}else{
+		{
+	double  sgmB = sigma_Ez ;
+	double  expsgmBt = 	exp ( 	- ( 	(  DT * sgmB ) ) ) ;
+	double  mesgbosgbdb = ((	(  sgmB == 0 ))?(	(  DT / DZ )):(	(  	(  1 - expsgmBt ) / 	(  sgmB * DZ ) ))) ;
+	double  dceb_A = 	(  (	(  inEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + -1 ) + ovlp ) ) ) ) ) ) )] - (	(  inEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] ) ;
+	double  dceb_B = 	(  (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + -1 ) + ovlp ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] ) ;
+((	(  outEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] = 	(  1.00000000000000000e+00 * 	(  	(  expsgmBt * (	(  outEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  	(  xyzz + 0 ) + ovlp ) ) ) ) ) ) )] ) + 	(  1 * 	(  -1 * 	(  mesgbosgbdb * 	(  dceb_A + dceb_B ) ) ) ) ) ));
+}
+	 }
+	if (  inner_pec  ){  
+		((	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 0);
+
+	}else{
+		{
+	double  sgmB = sigma_Ex ;
+	double  expsgmBt = 	exp ( 	- ( 	(  DT * sgmB ) ) ) ;
+	double  mesgbosgbdb = ((	(  sgmB == 0 ))?(	(  DT / DX )):(	(  	(  1 - expsgmBt ) / 	(  sgmB * DX ) ))) ;
+	double  dceb_A = 	(  (	(  inEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + -1 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+	double  dceb_B = 	(  (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + -1 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+((	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 	(  1.00000000000000000e+00 * 	(  	(  expsgmBt * (	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) + 	(  -1 * 	(  -1 * 	(  mesgbosgbdb * 	(  dceb_A + dceb_B ) ) ) ) ) ));
+}
+	 }
+	if (  inner_pec  ){  
+		((	(  outEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 0);
+
+	}else{
+		{
+	double  sgmB = sigma_Ex ;
+	double  expsgmBt = 	exp ( 	- ( 	(  DT * sgmB ) ) ) ;
+	double  mesgbosgbdb = ((	(  sgmB == 0 ))?(	(  DT / DX )):(	(  	(  1 - expsgmBt ) / 	(  sgmB * DX ) ))) ;
+	double  dceb_A = 	(  (	(  inEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + -1 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+	double  dceb_B = 	(  (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + -1 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+((	(  outEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 	(  1.00000000000000000e+00 * 	(  	(  expsgmBt * (	(  outEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) + 	(  1 * 	(  -1 * 	(  mesgbosgbdb * 	(  dceb_A + dceb_B ) ) ) ) ) ));
+}
+	 }
+	if (  inner_pec  ){  
+		((	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 0);
+
+	}else{
+		{
+	double  sgmB = sigma_Ey ;
+	double  expsgmBt = 	exp ( 	- ( 	(  DT * sgmB ) ) ) ;
+	double  mesgbosgbdb = ((	(  sgmB == 0 ))?(	(  DT / DY )):(	(  	(  1 - expsgmBt ) / 	(  sgmB * DY ) ))) ;
+	double  dceb_A = 	(  (	(  inEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + -1 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+	double  dceb_B = 	(  (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + -1 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) ;
+((	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 	(  1.00000000000000000e+00 * 	(  	(  expsgmBt * (	(  outPMLEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  	(  xyzy + 0 ) + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ) + 	(  -1 * 	(  -1 * 	(  mesgbosgbdb * 	(  dceb_A + dceb_B ) ) ) ) ) ));
+}
+	 }
+
+	}else{
+			(  (	(  outEB + 	(  blk_all_len * i ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] -= 	(  DT * 	(  	(  	(  (	(  inEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  -1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) - 	(  (	(  inEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  -1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) + 	(  	(  (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  -1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) - 	(  (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  -1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) ) ) );
+	(  (	(  outEB + 	(  blk_all_len * i ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] -= 	(  DT * 	(  	(  	(  (	(  inEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  -1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) - 	(  (	(  inEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + -1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) + 	(  	(  (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  -1 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) - 	(  (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + -1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) ) ) );
+	(  (	(  outEB + 	(  blk_all_len * i ) ))[	(  2 + 	(  num_ele * 	(  	(  	(  xyzx + 0 ) + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] -= 	(  DT * 	(  	(  	(  (	(  inEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + -1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) - 	(  (	(  inEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  -1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) + 	(  	(  (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + -1 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  1 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) - 	(  (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  -1 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] - (	(  inPMLEB + 	(  i * blk_all_len ) ))[	(  0 + 	(  num_ele * 	(  	(  	(  xyzx + ovlp ) + 0 ) + 	(  xb * 	(  	(  0 + 	(  xyzy + ovlp ) ) + 	(  yb * 	(  0 + 	(  xyzz + ovlp ) ) ) ) ) ) ) )] ) ) ) ) );
+
+	 }
+
+	}else{
+		0;
+
+	 }
+}}}}
+void  c_kgm_calc_rho_scmc_kernel (double *  outEB ,double *  inEB ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,double  M ,double  Q ,double  DX ,double  refz0 ,double  q ,double  dtodx ,int  mode ,int  swap_input ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
+	const long  idx = 0 ;
+	const long  idy = scmc_internal_g_idy ;
+	const long  xlen = 1 ;
+	const long  ylen = scmc_internal_g_ylen ;
+	const long  global_idx = 	(  idx + 	(  idy * xlen ) ) ;
+	long  local_ynum = 	(  	(  	(  numvec - 1 ) / y_cpu_core ) + 1 ) ;
+	long  local_ymin = 	(  idy * local_ynum ) ;
+	long  local_ymax = 	(  	(  1 + idy ) * local_ynum ) ;
+	if (  	(  local_ymax >= numvec )  ){  
+		(local_ymax = numvec);
+
+	}else{
+		0;
+
+	 }
+	long  blk_all_len = 	(  xblock * 	(  yblock * 	(  zblock * num_ele ) ) ) ;
+{
+	long  i ;
+	for ((i = local_ymin) ; 	(  i < local_ymax ) ; (i = 	(  i + 1 )))
+	{
+	long  allmax = 	(  XLEN * 	(  YLEN * ZLEN ) ) ;
+	long  g = 0 ;
+	for ((g = 0) ; 	(  g < allmax ) ; (g = 	(  g + 1 )))
+	{
+	long  xyzx = 	(  g % XLEN ) ;
+	long  xyzy = 	(  	(  g / XLEN ) % YLEN ) ;
+	long  xyzz = 	(  g / 	(  XLEN * YLEN ) ) ;
+	long  blk_offset = 	(  blk_all_len * i ) ;
+	if (  	(  idx == 0 )  ){  
+			double  rho = 0 ;
+{
+	long  num_ele = 10 ;
+	double  p0r = (	(  inEB + 	(  10 * blk_offset ) ))[	(  8 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ;
+	double  p0i = (	(  inEB + 	(  10 * blk_offset ) ))[	(  9 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ;
+	double  p1r = (	(  inEB + 	(  10 * blk_offset ) ))[	(  3 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ;
+	double  p1i = (	(  inEB + 	(  10 * blk_offset ) ))[	(  4 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] ;
+	double  cjp1i = p0i*p1r-p0r*p1i ;
+(rho = 	(  	(  2 * 	(  cjp1i * q ) ) / dtodx ));
+	double   curr  [3];((curr)[0] = 	(  xyzx + (xoffset)[i] ));
+((curr)[1] = 	(  xyzy + (yoffset)[i] ));
+((curr)[2] = 	(  xyzz + (zoffset)[i] ));
+	if (  	(  	(  mode > 0 ) && 	(  mode < 4 ) )  ){  
+		(rho = 	(  rho * (curr)[	(  mode - 1 )] ));
+
+	}else{
+			if (  	(  	(  mode > 3 ) && 	(  mode < 6 ) )  ){  
+		(rho = 	(  rho * 	pow ( (curr)[	(  mode - 4 )] , 2 ) ));
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}((	(  outEB + blk_offset ))[	(  0 + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = rho);
+
+	}else{
+		0;
+
+	 }
+}}}}
+void  c_kgm_eqn_core_scmc_kernel (double *  outEB ,double *  inEB ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,double  M ,double  Q ,double  DX ,double  GEXT ,double  rfz0 ,int  swap_input ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
+	const long  idx = 0 ;
+	const long  idy = scmc_internal_g_idy ;
+	const long  xlen = 1 ;
+	const long  ylen = scmc_internal_g_ylen ;
+	const long  global_idx = 	(  idx + 	(  idy * xlen ) ) ;
+	long  local_ynum = 	(  	(  	(  numvec - 1 ) / y_cpu_core ) + 1 ) ;
+	long  local_ymin = 	(  idy * local_ynum ) ;
+	long  local_ymax = 	(  	(  1 + idy ) * local_ynum ) ;
+	if (  	(  local_ymax >= numvec )  ){  
+		(local_ymax = numvec);
+
+	}else{
+		0;
+
+	 }
+	long  blk_all_len = 	(  xblock * 	(  yblock * 	(  zblock * num_ele ) ) ) ;
+{
+	long  i ;
+	for ((i = local_ymin) ; 	(  i < local_ymax ) ; (i = 	(  i + 1 )))
+	{
+	long  allmax = 	(  XLEN * 	(  YLEN * ZLEN ) ) ;
+	long  g = 0 ;
+	for ((g = 0) ; 	(  g < allmax ) ; (g = 	(  g + 1 )))
+	{
+	long  xyzx = 	(  g % XLEN ) ;
+	long  xyzy = 	(  	(  g / XLEN ) % YLEN ) ;
+	long  xyzz = 	(  g / 	(  XLEN * YLEN ) ) ;
+	long  blk_offset = 	(  blk_all_len * i ) ;
+	if (  	(  idx == 0 )  ){  
+			double  vA0000_1 = (	(  inEB + blk_offset ))[	(  	(  1 + 	(  -1 + 5 ) ) + 	(  num_ele * 	(  	(  	(  0 + 	(  xyzx + -1 ) ) + ovlp ) + 	(  xblock * 	(  	(  	(  0 + 	(  xyzy + -1 ) ) + ovlp ) + 	(  yblock * 	(  	(  0 + 	(  xyzz + -1 ) ) + ovlp ) ) ) ) ) ) )] ;
 	double  vA1000_1 = (	(  inEB + blk_offset ))[	(  	(  1 + 	(  -1 + 0 ) ) + 	(  num_ele * 	(  	(  	(  0 + 	(  xyzx + -1 ) ) + ovlp ) + 	(  xblock * 	(  	(  	(  0 + 	(  xyzy + -1 ) ) + ovlp ) + 	(  yblock * 	(  	(  0 + 	(  xyzz + -1 ) ) + ovlp ) ) ) ) ) ) )] ;
 	double  vA0000_2 = (	(  inEB + blk_offset ))[	(  	(  2 + 	(  -1 + 5 ) ) + 	(  num_ele * 	(  	(  	(  0 + 	(  xyzx + -1 ) ) + ovlp ) + 	(  xblock * 	(  	(  	(  0 + 	(  xyzy + -1 ) ) + ovlp ) + 	(  yblock * 	(  	(  0 + 	(  xyzz + -1 ) ) + ovlp ) ) ) ) ) ) )] ;
 	double  vA1000_2 = (	(  inEB + blk_offset ))[	(  	(  2 + 	(  -1 + 0 ) ) + 	(  num_ele * 	(  	(  	(  0 + 	(  xyzx + -1 ) ) + ovlp ) + 	(  xblock * 	(  	(  	(  0 + 	(  xyzy + -1 ) ) + ovlp ) + 	(  yblock * 	(  	(  0 + 	(  xyzz + -1 ) ) + ovlp ) ) ) ) ) ) )] ;
@@ -1360,7 +1894,12 @@ void  c_kgm_eqn_core_scmc_kernel (double *  outEB ,double *  inEB ,int *  xoffse
 ((	(  outEB + blk_offset ))[	(  	(  2 + 5 ) + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = vA1111_3);
 ((	(  outEB + blk_offset ))[	(  	(  2 + 0 ) + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 	(  -1.00000000000000000e+00 * 	(  	pow ( DX , -2 ) * 	(  	(  	pow ( DX , 2 ) * vA0111_3 ) + 	(  	(  	pow ( DT , 2 ) * vA1101_2 ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * vA1101_3 ) ) + 	(  	(  	pow ( DT , 2 ) * vA1110_1 ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * vA1110_3 ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * vA1111_1 ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * vA1111_2 ) ) + 	(  	(  	(  	(  4.00000000000000000e+00 * 	pow ( DT , 2 ) ) + 	(  -2.00000000000000000e+00 * 	pow ( DX , 2 ) ) ) * vA1111_3 ) + 	(  	(  	(  	(  2.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  DX * 	(  PHI1_I1211 * PHI1_R1111 ) ) ) ) + 	(  -2.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  DX * 	(  PHI1_I1111 * PHI1_R1211 ) ) ) ) ) * 	(  Q * 	cos ( 	(  DX * 	(  Q * vA1111_3 ) ) ) ) ) + 	(  	(  	(  	(  2.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  DX * 	(  PHI1_I1111 * PHI1_I1211 ) ) ) ) + 	(  2.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  DX * 	(  PHI1_R1111 * PHI1_R1211 ) ) ) ) ) * 	(  Q * 	sin ( 	(  DX * 	(  Q * vA1111_3 ) ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * vA1112_3 ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * vA1121_3 ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * vA1201_2 ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * vA1210_1 ) ) + 	(  	(  	pow ( DT , 2 ) * vA1211_1 ) + 	(  	pow ( DT , 2 ) * vA1211_2 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ));
 ((	(  outEB + blk_offset ))[	(  	(  3 + 5 ) + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = PHI1_R1111);
-((	(  outEB + blk_offset ))[	(  	(  3 + 0 ) + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 	(  -1.00000000000000000e+00 * 	(  	pow ( DX , -2 ) * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  -2 * GEXT ) + 	(  -2 * 	(  GEXT * REFZ0 ) ) ) ) * 	(  	(  	pow ( DT , 2 ) * 	(  	pow ( DX , 2 ) * 	(  	pow ( M , 2 ) * PHI1_R1111 ) ) ) + 	(  	(  	(  	(  	pow ( DX , 2 ) * 	(  	pow ( 2.71828182845904509e+00 , 	(  2 * GEXT ) ) * PHI1_R0111 ) ) + 	(  	(  	(  6.00000000000000000e+00 * 	pow ( DT , 2 ) ) + 	(  -2.00000000000000000e+00 * 	pow ( DX , 2 ) ) ) * 	(  	pow ( 2.71828182845904509e+00 , 	(  2 * GEXT ) ) * PHI1_R1111 ) ) ) * 	pow ( 2.71828182845904509e+00 , 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1011 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1011_3 ) ) ) ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1011 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1011_3 ) ) ) ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1101 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1101_2 ) ) ) ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1101 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1101_2 ) ) ) ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1110 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1110_1 ) ) ) ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1110 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1110_1 ) ) ) ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1112 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1111_1 ) ) ) ) ) ) ) + 	(  	(  	pow ( DT , 2 ) * 	(  PHI1_I1112 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1111_1 ) ) ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1121 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1111_2 ) ) ) ) ) ) ) + 	(  	(  	pow ( DT , 2 ) * 	(  PHI1_I1121 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1111_2 ) ) ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1211 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1111_3 ) ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_I1211 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1111_3 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ));
+((	(  outEB + blk_offset ))[	(  	(  3 + 0 ) + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 	(  -1.00000000000000000e+00 * 	(  	pow ( DX , -2 ) * 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DX , 2 ) * PHI1_R0111 ) ) + 	(  	(  	(  	(  6.00000000000000000e+00 * 	pow ( DT , 2 ) ) + 	(  	(  -2.00000000000000000e+00 * 	pow ( DX , 2 ) ) + 	(  	pow ( DT , 2 ) * 	(  	pow ( DX , 2 ) * 	pow ( M , 2 ) ) ) ) ) * 	(  PHI1_R1111 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) + 	(  	(  2.00000000000000000e+00 * 	(  	pow ( DX , 2 ) * 	(  PHI1_R0111 * 	pow ( 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) , 2 ) ) ) ) + 	(  	(  	(  	(  	(  	(  -6.00000000000000000e+00 * 	pow ( DT , 2 ) ) + 	(  	(  2.00000000000000000e+00 * 	pow ( DX , 2 ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  	pow ( DX , 2 ) * 	pow ( M , 2 ) ) ) ) ) ) * PHI1_I1111 ) + 	(  -2.00000000000000000e+00 * 	(  	pow ( DX , 2 ) * 	(  PHI1_I0111 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1011 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_I1011 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1011_3 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1011 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1011 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1011_3 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1101 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_I1101 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1101_2 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1101 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1101 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1101_2 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1110 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_I1110 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1110_1 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1110 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1110 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1110_1 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1112 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_I1112 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1111_1 ) ) ) ) + 	(  	(  	(  	(  	pow ( DT , 2 ) * 	(  PHI1_I1112 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_R1112 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1111_1 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1121 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_I1121 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1111_2 ) ) ) ) + 	(  	(  	(  	(  	pow ( DT , 2 ) * 	(  PHI1_I1121 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_R1121 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1111_2 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1211 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_I1211 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1111_3 ) ) ) ) + 	(  	(  	(  	pow ( DT , 2 ) * 	(  PHI1_I1211 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_R1211 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1111_3 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ));
 ((	(  outEB + blk_offset ))[	(  	(  4 + 5 ) + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = PHI1_I1111);
-((	(  outEB + blk_offset ))[	(  	(  4 + 0 ) + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 	(  	pow ( DX , -2 ) * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  -2 * GEXT ) + 	(  -2 * 	(  GEXT * REFZ0 ) ) ) ) * 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  	pow ( DX , 2 ) * 	(  	pow ( M , 2 ) * PHI1_I1111 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DX , 2 ) * 	(  	pow ( 2.71828182845904509e+00 , 	(  2 * GEXT ) ) * PHI1_I0111 ) ) ) + 	(  	(  	(  -6.00000000000000000e+00 * 	pow ( DT , 2 ) ) + 	(  2.00000000000000000e+00 * 	pow ( DX , 2 ) ) ) * 	(  	pow ( 2.71828182845904509e+00 , 	(  2 * GEXT ) ) * PHI1_I1111 ) ) ) * 	pow ( 2.71828182845904509e+00 , 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) + 	(  	(  	pow ( DT , 2 ) * 	(  PHI1_I1011 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1011_3 ) ) ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1011 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1011_3 ) ) ) ) ) ) ) + 	(  	(  	pow ( DT , 2 ) * 	(  PHI1_I1101 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1101_2 ) ) ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1101 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1101_2 ) ) ) ) ) ) ) + 	(  	(  	pow ( DT , 2 ) * 	(  PHI1_I1110 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1110_1 ) ) ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1110 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1110_1 ) ) ) ) ) ) ) + 	(  	(  	pow ( DT , 2 ) * 	(  PHI1_I1112 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1111_1 ) ) ) ) ) ) + 	(  	(  	pow ( DT , 2 ) * 	(  PHI1_R1112 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1111_1 ) ) ) ) ) ) + 	(  	(  	pow ( DT , 2 ) * 	(  PHI1_I1121 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1111_2 ) ) ) ) ) ) + 	(  	(  	pow ( DT , 2 ) * 	(  PHI1_R1121 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1111_2 ) ) ) ) ) ) + 	(  	(  	pow ( DT , 2 ) * 	(  PHI1_I1211 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1111_3 ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_R1211 * 	(  	pow ( 2.71828182845904509e+00 , 	(  	(  2 * GEXT ) + 	(  2 * 	(  GEXT * REFZ0 ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1111_3 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ));
+((	(  outEB + blk_offset ))[	(  	(  4 + 0 ) + 	(  num_ele * 	(  	(  xyzx + ovlp ) + 	(  xblock * 	(  	(  xyzy + ovlp ) + 	(  yblock * 	(  xyzz + ovlp ) ) ) ) ) ) )] = 	(  -1.00000000000000000e+00 * 	(  	pow ( DX , -2 ) * 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DX , 2 ) * PHI1_I0111 ) ) + 	(  	(  	(  	(  6.00000000000000000e+00 * 	pow ( DT , 2 ) ) + 	(  	(  -2.00000000000000000e+00 * 	pow ( DX , 2 ) ) + 	(  	pow ( DT , 2 ) * 	(  	pow ( DX , 2 ) * 	pow ( M , 2 ) ) ) ) ) * 	(  PHI1_I1111 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) + 	(  	(  2.00000000000000000e+00 * 	(  	pow ( DX , 2 ) * 	(  PHI1_I0111 * 	pow ( 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) , 2 ) ) ) ) + 	(  	(  	(  	(  	(  	(  6.00000000000000000e+00 * 	pow ( DT , 2 ) ) + 	(  	(  -2.00000000000000000e+00 * 	pow ( DX , 2 ) ) + 	(  	pow ( DT , 2 ) * 	(  	pow ( DX , 2 ) * 	pow ( M , 2 ) ) ) ) ) * PHI1_R1111 ) + 	(  2.00000000000000000e+00 * 	(  	pow ( DX , 2 ) * 	(  PHI1_R0111 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1011 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1011 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1011_3 ) ) ) ) + 	(  	(  	(  	(  	pow ( DT , 2 ) * 	(  PHI1_R1011 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1011 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1011_3 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1101 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1101 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1101_2 ) ) ) ) + 	(  	(  	(  	(  	pow ( DT , 2 ) * 	(  PHI1_R1101 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1101 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1101_2 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1110 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1110 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1110_1 ) ) ) ) + 	(  	(  	(  	(  	pow ( DT , 2 ) * 	(  PHI1_R1110 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1110 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1110_1 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1112 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1112 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1111_1 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1112 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_I1112 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1111_1 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1121 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1121 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1111_2 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1121 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_I1121 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1111_2 ) ) ) ) + 	(  	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_I1211 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1211 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) ) * 	cos ( 	(  DX * 	(  Q * vA1111_3 ) ) ) ) + 	(  	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DT , 2 ) * 	(  PHI1_R1211 * 	cos ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) + 	(  	pow ( DT , 2 ) * 	(  PHI1_I1211 * 	sin ( 	(  	(  DT * 	(  DX * 	(  GEXT * M ) ) ) + 	(  DT * 	(  DX * 	(  GEXT * 	(  M * REFZ0 ) ) ) ) ) ) ) ) ) * 	sin ( 	(  DX * 	(  Q * vA1111_3 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ));
+
+	}else{
+		0;
+
+	 }
 }}}}

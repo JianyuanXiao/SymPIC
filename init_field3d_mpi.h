@@ -26,6 +26,8 @@ void  init_external_field3d_FILTER_B (Field3D_MPI *  pthis )
 ;
 void  init_external_field3d_FILTER_KROOK (Field3D_MPI *  pthis )
 ;
+void  init_external_field3d_without_ss_KGM (Field3D_MPI *  pthis )
+;
 void  init_dm_phi_global (Field3D_MPI *  pthis ,double  phi_r1 ,double  phi_r2 ,double  phi_r3 ,double  phi_r4 ,double  phi_i1 ,double  phi_i2 ,double  phi_i3 ,double  phi_i4 ,double  sgm ,double  frq )
 ;
 void  init_dm_A0_global (Field3D_MPI *  pthis ,double  ampEy ,double  dt )

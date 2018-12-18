@@ -34,7 +34,7 @@ typedef enum {CD_C,CD_OpenMP,CD_OpenCL,CD_CUDA} SEQ_FIELD_TYPES;
 
 #define NUM_SYNC_KERNEL 4
 
-#define NUM_FDTD_KERNEL 18
+#define NUM_FDTD_KERNEL 22
 typedef struct { 	void *  pe ;
 	long  xlen ;
 	long  ylen ;
@@ -88,7 +88,7 @@ typedef struct { 	void *  pe ;
 	Field3D_Seq *  pFoutJ ;
 	Field3D_Seq *  pLFoutJ ;
 	Field3D_Seq *  pFoutEN ;
-	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [5];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
+	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [8];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel ;
 	void *  move_back_kernel_kernel ;
 	double  Mass ;
@@ -102,6 +102,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel ;
@@ -109,6 +112,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel ;
 	void *  calculate_rho_kernel ;
@@ -134,6 +140,10 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_FoutJ ;
 	Field3D_MPI  MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp ;
+	Field3D_MPI  MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldBtmp1 ;
+	Field3D_MPI  MPI_fieldPMLB ;
+	Field3D_MPI  MPI_fieldPMLE ;
 	Field3D_MPI *  pMPI_FoutJ ;
 	Field3D_MPI *  pMPI_FoutEN ;
 	Field3D_MPI  MPI_fieldE_ext ;
@@ -142,7 +152,13 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_fieldB_filter ;
 	Field3D_MPI *  pB0 ;
 	Field3D_MPI *  pB1 ;
+	int  use_pml_abc_dir ;
+	int  use_pml_level ;
 	int  use_small_grid ;
+	long  allxmax ;
+	long  allymax ;
+	long  allzmax ;
+	double  use_pml_sigma_max ;
 	double  dt ;
 } Particle_in_Cell_MPI;
 	#ifndef   LINEAR_OPERATOR_PICUS_001    
@@ -651,6 +667,33 @@ int  MPI_Yee_FDTD_Div_BWD_4th (Field3D_MPI *  pthis ,Field3D_MPI *  inEB ,double
 	double  damp_vars = 	( inEB )->damp_vars ;
 	Field3D_Seq_Yee_FDTD_Div_BWD_4th ( 	(  data0 + i ) , 	(  data + i ) , DT );
 }	return  0 ;}
+int  MPI_merge_current_2 (Field3D_MPI *  pthis ,Field3D_MPI *  inEB ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	long  i = 0 ;
+	for (i=0 ; 	(  i < num_runtime ) ; i++)
+	{
+	Field3D_Seq *  data0 = data ;
+	Field3D_Seq *  data = 	( inEB )->data ;
+	long  num_runtime = 	( inEB )->num_runtime ;
+	PS_MPI_Comm  comm = 	( inEB )->comm ;
+	long  cur_rank = 	( inEB )->cur_rank ;
+	long  num_mpi_process = 	( inEB )->num_mpi_process ;
+	long *  sync_layer_len = 	( inEB )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( inEB )->rqst ;
+	One_Particle_Collection *  particles = 	( inEB )->particles ;
+	int  num_spec = 	( inEB )->num_spec ;
+	double  damp_vars = 	( inEB )->damp_vars ;
+	Field3D_Seq_merge_current_2 ( 	(  data0 + i ) , 	(  data + i ) );
+}	return  0 ;}
 int  MPI_merge_current (Field3D_MPI *  pthis ,Field3D_MPI *  inEB ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
@@ -690,55 +733,6 @@ int  MPI_Yee_FDTD_MUR_ABC (Field3D_MPI *  pthis ,Field3D_MPI *  inEB ,double  DT
 	int  num_spec = 	( pthis )->num_spec ;
 	double  damp_vars = 	( pthis )->damp_vars ;
 	sync_ovlp_mpi_field ( inEB );
-	if (  	(  use_abc == 0 )  ){  
-			Field3D_MPI_yee_abc_ ( pthis , inEB , DT );
-
-	}else{
-			if (  	(  use_abc == 1 )  ){  
-			Field3D_MPI_yee_abc_x ( pthis , inEB , DT );
-
-	}else{
-			if (  	(  use_abc == 2 )  ){  
-			Field3D_MPI_yee_abc_y ( pthis , inEB , DT );
-
-	}else{
-			if (  	(  use_abc == 3 )  ){  
-			Field3D_MPI_yee_abc_xy ( pthis , inEB , DT );
-
-	}else{
-			if (  	(  use_abc == 4 )  ){  
-			Field3D_MPI_yee_abc_z ( pthis , inEB , DT );
-
-	}else{
-			if (  	(  use_abc == 5 )  ){  
-			Field3D_MPI_yee_abc_xz ( pthis , inEB , DT );
-
-	}else{
-			if (  	(  use_abc == 6 )  ){  
-			Field3D_MPI_yee_abc_yz ( pthis , inEB , DT );
-
-	}else{
-			if (  	(  use_abc == 7 )  ){  
-			Field3D_MPI_yee_abc_xyz ( pthis , inEB , DT );
-
-	}else{
-		0;
-
-	 }
-
-	 }
-
-	 }
-
-	 }
-
-	 }
-
-	 }
-
-	 }
-
-	 }
 	if (  	(  use_pec == 0 )  ){  
 			Field3D_MPI_yee_pec_ ( pthis , inEB , DT );
 
@@ -769,6 +763,55 @@ int  MPI_Yee_FDTD_MUR_ABC (Field3D_MPI *  pthis ,Field3D_MPI *  inEB ,double  DT
 	}else{
 			if (  	(  use_pec == 7 )  ){  
 			Field3D_MPI_yee_pec_xyz ( pthis , inEB , DT );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+
+	 }
+
+	 }
+
+	 }
+
+	 }
+
+	 }
+
+	 }
+	if (  	(  use_abc == 0 )  ){  
+			Field3D_MPI_yee_abc_ ( pthis , inEB , DT );
+
+	}else{
+			if (  	(  use_abc == 1 )  ){  
+			Field3D_MPI_yee_abc_x ( pthis , inEB , DT );
+
+	}else{
+			if (  	(  use_abc == 2 )  ){  
+			Field3D_MPI_yee_abc_y ( pthis , inEB , DT );
+
+	}else{
+			if (  	(  use_abc == 3 )  ){  
+			Field3D_MPI_yee_abc_xy ( pthis , inEB , DT );
+
+	}else{
+			if (  	(  use_abc == 4 )  ){  
+			Field3D_MPI_yee_abc_z ( pthis , inEB , DT );
+
+	}else{
+			if (  	(  use_abc == 5 )  ){  
+			Field3D_MPI_yee_abc_xz ( pthis , inEB , DT );
+
+	}else{
+			if (  	(  use_abc == 6 )  ){  
+			Field3D_MPI_yee_abc_yz ( pthis , inEB , DT );
+
+	}else{
+			if (  	(  use_abc == 7 )  ){  
+			Field3D_MPI_yee_abc_xyz ( pthis , inEB , DT );
 
 	}else{
 		0;
@@ -838,7 +881,65 @@ int  MPI_Yee_FDTD_MUR_ABC (Field3D_MPI *  pthis ,Field3D_MPI *  inEB ,double  DT
 
 	 }
 	return  0 ;}
-int  MPI_kgm_eqn_core (Field3D_MPI *  pthis ,Field3D_MPI *  inEB ,double  DT ,double  m ,double  Q ,double  DX ,double  extg ,double  refz0 ){
+int  MPI_PML_FDTD_CURL_FWD (Field3D_MPI *  pthis ,Field3D_MPI *  inEB ,Field3D_MPI *  outPMLEB ,Field3D_MPI *  inPMLEB ,double  DT ,double  m ,double  q ,double  DX ,double  DY ,double  DZ ,int  abc_dir ,int  level ,int  pml_m ,double  max_sigma ,long  allxmax ,long  allymax ,long  allzmax ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	long  i = 0 ;
+	sync_ovlp_mpi_field ( inEB );
+	sync_ovlp_mpi_field ( inPMLEB );
+	for (i=0 ; 	(  i < num_runtime ) ; i++)
+	{
+	Field3D_Seq *  data0 = data ;
+	Field3D_Seq *  data = 	( inEB )->data ;
+	long  num_runtime = 	( inEB )->num_runtime ;
+	PS_MPI_Comm  comm = 	( inEB )->comm ;
+	long  cur_rank = 	( inEB )->cur_rank ;
+	long  num_mpi_process = 	( inEB )->num_mpi_process ;
+	long *  sync_layer_len = 	( inEB )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( inEB )->rqst ;
+	One_Particle_Collection *  particles = 	( inEB )->particles ;
+	int  num_spec = 	( inEB )->num_spec ;
+	double  damp_vars = 	( inEB )->damp_vars ;
+	Field3D_Seq_PML_FDTD_CURL_FWD ( 	(  data0 + i ) , 	(  data + i ) , 	(  	( outPMLEB )->data + i ) , 	(  	( inPMLEB )->data + i ) , DT , m , q , DX , DY , DZ , abc_dir , level , pml_m , max_sigma , allxmax , allymax , allzmax );
+}}
+int  MPI_PML_FDTD_CURL_BWD (Field3D_MPI *  pthis ,Field3D_MPI *  inEB ,Field3D_MPI *  outPMLEB ,Field3D_MPI *  inPMLEB ,double  DT ,double  m ,double  q ,double  DX ,double  DY ,double  DZ ,int  abc_dir ,int  level ,int  pml_m ,double  max_sigma ,long  allxmax ,long  allymax ,long  allzmax ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	long  i = 0 ;
+	sync_ovlp_mpi_field ( inEB );
+	sync_ovlp_mpi_field ( inPMLEB );
+	for (i=0 ; 	(  i < num_runtime ) ; i++)
+	{
+	Field3D_Seq *  data0 = data ;
+	Field3D_Seq *  data = 	( inEB )->data ;
+	long  num_runtime = 	( inEB )->num_runtime ;
+	PS_MPI_Comm  comm = 	( inEB )->comm ;
+	long  cur_rank = 	( inEB )->cur_rank ;
+	long  num_mpi_process = 	( inEB )->num_mpi_process ;
+	long *  sync_layer_len = 	( inEB )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( inEB )->rqst ;
+	One_Particle_Collection *  particles = 	( inEB )->particles ;
+	int  num_spec = 	( inEB )->num_spec ;
+	double  damp_vars = 	( inEB )->damp_vars ;
+	Field3D_Seq_PML_FDTD_CURL_BWD ( 	(  data0 + i ) , 	(  data + i ) , 	(  	( outPMLEB )->data + i ) , 	(  	( inPMLEB )->data + i ) , DT , m , q , DX , DY , DZ , abc_dir , level , pml_m , max_sigma , allxmax , allymax , allzmax );
+}}
+int  MPI_kgm_calc_rho (Field3D_MPI *  pthis ,Field3D_MPI *  inEB ,double  DT ,double  m ,double  Q ,double  DX ,double  refz0 ,double  q ,double  dtodx ,int  mode ,int  swap_input ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -864,5 +965,33 @@ int  MPI_kgm_eqn_core (Field3D_MPI *  pthis ,Field3D_MPI *  inEB ,double  DT ,do
 	One_Particle_Collection *  particles = 	( inEB )->particles ;
 	int  num_spec = 	( inEB )->num_spec ;
 	double  damp_vars = 	( inEB )->damp_vars ;
-	Field3D_Seq_kgm_eqn_core ( 	(  data0 + i ) , 	(  data + i ) , DT , m , Q , DX , extg , refz0 );
+	Field3D_Seq_kgm_calc_rho ( 	(  data0 + i ) , 	(  data + i ) , DT , m , Q , DX , refz0 , q , dtodx , mode , swap_input );
+}	return  0 ;}
+int  MPI_kgm_eqn_core (Field3D_MPI *  pthis ,Field3D_MPI *  inEB ,double  DT ,double  m ,double  Q ,double  DX ,double  extg ,double  refz0 ,int  swap_input ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	long  i = 0 ;
+	sync_ovlp_mpi_field ( inEB );
+	for (i=0 ; 	(  i < num_runtime ) ; i++)
+	{
+	Field3D_Seq *  data0 = data ;
+	Field3D_Seq *  data = 	( inEB )->data ;
+	long  num_runtime = 	( inEB )->num_runtime ;
+	PS_MPI_Comm  comm = 	( inEB )->comm ;
+	long  cur_rank = 	( inEB )->cur_rank ;
+	long  num_mpi_process = 	( inEB )->num_mpi_process ;
+	long *  sync_layer_len = 	( inEB )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( inEB )->rqst ;
+	One_Particle_Collection *  particles = 	( inEB )->particles ;
+	int  num_spec = 	( inEB )->num_spec ;
+	double  damp_vars = 	( inEB )->damp_vars ;
+	Field3D_Seq_kgm_eqn_core ( 	(  data0 + i ) , 	(  data + i ) , DT , m , Q , DX , extg , refz0 , swap_input );
 }	return  0 ;}

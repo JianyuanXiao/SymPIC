@@ -4,7 +4,13 @@
 #include <stdio.h>
 #define IDX_OPT_MAX 1
 #include <stdio.h>
+double  c_rand01_k (double  x0 ,double  x1 ){
+	return  0 ;}
+double  c_maxwell_dist_k (double  ava ,double  sig ){
+	return  0 ;}
 void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -15,7 +21,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  numgrid_cu = 	(  numgrid * numvec ) ;
 	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
 	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
-	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [80][3];{
+	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];{
 	long  l1 ;
 	for ((l1 = 0) ; 	(  l1 < cu_load ) ; (l1 = 	(  l1 + 1 )))
 	{
@@ -57,7 +63,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  5 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -70,7 +76,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[1] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[1] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -87,7 +93,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 5 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 5 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -99,7 +105,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) )])[2]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) ) * 3 ) ))[2]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -115,7 +121,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  5 * total_idx )])[ridx] = (	(  FoutJ + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -127,13 +133,13 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shJx)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[0]);
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
 }}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
 	{
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -144,15 +150,22 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[0] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[1] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[2] - Midz ) ;
-	double  vx = ((a_rva)[g])[3] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -214,9 +227,9 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[0] = 	(  ((a_rva)[g])[0] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[0] = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -225,7 +238,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -243,7 +256,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-(((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[0] = (shJx)[total_idx]);
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0] = (shJx)[total_idx]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -257,7 +270,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 15 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
-((	(  FoutJ + 	(  	(  3 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  3 * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[Gll_P9918] = ((ByzJxtmp)[	(  5 * total_idx )])[Gll_P9918]);
+((	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[Gll_P9918]);
 }}}}}}}
 	}else{
 		0;
@@ -305,7 +318,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  5 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -318,7 +331,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[1] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[1] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -335,7 +348,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 5 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 5 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -347,7 +360,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) )])[2]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) ) * 3 ) ))[2]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -363,7 +376,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  5 * total_idx )])[ridx] = (	(  FoutJ + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -375,13 +388,13 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shJx)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[0]);
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
 }}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
 	{
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -392,15 +405,22 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[0] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[1] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[2] - Midz ) ;
-	double  vx = ((a_rva)[g])[3] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -462,9 +482,9 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[0] = 	(  ((a_rva)[g])[0] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[0] = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -473,7 +493,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -491,7 +511,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-(((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[0] = (shJx)[total_idx]);
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0] = (shJx)[total_idx]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -505,7 +525,7 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 15 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
-((	(  FoutJ + 	(  	(  3 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  3 * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[Gll_P9918] = ((ByzJxtmp)[	(  5 * total_idx )])[Gll_P9918]);
+((	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[Gll_P9918]);
 }}}}}}}
 	}else{
 		0;
@@ -520,6 +540,8 @@ void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	 }
 }}}
 void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -532,7 +554,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
 	long  cu_offset = 	(  idy * numgrid ) ;
 	long  xyzalllen = numgrid ;
-	double   local_temp_particle_cache  [768][6];	int   cu_xyzw_shared  [4];	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [80][3];{
+	double   local_temp_particle_cache  [	(  768 * 6 )];	int   cu_xyzw_shared  [4];	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];{
 	long  l1 ;
 	for ((l1 = 0) ; 	(  l1 < cu_load ) ; (l1 = 	(  l1 + 1 )))
 	{
@@ -574,7 +596,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  5 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -587,7 +609,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[1] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[1] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -604,7 +626,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 5 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 5 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -616,7 +638,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) )])[2]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) ) * 3 ) ))[2]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -632,7 +654,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  5 * total_idx )])[ridx] = (	(  FoutJ + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -644,13 +666,13 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shJx)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[0]);
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
 }}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
 	{
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -661,15 +683,15 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[0] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[1] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[2] - Midz ) ;
-	double  vx = ((a_rva)[g])[3] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -731,9 +753,9 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[0] = 	(  ((a_rva)[g])[0] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[0] = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -742,7 +764,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -760,7 +782,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-(((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[0] = (shJx)[total_idx]);
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0] = (shJx)[total_idx]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -774,14 +796,14 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 15 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
-((	(  FoutJ + 	(  	(  3 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  3 * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[Gll_P9918] = ((ByzJxtmp)[	(  5 * total_idx )])[Gll_P9918]);
+((	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[Gll_P9918]);
 }}}}}}}
 	}else{
 		0;
 
 	 }
 }}{
-	double   local_pos_cache  [64][6];	if (  	(  idx == 0 )  ){  
+	double   local_pos_cache  [	(  64 * 6 )];	if (  	(  	(  idy < numvec ) && 	(  idx == 0 ) )  ){  
 			int  cu_cur_cache_load = (cu_xyzw)[	(  4 * idy )] ;
 {
 	int  num_cur_load = 0 ;
@@ -803,11 +825,11 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((local_pos_cache)[0])[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  lg * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  local_pos_cache + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  lg * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}	for (g=0 ; 	(  g < num_read ) ; g++)
 	{
 	int  gall = 	(  g + lg ) ;
-	if (  	(  ((local_pos_cache)[g])[0] < 0 )  ){  
+	if (  	(  (	(  local_pos_cache + 	(  g * 6 ) ))[0] < 0 )  ){  
 		{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
@@ -816,11 +838,11 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_left * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_pos_cache)[g])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_left * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}(cur_to_left = 	(  cur_to_left + 1 ));
 
 	}else{
-			if (  	(  ((local_pos_cache)[g])[0] > XLEN )  ){  
+			if (  	(  (	(  local_pos_cache + 	(  g * 6 ) ))[0] > XLEN )  ){  
 		cur_to_right--;
 {
 	long  inner_step ;
@@ -830,7 +852,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_right * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_pos_cache)[g])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_right * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}
 	}else{
 		{
@@ -841,7 +863,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_this * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_pos_cache)[g])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_this * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}(cur_this = 	(  cur_this + 1 ));
 
 	 }
@@ -856,12 +878,18 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 		0;
 
 	 }
-{
+	if (  	(  idy < numvec )  ){  
+		{
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 4 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
 ((	(  cu_xyzw + 	(  4 * idy ) ))[Gll_P9918] = (cu_xyzw_shared)[Gll_P9918]);
-}}}{
+}}
+	}else{
+		0;
+
+	 }
+}{
 	long  allgid ;
 	for ((allgid = 0) ; 	(  allgid < numgrid ) ; (allgid = 	(  allgid + 1 )))
 	{
@@ -906,7 +934,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  5 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -919,7 +947,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[1] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[1] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -936,7 +964,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 5 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 5 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -948,7 +976,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) )])[2]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) ) * 3 ) ))[2]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -964,7 +992,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  5 * total_idx )])[ridx] = (	(  FoutJ + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -976,13 +1004,13 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shJx)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[0]);
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
 }}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
 	{
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -993,15 +1021,15 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[0] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[1] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[2] - Midz ) ;
-	double  vx = ((a_rva)[g])[3] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -1063,24 +1091,24 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[0] = 	(  ((a_rva)[g])[0] + 	(  Deltat * vx ) ));
-	if (  	(  ((a_rva)[g])[0] < left_bound )  ){  
+}}}}((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[0] = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] + 	(  Deltat * vx ) ));
+	if (  	(  (	(  a_rva + 	(  g * 6 ) ))[0] < left_bound )  ){  
 		{
 	long  m ;
 	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
 	{
-(((local_temp_particle_cache)[left_cache_usage])[m] = ((a_rva)[g])[m]);
+((	(  local_temp_particle_cache + 	(  left_cache_usage * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
 }}(left_cache_usage = 	(  left_cache_usage + 1 ));
 
 	}else{
-			if (  	(  ((a_rva)[g])[0] > right_bound )  ){  
+			if (  	(  (	(  a_rva + 	(  g * 6 ) ))[0] > right_bound )  ){  
 		{
 	long  m ;
 	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
 	{
-(((local_temp_particle_cache)[right_cache_usage])[m] = ((a_rva)[g])[m]);
+((	(  local_temp_particle_cache + 	(  right_cache_usage * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
 }}(right_cache_usage = 	(  right_cache_usage + -1 ));
 
 	}else{
@@ -1089,7 +1117,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  m ;
 	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
 	{
-(((a_rva)[sort_cur])[m] = ((a_rva)[g])[m]);
+((	(  a_rva + 	(  sort_cur * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
 }}
 	}else{
 		0;
@@ -1109,7 +1137,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  	(  6 * cur_cache_usage ) + 	(  lg * 0 ) ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  	(  6 * cur_cache_usage ) + 	(  lg * 0 ) ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}(cur_cache_usage = 	(  cur_cache_usage + sort_cur ));
 
 	}else{
@@ -1141,7 +1169,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_minus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_temp_particle_cache)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_minus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_temp_particle_cache + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  right_len * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -1150,7 +1178,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_plus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_temp_particle_cache)[	(  right_cache_usage + 1 )])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_plus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_temp_particle_cache + 	(  	(  right_cache_usage + 1 ) * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -1168,7 +1196,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-(((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[0] = (shJx)[total_idx]);
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0] = (shJx)[total_idx]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -1182,7 +1210,7 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 15 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
-((	(  FoutJ + 	(  	(  3 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  3 * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[Gll_P9918] = ((ByzJxtmp)[	(  5 * total_idx )])[Gll_P9918]);
+((	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[Gll_P9918]);
 }}}}}}}
 	}else{
 		0;
@@ -1197,6 +1225,8 @@ void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	 }
 }}}
 void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const int  IDX_LOCAL_XLEN = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
@@ -1208,7 +1238,7 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  numgrid_cu = 	(  numgrid * numvec ) ;
 	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
 	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
-	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [80][3];	long  allgid = idy ;
+	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];	long  allgid = idy ;
 	for (0 ; 	(  allgid < numvec ) ; (allgid = 	(  allgid + ylen )))
 	{
 	int  cu_load = (cu_xyzw)[	(  4 * allgid )] ;
@@ -1255,7 +1285,7 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  5 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -1268,7 +1298,7 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[1] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[1] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -1285,7 +1315,7 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 5 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 5 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -1297,7 +1327,7 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) )])[2]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) ) * 3 ) ))[2]);
 }{
 	long  lg = 0 ;
 	for (0 ; 	(  lg < 125 ) ; (lg = 	(  lg + xlen )))
@@ -1315,7 +1345,7 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -1326,15 +1356,22 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[0] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[1] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[2] - Midz ) ;
-	double  vx = ((a_rva)[g])[3] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -1396,9 +1433,9 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[0] = 	(  ((a_rva)[g])[0] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[0] = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -1407,7 +1444,7 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -1476,7 +1513,7 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  5 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -1489,7 +1526,7 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[1] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[1] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -1506,7 +1543,7 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 5 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 5 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -1518,7 +1555,7 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) )])[2]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) ) * 3 ) ))[2]);
 }{
 	long  lg = 0 ;
 	for (0 ; 	(  lg < 125 ) ; (lg = 	(  lg + xlen )))
@@ -1536,7 +1573,7 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -1547,15 +1584,22 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[0] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[1] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[2] - Midz ) ;
-	double  vx = ((a_rva)[g])[3] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -1617,9 +1661,9 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[0] = 	(  ((a_rva)[g])[0] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[0] = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -1628,7 +1672,7 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -1656,7 +1700,544 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 
 	 }
 	if (  	(  load0 != new_load )  ){  
-		((xyzw)[	(  4 * 	(  	(  idy * numgrid ) + allgid ) )] = new_load);
+		((xyzw)[	(  4 * 	(  0 + allgid ) )] = new_load);
+
+	}else{
+		0;
+
+	 }
+}}
+void  c_split_pass_x_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
+	const int  IDX_LOCAL_XLEN = 1 ;
+	const long  idx = 0 ;
+	const long  idy = scmc_internal_g_idy ;
+	const long  xlen = 1 ;
+	const long  ylen = scmc_internal_g_ylen ;
+	const long  global_idx = 	(  idx + 	(  idy * xlen ) ) ;
+	long  numgrid = 	(  XLEN * 	(  YLEN * ZLEN ) ) ;
+	long  numallgrid = 	(  	(  XLEN + 	(  ovlp + ovlp ) ) * 	(  	(  YLEN + 	(  ovlp + ovlp ) ) * 	(  ZLEN + 	(  ovlp + ovlp ) ) ) ) ;
+	long  numgrid_cu = 	(  numgrid * numvec ) ;
+	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
+	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
+	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];	long  allgid = idy ;
+	for (0 ; 	(  allgid < numvec ) ; (allgid = 	(  allgid + ylen )))
+	{
+	int  cu_load = (cu_xyzw)[	(  4 * allgid )] ;
+{
+	long  l1 ;
+	for ((l1 = 0) ; 	(  l1 < cu_load ) ; (l1 = 	(  l1 + 1 )))
+	{
+	long  load0 = 1 ;
+	long  new_load = load0 ;
+	long  idy = allgid ;
+	if (  load0  ){  
+			double  grid_geo = 	(  DELTA_X / 	(  DELTA_Y * DELTA_Z ) ) ;
+	double  grid_geo_py = 	(  1.00000000000000000e+00 / 	(  DELTA_Y * DELTA_Y ) ) ;
+	double  grid_geo_pz = 	(  1.00000000000000000e+00 / 	(  DELTA_Z * DELTA_Z ) ) ;
+	int  lg ;
+	double  xx = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  0 + 	(  0 * 6 ) )] ;
+	double  xy = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  1 + 	(  0 * 6 ) )] ;
+	double  xz = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  2 + 	(  0 * 6 ) )] ;
+	int  Bidx = 	floor ( xx ) ;
+	int  Bidy = 	floor ( xy ) ;
+	int  Bidz = 	floor ( xz ) ;
+	int  Midx = Bidx ;
+	int  Midy = Bidy ;
+	int  Midz = Bidz ;
+	int  left_bound = Midx ;
+	long  right_bound = 	(  left_bound + 1 ) ;
+(Bidx = 	(  Bidx - 2 ));
+(Bidy = 	(  Bidy - 1 ));
+(Bidz = 	(  Bidz - 1 ));
+	double  QE_MASS = 	(  Charge / Mass ) ;
+{
+{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 3 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 15 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 15 )  ){  
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[1] ;
+((shBy)[total_idx] = l1);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 3 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  3 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 15 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 15 )  ){  
+		((	(  ByzJxtmp + 	(  	(  total_idx * 5 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) ) * 3 ) ))[2]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 15 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 15 )  ){  
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
+}}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
+	{
+((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
+}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
+	{
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	int  numcp = 1 ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}{
+	long  sort_cur = 0 ;
+{
+	int  g = 0 ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
+	double  Iby = 0 ;
+	double  Ibz = 0 ;
+	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
+((fBy_y)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) ));
+((fBy_y)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * ry ) + 	pow ( ry , 2 ) ) ) ));
+((fBy_y)[3] = 	(  2.50000000000000000e-01 * 	pow ( ry , 2 ) ));
+((fBy_z)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ));
+((fBy_z)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ));
+((fBy_z)[2] = 	(  5.00000000000000000e-01 * rz ));
+((fBz_z)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) ));
+((fBz_z)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) ));
+((fBz_z)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rz ) + 	pow ( rz , 2 ) ) ) ));
+((fBz_z)[3] = 	(  2.50000000000000000e-01 * 	pow ( rz , 2 ) ));
+((fBz_y)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ));
+((fBz_y)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ));
+((fBz_y)[2] = 	(  5.00000000000000000e-01 * ry ));
+((fBy_x)[0] = 1.00000000000000000e+00);
+((fBy_x)[1] = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx ) ) , 2 ) ) ));
+((fBy_x)[2] = 	(  	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx ) + 	pow ( rx , 2 ) ) ) ) ));
+((fBy_x)[3] = 	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ));
+((fBy_x)[4] = 0.00000000000000000e+00);
+	double  rxplus ;
+(rxplus = 	(  rx + 	(  Deltat * vx ) ));
+	double  rxplus_int = 	floor ( rxplus ) ;
+(rxplus = 	(  rxplus - rxplus_int ));
+	double  fByxplustmp0 ;
+	double  fByxplustmp1 ;
+	double  fByxplustmp2 ;
+(fByxplustmp0 = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rxplus ) ) , 2 ) ) ));
+(fByxplustmp1 = 	(  	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rxplus ) + 	pow ( rxplus , 2 ) ) ) ) ));
+(fByxplustmp2 = 	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ));
+	double  isrx_minus = ((	(  rxplus_int == -1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_zero = ((	(  rxplus_int == 0 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_plus = ((	(  rxplus_int == 1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+((fBy_xplus)[0] = 	(  	(  isrx_minus * fByxplustmp0 ) + 	(  1.00000000000000000e+00 - isrx_minus ) ));
+((fBy_xplus)[1] = 	(  	(  isrx_minus * fByxplustmp1 ) + 	(  	(  isrx_zero * fByxplustmp0 ) + isrx_plus ) ));
+((fBy_xplus)[2] = 	(  	(  isrx_minus * fByxplustmp2 ) + 	(  	(  isrx_zero * fByxplustmp1 ) + 	(  isrx_plus * fByxplustmp0 ) ) ));
+((fBy_xplus)[3] = 	(  	(  isrx_zero * fByxplustmp2 ) + 	(  isrx_plus * fByxplustmp1 ) ));
+((fBy_xplus)[4] = 	(  isrx_plus * fByxplustmp2 ));
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 5 ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 4 ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+(Iby = 	(  Iby + 	(  (shBy)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBy_z)[xyzx] ) ) ) ));
+(Ibz = 	(  Ibz + 	(  (shBz)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBz_z)[xyzy] * (fBz_y)[xyzx] ) ) ) ));
+{
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}	int  xyzx = 3 ;
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[0] = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] + 	(  Deltat * vx ) ));
+}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	double  inctmp = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < 	(  1 * IDX_OPT_MAX ) ) ; (i = 	(  i + 1 )))
+	{
+(inctmp = 	(  inctmp + (shJx_allidx)[	(  	(  	(  lg + idx ) * 	(  IDX_OPT_MAX * 1 ) ) + i )] ));
+}}((shJx)[	(  lg + idx )] = 	(  (shJx)[	(  lg + idx )] + inctmp ));
+}{
+	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0] = (shJx)[total_idx]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 15 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[Gll_P9918]);
+}}}}}}}
+	}else{
+		0;
+
+	 }
+}}}(allgid = idy);
+	for (0 ; 	(  allgid < numgrid_cu ) ; (allgid = 	(  allgid + ylen )))
+	{
+	int  load0 = (xyzw)[	(  4 * allgid )] ;
+	long  idy = 	(  allgid / numgrid ) ;
+	int  new_load = load0 ;
+	if (  load0  ){  
+			double  grid_geo = 	(  DELTA_X / 	(  DELTA_Y * DELTA_Z ) ) ;
+	double  grid_geo_py = 	(  1.00000000000000000e+00 / 	(  DELTA_Y * DELTA_Y ) ) ;
+	double  grid_geo_pz = 	(  1.00000000000000000e+00 / 	(  DELTA_Z * DELTA_Z ) ) ;
+	int  lg ;
+	double  xx = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  0 + 	(  0 * 6 ) )] ;
+	double  xy = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  1 + 	(  0 * 6 ) )] ;
+	double  xz = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  2 + 	(  0 * 6 ) )] ;
+	int  Bidx = 	floor ( xx ) ;
+	int  Bidy = 	floor ( xy ) ;
+	int  Bidz = 	floor ( xz ) ;
+	int  Midx = Bidx ;
+	int  Midy = Bidy ;
+	int  Midz = Bidz ;
+	int  left_bound = Midx ;
+	long  right_bound = 	(  left_bound + 1 ) ;
+(Bidx = 	(  Bidx - 2 ));
+(Bidy = 	(  Bidy - 1 ));
+(Bidz = 	(  Bidz - 1 ));
+	double  QE_MASS = 	(  Charge / Mass ) ;
+{
+{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 3 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 15 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 15 )  ){  
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[1] ;
+((shBy)[total_idx] = l1);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 3 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  3 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 15 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 15 )  ){  
+		((	(  ByzJxtmp + 	(  	(  total_idx * 5 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) ) * 3 ) ))[2]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 15 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 15 )  ){  
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
+}}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
+	{
+((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
+}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
+	{
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	int  numcp = 1 ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}{
+	long  sort_cur = 0 ;
+{
+	int  g = 0 ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
+	double  Iby = 0 ;
+	double  Ibz = 0 ;
+	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
+((fBy_y)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) ));
+((fBy_y)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * ry ) + 	pow ( ry , 2 ) ) ) ));
+((fBy_y)[3] = 	(  2.50000000000000000e-01 * 	pow ( ry , 2 ) ));
+((fBy_z)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ));
+((fBy_z)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ));
+((fBy_z)[2] = 	(  5.00000000000000000e-01 * rz ));
+((fBz_z)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) ));
+((fBz_z)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) ));
+((fBz_z)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rz ) + 	pow ( rz , 2 ) ) ) ));
+((fBz_z)[3] = 	(  2.50000000000000000e-01 * 	pow ( rz , 2 ) ));
+((fBz_y)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ));
+((fBz_y)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ));
+((fBz_y)[2] = 	(  5.00000000000000000e-01 * ry ));
+((fBy_x)[0] = 1.00000000000000000e+00);
+((fBy_x)[1] = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx ) ) , 2 ) ) ));
+((fBy_x)[2] = 	(  	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx ) + 	pow ( rx , 2 ) ) ) ) ));
+((fBy_x)[3] = 	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ));
+((fBy_x)[4] = 0.00000000000000000e+00);
+	double  rxplus ;
+(rxplus = 	(  rx + 	(  Deltat * vx ) ));
+	double  rxplus_int = 	floor ( rxplus ) ;
+(rxplus = 	(  rxplus - rxplus_int ));
+	double  fByxplustmp0 ;
+	double  fByxplustmp1 ;
+	double  fByxplustmp2 ;
+(fByxplustmp0 = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rxplus ) ) , 2 ) ) ));
+(fByxplustmp1 = 	(  	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rxplus ) + 	pow ( rxplus , 2 ) ) ) ) ));
+(fByxplustmp2 = 	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ));
+	double  isrx_minus = ((	(  rxplus_int == -1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_zero = ((	(  rxplus_int == 0 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_plus = ((	(  rxplus_int == 1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+((fBy_xplus)[0] = 	(  	(  isrx_minus * fByxplustmp0 ) + 	(  1.00000000000000000e+00 - isrx_minus ) ));
+((fBy_xplus)[1] = 	(  	(  isrx_minus * fByxplustmp1 ) + 	(  	(  isrx_zero * fByxplustmp0 ) + isrx_plus ) ));
+((fBy_xplus)[2] = 	(  	(  isrx_minus * fByxplustmp2 ) + 	(  	(  isrx_zero * fByxplustmp1 ) + 	(  isrx_plus * fByxplustmp0 ) ) ));
+((fBy_xplus)[3] = 	(  	(  isrx_zero * fByxplustmp2 ) + 	(  isrx_plus * fByxplustmp1 ) ));
+((fBy_xplus)[4] = 	(  isrx_plus * fByxplustmp2 ));
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 5 ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 4 ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+(Iby = 	(  Iby + 	(  (shBy)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBy_z)[xyzx] ) ) ) ));
+(Ibz = 	(  Ibz + 	(  (shBz)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBz_z)[xyzy] * (fBz_y)[xyzx] ) ) ) ));
+{
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}	int  xyzx = 3 ;
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[0] = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] + 	(  Deltat * vx ) ));
+}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	double  inctmp = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < 	(  1 * IDX_OPT_MAX ) ) ; (i = 	(  i + 1 )))
+	{
+(inctmp = 	(  inctmp + (shJx_allidx)[	(  	(  	(  lg + idx ) * 	(  IDX_OPT_MAX * 1 ) ) + i )] ));
+}}((shJx)[	(  lg + idx )] = 	(  (shJx)[	(  lg + idx )] + inctmp ));
+}{
+	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0] = (shJx)[total_idx]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 15 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[Gll_P9918]);
+}}}}}}}
+	}else{
+		0;
+
+	 }
+	if (  	(  load0 != new_load )  ){  
+		((xyzw)[	(  4 * 	(  0 + allgid ) )] = new_load);
 
 	}else{
 		0;
@@ -1664,6 +2245,8 @@ void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	 }
 }}
 void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const int  IDX_LOCAL_XLEN = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
@@ -1675,7 +2258,7 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  numgrid_cu = 	(  numgrid * numvec ) ;
 	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
 	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
-	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [80][3];	long  allgid = idy ;
+	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];	long  allgid = idy ;
 	for (0 ; 	(  allgid < numvec ) ; (allgid = 	(  allgid + ylen )))
 	{
 	int  cu_load = (cu_xyzw)[	(  4 * allgid )] ;
@@ -1722,7 +2305,7 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  5 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -1735,7 +2318,7 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[1] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[1] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -1752,7 +2335,7 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 5 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 5 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -1764,7 +2347,7 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) )])[2]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) ) * 3 ) ))[2]);
 }{
 	long  lg = 0 ;
 	for (0 ; 	(  lg < 125 ) ; (lg = 	(  lg + xlen )))
@@ -1782,7 +2365,7 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -1793,15 +2376,15 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[0] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[1] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[2] - Midz ) ;
-	double  vx = ((a_rva)[g])[3] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -1863,9 +2446,9 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[0] = 	(  ((a_rva)[g])[0] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[0] = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -1874,7 +2457,7 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -1943,7 +2526,7 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  5 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -1956,7 +2539,7 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) )])[1] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[1] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -1973,7 +2556,7 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 15 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 5 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 5 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -1985,7 +2568,7 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) )])[2]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) ) * 3 ) ))[2]);
 }{
 	long  lg = 0 ;
 	for (0 ; 	(  lg < 125 ) ; (lg = 	(  lg + xlen )))
@@ -2003,7 +2586,7 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -2014,15 +2597,15 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[0] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[1] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[2] - Midz ) ;
-	double  vx = ((a_rva)[g])[3] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -2084,9 +2667,9 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[0] = 	(  ((a_rva)[g])[0] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[0] = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -2095,7 +2678,7 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -2123,14 +2706,17 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 
 	 }
 	if (  	(  load0 != new_load )  ){  
-		((xyzw)[	(  4 * 	(  	(  idy * numgrid ) + allgid ) )] = new_load);
+		((xyzw)[	(  4 * 	(  0 + allgid ) )] = new_load);
 
 	}else{
 		0;
 
 	 }
 }}
-void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+void  c_split_pass_x_vlo_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
+	const int  IDX_LOCAL_XLEN = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -2141,7 +2727,697 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  numgrid_cu = 	(  numgrid * numvec ) ;
 	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
 	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
-	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [80][3];{
+	long  cu_offset = 	(  idy * numgrid ) ;
+	long  xyzalllen = numgrid ;
+	double   local_temp_particle_cache  [	(  768 * 6 )];	int   cu_xyzw_shared  [4];	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];	long  allgid = idy ;
+	for (0 ; 	(  allgid < numvec ) ; (allgid = 	(  allgid + ylen )))
+	{
+	int  cu_load = (cu_xyzw)[	(  4 * allgid )] ;
+{
+	long  l1 ;
+	for ((l1 = 0) ; 	(  l1 < cu_load ) ; (l1 = 	(  l1 + 1 )))
+	{
+	long  load0 = 1 ;
+	long  new_load = load0 ;
+	long  idy = allgid ;
+	if (  load0  ){  
+			double  grid_geo = 	(  DELTA_X / 	(  DELTA_Y * DELTA_Z ) ) ;
+	double  grid_geo_py = 	(  1.00000000000000000e+00 / 	(  DELTA_Y * DELTA_Y ) ) ;
+	double  grid_geo_pz = 	(  1.00000000000000000e+00 / 	(  DELTA_Z * DELTA_Z ) ) ;
+	int  lg ;
+	double  xx = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  0 + 	(  0 * 6 ) )] ;
+	double  xy = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  1 + 	(  0 * 6 ) )] ;
+	double  xz = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  2 + 	(  0 * 6 ) )] ;
+	int  Bidx = 	floor ( xx ) ;
+	int  Bidy = 	floor ( xy ) ;
+	int  Bidz = 	floor ( xz ) ;
+	int  Midx = Bidx ;
+	int  Midy = Bidy ;
+	int  Midz = Bidz ;
+	int  left_bound = Midx ;
+	long  right_bound = 	(  left_bound + 1 ) ;
+(Bidx = 	(  Bidx - 2 ));
+(Bidy = 	(  Bidy - 1 ));
+(Bidz = 	(  Bidz - 1 ));
+	double  QE_MASS = 	(  Charge / Mass ) ;
+{
+{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 3 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 15 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 15 )  ){  
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[1] ;
+((shBy)[total_idx] = l1);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 3 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  3 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 15 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 15 )  ){  
+		((	(  ByzJxtmp + 	(  	(  total_idx * 5 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) ) * 3 ) ))[2]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 15 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 15 )  ){  
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
+}}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
+	{
+((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
+}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
+	{
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	int  numcp = 1 ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}{
+	long  sort_cur = 0 ;
+{
+	int  g = 0 ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	double  Iby = 0 ;
+	double  Ibz = 0 ;
+	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
+((fBy_y)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) ));
+((fBy_y)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * ry ) + 	pow ( ry , 2 ) ) ) ));
+((fBy_y)[3] = 	(  2.50000000000000000e-01 * 	pow ( ry , 2 ) ));
+((fBy_z)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ));
+((fBy_z)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ));
+((fBy_z)[2] = 	(  5.00000000000000000e-01 * rz ));
+((fBz_z)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) ));
+((fBz_z)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) ));
+((fBz_z)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rz ) + 	pow ( rz , 2 ) ) ) ));
+((fBz_z)[3] = 	(  2.50000000000000000e-01 * 	pow ( rz , 2 ) ));
+((fBz_y)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ));
+((fBz_y)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ));
+((fBz_y)[2] = 	(  5.00000000000000000e-01 * ry ));
+((fBy_x)[0] = 1.00000000000000000e+00);
+((fBy_x)[1] = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx ) ) , 2 ) ) ));
+((fBy_x)[2] = 	(  	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx ) + 	pow ( rx , 2 ) ) ) ) ));
+((fBy_x)[3] = 	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ));
+((fBy_x)[4] = 0.00000000000000000e+00);
+	double  rxplus ;
+(rxplus = 	(  rx + 	(  Deltat * vx ) ));
+	double  rxplus_int = 	floor ( rxplus ) ;
+(rxplus = 	(  rxplus - rxplus_int ));
+	double  fByxplustmp0 ;
+	double  fByxplustmp1 ;
+	double  fByxplustmp2 ;
+(fByxplustmp0 = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rxplus ) ) , 2 ) ) ));
+(fByxplustmp1 = 	(  	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rxplus ) + 	pow ( rxplus , 2 ) ) ) ) ));
+(fByxplustmp2 = 	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ));
+	double  isrx_minus = ((	(  rxplus_int == -1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_zero = ((	(  rxplus_int == 0 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_plus = ((	(  rxplus_int == 1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+((fBy_xplus)[0] = 	(  	(  isrx_minus * fByxplustmp0 ) + 	(  1.00000000000000000e+00 - isrx_minus ) ));
+((fBy_xplus)[1] = 	(  	(  isrx_minus * fByxplustmp1 ) + 	(  	(  isrx_zero * fByxplustmp0 ) + isrx_plus ) ));
+((fBy_xplus)[2] = 	(  	(  isrx_minus * fByxplustmp2 ) + 	(  	(  isrx_zero * fByxplustmp1 ) + 	(  isrx_plus * fByxplustmp0 ) ) ));
+((fBy_xplus)[3] = 	(  	(  isrx_zero * fByxplustmp2 ) + 	(  isrx_plus * fByxplustmp1 ) ));
+((fBy_xplus)[4] = 	(  isrx_plus * fByxplustmp2 ));
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 5 ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 4 ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+(Iby = 	(  Iby + 	(  (shBy)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBy_z)[xyzx] ) ) ) ));
+(Ibz = 	(  Ibz + 	(  (shBz)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBz_z)[xyzy] * (fBz_y)[xyzx] ) ) ) ));
+{
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}	int  xyzx = 3 ;
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[0] = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] + 	(  Deltat * vx ) ));
+}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	double  inctmp = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < 	(  1 * IDX_OPT_MAX ) ) ; (i = 	(  i + 1 )))
+	{
+(inctmp = 	(  inctmp + (shJx_allidx)[	(  	(  	(  lg + idx ) * 	(  IDX_OPT_MAX * 1 ) ) + i )] ));
+}}((shJx)[	(  lg + idx )] = 	(  (shJx)[	(  lg + idx )] + inctmp ));
+}{
+	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0] = (shJx)[total_idx]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 15 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[Gll_P9918]);
+}}}}}}}
+	}else{
+		0;
+
+	 }
+}}}{
+	double   local_pos_cache  [	(  64 * 6 )];	if (  	(  	(  idy < numvec ) && 	(  idx == 0 ) )  ){  
+			int  cu_cur_cache_load = (cu_xyzw)[	(  4 * idy )] ;
+{
+	int  num_cur_load = 0 ;
+	int  beg_to_left = 	(  	(  2 * cu_cache_length ) / 5 ) ;
+	int  cur_to_left = beg_to_left ;
+	int  cur_to_right = cu_cache_length ;
+	int  cur_this = 0 ;
+	int  lg ;
+	int  g ;
+	for (lg=0 ; 	(  lg < cu_cur_cache_load ) ; (lg = 	(  lg + 64 )))
+	{
+	long  num_read = ((	(  	(  lg + 64 ) > cu_cur_cache_load ))?(	(  cu_cur_cache_load - lg )):(64)) ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  num_read * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  local_pos_cache + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  lg * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}	for (g=0 ; 	(  g < num_read ) ; g++)
+	{
+	int  gall = 	(  g + lg ) ;
+	if (  	(  (	(  local_pos_cache + 	(  g * 6 ) ))[0] < 0 )  ){  
+		{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_left * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}(cur_to_left = 	(  cur_to_left + 1 ));
+
+	}else{
+			if (  	(  (	(  local_pos_cache + 	(  g * 6 ) ))[0] > XLEN )  ){  
+		cur_to_right--;
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_right * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}
+	}else{
+		{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_this * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}(cur_this = 	(  cur_this + 1 ));
+
+	 }
+
+	 }
+}}((cu_xyzw_shared)[0] = cur_this);
+((cu_xyzw_shared)[1] = beg_to_left);
+((cu_xyzw_shared)[2] = cur_to_left);
+((cu_xyzw_shared)[3] = cur_to_right);
+}
+	}else{
+		0;
+
+	 }
+	if (  	(  idy < numvec )  ){  
+		{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 4 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  cu_xyzw + 	(  4 * idy ) ))[Gll_P9918] = (cu_xyzw_shared)[Gll_P9918]);
+}}
+	}else{
+		0;
+
+	 }
+}(allgid = idy);
+	for (0 ; 	(  allgid < numgrid_cu ) ; (allgid = 	(  allgid + ylen )))
+	{
+	int  load0 = (xyzw)[	(  4 * allgid )] ;
+	long  idy = 	(  allgid / numgrid ) ;
+	int  new_load = load0 ;
+	if (  load0  ){  
+			double  grid_geo = 	(  DELTA_X / 	(  DELTA_Y * DELTA_Z ) ) ;
+	double  grid_geo_py = 	(  1.00000000000000000e+00 / 	(  DELTA_Y * DELTA_Y ) ) ;
+	double  grid_geo_pz = 	(  1.00000000000000000e+00 / 	(  DELTA_Z * DELTA_Z ) ) ;
+	int  lg ;
+	double  xx = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  0 + 	(  0 * 6 ) )] ;
+	double  xy = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  1 + 	(  0 * 6 ) )] ;
+	double  xz = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  2 + 	(  0 * 6 ) )] ;
+	int  Bidx = 	floor ( xx ) ;
+	int  Bidy = 	floor ( xy ) ;
+	int  Bidz = 	floor ( xz ) ;
+	int  cur_cache_usage = 0 ;
+	int  left_cache_usage = 0 ;
+	int  right_cache_usage = 	(  768 - 1 ) ;
+	int  Midx = Bidx ;
+	int  Midy = Bidy ;
+	int  Midz = Bidz ;
+	int  left_bound = Midx ;
+	long  right_bound = 	(  left_bound + 1 ) ;
+(Bidx = 	(  Bidx - 2 ));
+(Bidy = 	(  Bidy - 1 ));
+(Bidz = 	(  Bidz - 1 ));
+	double  QE_MASS = 	(  Charge / Mass ) ;
+{
+{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 3 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 15 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 15 )  ){  
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[1] ;
+((shBy)[total_idx] = l1);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 3 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  3 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 15 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 15 )  ){  
+		((	(  ByzJxtmp + 	(  	(  total_idx * 5 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 5 ) ) ) * 3 ) ))[2]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 15 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 15 )  ){  
+		((	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[ridx] = (	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
+}}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
+	{
+((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
+}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
+	{
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	int  numcp = 1 ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}{
+	long  sort_cur = 0 ;
+{
+	int  g = 0 ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	double  Iby = 0 ;
+	double  Ibz = 0 ;
+	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
+((fBy_y)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) ));
+((fBy_y)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * ry ) + 	pow ( ry , 2 ) ) ) ));
+((fBy_y)[3] = 	(  2.50000000000000000e-01 * 	pow ( ry , 2 ) ));
+((fBy_z)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ));
+((fBy_z)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ));
+((fBy_z)[2] = 	(  5.00000000000000000e-01 * rz ));
+((fBz_z)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) ));
+((fBz_z)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) ));
+((fBz_z)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rz ) + 	pow ( rz , 2 ) ) ) ));
+((fBz_z)[3] = 	(  2.50000000000000000e-01 * 	pow ( rz , 2 ) ));
+((fBz_y)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ));
+((fBz_y)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ));
+((fBz_y)[2] = 	(  5.00000000000000000e-01 * ry ));
+((fBy_x)[0] = 1.00000000000000000e+00);
+((fBy_x)[1] = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx ) ) , 2 ) ) ));
+((fBy_x)[2] = 	(  	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx ) + 	pow ( rx , 2 ) ) ) ) ));
+((fBy_x)[3] = 	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ));
+((fBy_x)[4] = 0.00000000000000000e+00);
+	double  rxplus ;
+(rxplus = 	(  rx + 	(  Deltat * vx ) ));
+	double  rxplus_int = 	floor ( rxplus ) ;
+(rxplus = 	(  rxplus - rxplus_int ));
+	double  fByxplustmp0 ;
+	double  fByxplustmp1 ;
+	double  fByxplustmp2 ;
+(fByxplustmp0 = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rxplus ) ) , 2 ) ) ));
+(fByxplustmp1 = 	(  	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rxplus ) + 	pow ( rxplus , 2 ) ) ) ) ));
+(fByxplustmp2 = 	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ));
+	double  isrx_minus = ((	(  rxplus_int == -1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_zero = ((	(  rxplus_int == 0 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_plus = ((	(  rxplus_int == 1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+((fBy_xplus)[0] = 	(  	(  isrx_minus * fByxplustmp0 ) + 	(  1.00000000000000000e+00 - isrx_minus ) ));
+((fBy_xplus)[1] = 	(  	(  isrx_minus * fByxplustmp1 ) + 	(  	(  isrx_zero * fByxplustmp0 ) + isrx_plus ) ));
+((fBy_xplus)[2] = 	(  	(  isrx_minus * fByxplustmp2 ) + 	(  	(  isrx_zero * fByxplustmp1 ) + 	(  isrx_plus * fByxplustmp0 ) ) ));
+((fBy_xplus)[3] = 	(  	(  isrx_zero * fByxplustmp2 ) + 	(  isrx_plus * fByxplustmp1 ) ));
+((fBy_xplus)[4] = 	(  isrx_plus * fByxplustmp2 ));
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 5 ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 4 ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+(Iby = 	(  Iby + 	(  (shBy)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBy_z)[xyzx] ) ) ) ));
+(Ibz = 	(  Ibz + 	(  (shBz)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBz_z)[xyzy] * (fBz_y)[xyzx] ) ) ) ));
+{
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}	int  xyzx = 3 ;
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[0] = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] + 	(  Deltat * vx ) ));
+	if (  	(  (	(  a_rva + 	(  g * 6 ) ))[0] < left_bound )  ){  
+		{
+	long  m ;
+	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
+	{
+((	(  local_temp_particle_cache + 	(  left_cache_usage * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
+}}(left_cache_usage = 	(  left_cache_usage + 1 ));
+
+	}else{
+			if (  	(  (	(  a_rva + 	(  g * 6 ) ))[0] > right_bound )  ){  
+		{
+	long  m ;
+	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
+	{
+((	(  local_temp_particle_cache + 	(  right_cache_usage * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
+}}(right_cache_usage = 	(  right_cache_usage + -1 ));
+
+	}else{
+			if (  	(  g != sort_cur )  ){  
+		{
+	long  m ;
+	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
+	{
+((	(  a_rva + 	(  sort_cur * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
+}}
+	}else{
+		0;
+
+	 }
+(sort_cur = 	(  sort_cur + 1 ));
+
+	 }
+
+	 }
+}	if (  sort_cur  ){  
+		{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  sort_cur * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  	(  6 * cur_cache_usage ) + 	(  lg * 0 ) ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}(cur_cache_usage = 	(  cur_cache_usage + sort_cur ));
+
+	}else{
+		0;
+
+	 }
+}}	int  x_main = cur_cache_usage ;
+	int  x_beg_minus = x_main ;
+	int  x_beg_plus = 	(  	(  	(  grid_cache_len - load0 ) / 2 ) + 	(  left_cache_usage + x_main ) ) ;
+	int  right_len = 	(  767 - right_cache_usage ) ;
+	int   xm4  [4];((xm4)[0] = x_main);
+((xm4)[1] = 	(  left_cache_usage + x_main ));
+((xm4)[2] = x_beg_plus);
+((xm4)[3] = 	(  right_len + x_beg_plus ));
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 4 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  xyzw + 	(  4 * 	(  0 + allgid ) ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (xm4)[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  left_cache_usage * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_minus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_temp_particle_cache + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  right_len * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_plus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_temp_particle_cache + 	(  	(  right_cache_usage + 1 ) * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	double  inctmp = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < 	(  1 * IDX_OPT_MAX ) ) ; (i = 	(  i + 1 )))
+	{
+(inctmp = 	(  inctmp + (shJx_allidx)[	(  	(  	(  lg + idx ) * 	(  IDX_OPT_MAX * 1 ) ) + i )] ));
+}}((shJx)[	(  lg + idx )] = 	(  (shJx)[	(  lg + idx )] + inctmp ));
+}{
+	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 1 ) + 	(  	(  bxyzy * 5 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0] = (shJx)[total_idx]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 15 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidx ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidy ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidz ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  5 * total_idx ) * 3 ) ))[Gll_P9918]);
+}}}}}}}
+	}else{
+		0;
+
+	 }
+	if (  	(  load0 != new_load )  ){  
+		((xyzw)[	(  4 * 	(  0 + allgid ) )] = new_load);
+
+	}else{
+		0;
+
+	 }
+}}
+void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
+	const long  idx = 0 ;
+	const long  idy = scmc_internal_g_idy ;
+	const long  xlen = 1 ;
+	const long  ylen = scmc_internal_g_ylen ;
+	const long  global_idx = 	(  idx + 	(  idy * xlen ) ) ;
+	long  numgrid = 	(  XLEN * 	(  YLEN * ZLEN ) ) ;
+	long  numallgrid = 	(  	(  XLEN + 	(  ovlp + ovlp ) ) * 	(  	(  YLEN + 	(  ovlp + ovlp ) ) * 	(  ZLEN + 	(  ovlp + ovlp ) ) ) ) ;
+	long  numgrid_cu = 	(  numgrid * numvec ) ;
+	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
+	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
+	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];{
 	long  l1 ;
 	for ((l1 = 0) ; 	(  l1 < cu_load ) ; (l1 = 	(  l1 + 1 )))
 	{
@@ -2183,7 +3459,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  3 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  3 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -2196,7 +3472,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) )])[2] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[2] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -2213,7 +3489,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 4 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 4 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -2225,7 +3501,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) )])[0]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -2241,7 +3517,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  FoutJ + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -2253,13 +3529,13 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shJx)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) )])[1]);
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
 }}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
 	{
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -2270,15 +3546,22 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[1] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[2] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[0] - Midz ) ;
-	double  vx = ((a_rva)[g])[4] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -2340,9 +3623,9 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[1] = 	(  ((a_rva)[g])[1] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[1] = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -2351,7 +3634,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -2369,7 +3652,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-(((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) )])[1] = (shJx)[total_idx]);
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1] = (shJx)[total_idx]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -2383,7 +3666,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
-((	(  FoutJ + 	(  	(  3 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  3 * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[Gll_P9918] = ((ByzJxtmp)[	(  4 * total_idx )])[Gll_P9918]);
+((	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
 }}}}}}}
 	}else{
 		0;
@@ -2431,7 +3714,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  3 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  3 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -2444,7 +3727,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) )])[2] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[2] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -2461,7 +3744,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 4 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 4 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -2473,7 +3756,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) )])[0]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -2489,7 +3772,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  FoutJ + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -2501,13 +3784,13 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shJx)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) )])[1]);
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
 }}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
 	{
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -2518,15 +3801,22 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[1] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[2] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[0] - Midz ) ;
-	double  vx = ((a_rva)[g])[4] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -2588,9 +3878,9 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[1] = 	(  ((a_rva)[g])[1] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[1] = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -2599,7 +3889,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -2617,7 +3907,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-(((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) )])[1] = (shJx)[total_idx]);
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1] = (shJx)[total_idx]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -2631,7 +3921,7 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
-((	(  FoutJ + 	(  	(  3 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  3 * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[Gll_P9918] = ((ByzJxtmp)[	(  4 * total_idx )])[Gll_P9918]);
+((	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
 }}}}}}}
 	}else{
 		0;
@@ -2646,6 +3936,8 @@ void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	 }
 }}}
 void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -2658,7 +3950,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
 	long  cu_offset = 	(  idy * numgrid ) ;
 	long  xyzalllen = numgrid ;
-	double   local_temp_particle_cache  [768][6];	int   cu_xyzw_shared  [4];	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [80][3];{
+	double   local_temp_particle_cache  [	(  768 * 6 )];	int   cu_xyzw_shared  [4];	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];{
 	long  l1 ;
 	for ((l1 = 0) ; 	(  l1 < cu_load ) ; (l1 = 	(  l1 + 1 )))
 	{
@@ -2700,7 +3992,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  3 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  3 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -2713,7 +4005,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) )])[2] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[2] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -2730,7 +4022,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 4 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 4 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -2742,7 +4034,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) )])[0]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -2758,7 +4050,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  FoutJ + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -2770,13 +4062,13 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shJx)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) )])[1]);
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
 }}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
 	{
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -2787,15 +4079,15 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[1] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[2] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[0] - Midz ) ;
-	double  vx = ((a_rva)[g])[4] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[4] ;
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -2857,9 +4149,9 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[1] = 	(  ((a_rva)[g])[1] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[1] = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -2868,7 +4160,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -2886,7 +4178,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-(((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) )])[1] = (shJx)[total_idx]);
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1] = (shJx)[total_idx]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -2900,14 +4192,14 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
-((	(  FoutJ + 	(  	(  3 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  3 * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[Gll_P9918] = ((ByzJxtmp)[	(  4 * total_idx )])[Gll_P9918]);
+((	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
 }}}}}}}
 	}else{
 		0;
 
 	 }
 }}{
-	double   local_pos_cache  [64][6];	if (  	(  idx == 0 )  ){  
+	double   local_pos_cache  [	(  64 * 6 )];	if (  	(  	(  idy < numvec ) && 	(  idx == 0 ) )  ){  
 			int  cu_cur_cache_load = (cu_xyzw)[	(  4 * idy )] ;
 {
 	int  num_cur_load = 0 ;
@@ -2929,11 +4221,11 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((local_pos_cache)[0])[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  lg * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  local_pos_cache + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  lg * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}	for (g=0 ; 	(  g < num_read ) ; g++)
 	{
 	int  gall = 	(  g + lg ) ;
-	if (  	(  ((local_pos_cache)[g])[1] < 0 )  ){  
+	if (  	(  (	(  local_pos_cache + 	(  g * 6 ) ))[1] < 0 )  ){  
 		{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
@@ -2942,11 +4234,11 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_left * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_pos_cache)[g])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_left * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}(cur_to_left = 	(  cur_to_left + 1 ));
 
 	}else{
-			if (  	(  ((local_pos_cache)[g])[1] > YLEN )  ){  
+			if (  	(  (	(  local_pos_cache + 	(  g * 6 ) ))[1] > YLEN )  ){  
 		cur_to_right--;
 {
 	long  inner_step ;
@@ -2956,7 +4248,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_right * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_pos_cache)[g])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_right * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}
 	}else{
 		{
@@ -2967,7 +4259,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_this * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_pos_cache)[g])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_this * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}(cur_this = 	(  cur_this + 1 ));
 
 	 }
@@ -2982,12 +4274,18 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 		0;
 
 	 }
-{
+	if (  	(  idy < numvec )  ){  
+		{
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 4 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
 ((	(  cu_xyzw + 	(  4 * idy ) ))[Gll_P9918] = (cu_xyzw_shared)[Gll_P9918]);
-}}}{
+}}
+	}else{
+		0;
+
+	 }
+}{
 	long  allgid ;
 	for ((allgid = 0) ; 	(  allgid < numgrid ) ; (allgid = 	(  allgid + 1 )))
 	{
@@ -3032,7 +4330,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  3 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  3 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -3045,7 +4343,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) )])[2] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[2] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -3062,7 +4360,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 4 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 4 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -3074,7 +4372,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) )])[0]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -3090,7 +4388,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  FoutJ + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -3102,13 +4400,13 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shJx)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) )])[1]);
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
 }}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
 	{
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -3119,15 +4417,15 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[1] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[2] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[0] - Midz ) ;
-	double  vx = ((a_rva)[g])[4] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[4] ;
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -3189,24 +4487,24 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[1] = 	(  ((a_rva)[g])[1] + 	(  Deltat * vx ) ));
-	if (  	(  ((a_rva)[g])[1] < left_bound )  ){  
+}}}}((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[1] = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] + 	(  Deltat * vx ) ));
+	if (  	(  (	(  a_rva + 	(  g * 6 ) ))[1] < left_bound )  ){  
 		{
 	long  m ;
 	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
 	{
-(((local_temp_particle_cache)[left_cache_usage])[m] = ((a_rva)[g])[m]);
+((	(  local_temp_particle_cache + 	(  left_cache_usage * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
 }}(left_cache_usage = 	(  left_cache_usage + 1 ));
 
 	}else{
-			if (  	(  ((a_rva)[g])[1] > right_bound )  ){  
+			if (  	(  (	(  a_rva + 	(  g * 6 ) ))[1] > right_bound )  ){  
 		{
 	long  m ;
 	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
 	{
-(((local_temp_particle_cache)[right_cache_usage])[m] = ((a_rva)[g])[m]);
+((	(  local_temp_particle_cache + 	(  right_cache_usage * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
 }}(right_cache_usage = 	(  right_cache_usage + -1 ));
 
 	}else{
@@ -3215,7 +4513,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  m ;
 	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
 	{
-(((a_rva)[sort_cur])[m] = ((a_rva)[g])[m]);
+((	(  a_rva + 	(  sort_cur * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
 }}
 	}else{
 		0;
@@ -3235,7 +4533,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  	(  6 * cur_cache_usage ) + 	(  lg * 0 ) ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  	(  6 * cur_cache_usage ) + 	(  lg * 0 ) ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}(cur_cache_usage = 	(  cur_cache_usage + sort_cur ));
 
 	}else{
@@ -3267,7 +4565,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_minus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_temp_particle_cache)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_minus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_temp_particle_cache + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  right_len * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -3276,7 +4574,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_plus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_temp_particle_cache)[	(  right_cache_usage + 1 )])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_plus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_temp_particle_cache + 	(  	(  right_cache_usage + 1 ) * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -3294,7 +4592,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-(((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) )])[1] = (shJx)[total_idx]);
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1] = (shJx)[total_idx]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
@@ -3308,7 +4606,7 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
-((	(  FoutJ + 	(  	(  3 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  3 * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[Gll_P9918] = ((ByzJxtmp)[	(  4 * total_idx )])[Gll_P9918]);
+((	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
 }}}}}}}
 	}else{
 		0;
@@ -3323,6 +4621,8 @@ void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	 }
 }}}
 void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const int  IDX_LOCAL_XLEN = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
@@ -3334,7 +4634,7 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  numgrid_cu = 	(  numgrid * numvec ) ;
 	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
 	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
-	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [80][3];	long  allgid = idy ;
+	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];	long  allgid = idy ;
 	for (0 ; 	(  allgid < numvec ) ; (allgid = 	(  allgid + ylen )))
 	{
 	int  cu_load = (cu_xyzw)[	(  4 * allgid )] ;
@@ -3381,7 +4681,7 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  3 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  3 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -3394,7 +4694,7 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) )])[2] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[2] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -3411,7 +4711,7 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 4 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 4 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -3423,7 +4723,7 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) )])[0]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
 }{
 	long  lg = 0 ;
 	for (0 ; 	(  lg < 125 ) ; (lg = 	(  lg + xlen )))
@@ -3441,7 +4741,7 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -3452,15 +4752,22 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[1] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[2] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[0] - Midz ) ;
-	double  vx = ((a_rva)[g])[4] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -3522,9 +4829,9 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[1] = 	(  ((a_rva)[g])[1] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[1] = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -3533,7 +4840,7 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -3602,7 +4909,7 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  3 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  3 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -3615,7 +4922,7 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) )])[2] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[2] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -3632,7 +4939,7 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 4 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 4 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -3644,7 +4951,7 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) )])[0]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
 }{
 	long  lg = 0 ;
 	for (0 ; 	(  lg < 125 ) ; (lg = 	(  lg + xlen )))
@@ -3662,7 +4969,7 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -3673,15 +4980,22 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[1] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[2] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[0] - Midz ) ;
-	double  vx = ((a_rva)[g])[4] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -3743,9 +5057,9 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[1] = 	(  ((a_rva)[g])[1] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[1] = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -3754,7 +5068,7 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -3782,7 +5096,544 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 
 	 }
 	if (  	(  load0 != new_load )  ){  
-		((xyzw)[	(  4 * 	(  	(  idy * numgrid ) + allgid ) )] = new_load);
+		((xyzw)[	(  4 * 	(  0 + allgid ) )] = new_load);
+
+	}else{
+		0;
+
+	 }
+}}
+void  c_split_pass_y_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
+	const int  IDX_LOCAL_XLEN = 1 ;
+	const long  idx = 0 ;
+	const long  idy = scmc_internal_g_idy ;
+	const long  xlen = 1 ;
+	const long  ylen = scmc_internal_g_ylen ;
+	const long  global_idx = 	(  idx + 	(  idy * xlen ) ) ;
+	long  numgrid = 	(  XLEN * 	(  YLEN * ZLEN ) ) ;
+	long  numallgrid = 	(  	(  XLEN + 	(  ovlp + ovlp ) ) * 	(  	(  YLEN + 	(  ovlp + ovlp ) ) * 	(  ZLEN + 	(  ovlp + ovlp ) ) ) ) ;
+	long  numgrid_cu = 	(  numgrid * numvec ) ;
+	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
+	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
+	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];	long  allgid = idy ;
+	for (0 ; 	(  allgid < numvec ) ; (allgid = 	(  allgid + ylen )))
+	{
+	int  cu_load = (cu_xyzw)[	(  4 * allgid )] ;
+{
+	long  l1 ;
+	for ((l1 = 0) ; 	(  l1 < cu_load ) ; (l1 = 	(  l1 + 1 )))
+	{
+	long  load0 = 1 ;
+	long  new_load = load0 ;
+	long  idy = allgid ;
+	if (  load0  ){  
+			double  grid_geo = 	(  DELTA_Y / 	(  DELTA_Z * DELTA_X ) ) ;
+	double  grid_geo_py = 	(  1.00000000000000000e+00 / 	(  DELTA_Z * DELTA_Z ) ) ;
+	double  grid_geo_pz = 	(  1.00000000000000000e+00 / 	(  DELTA_X * DELTA_X ) ) ;
+	int  lg ;
+	double  xx = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  0 + 	(  0 * 6 ) )] ;
+	double  xy = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  1 + 	(  0 * 6 ) )] ;
+	double  xz = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  2 + 	(  0 * 6 ) )] ;
+	int  Bidz = 	floor ( xx ) ;
+	int  Bidx = 	floor ( xy ) ;
+	int  Bidy = 	floor ( xz ) ;
+	int  Midx = Bidx ;
+	int  Midy = Bidy ;
+	int  Midz = Bidz ;
+	int  left_bound = Midx ;
+	long  right_bound = 	(  left_bound + 1 ) ;
+(Bidx = 	(  Bidx - 2 ));
+(Bidy = 	(  Bidy - 1 ));
+(Bidz = 	(  Bidz - 1 ));
+	double  QE_MASS = 	(  Charge / Mass ) ;
+{
+{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 9 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 9 )  ){  
+		((	(  ByzJxtmp + 	(  	(  3 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[2] ;
+((shBy)[total_idx] = l1);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 3 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  total_idx * 4 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
+}}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
+	{
+((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
+}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
+	{
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	int  numcp = 1 ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}{
+	long  sort_cur = 0 ;
+{
+	int  g = 0 ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
+	double  Iby = 0 ;
+	double  Ibz = 0 ;
+	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
+((fBy_y)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) ));
+((fBy_y)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * ry ) + 	pow ( ry , 2 ) ) ) ));
+((fBy_y)[3] = 	(  2.50000000000000000e-01 * 	pow ( ry , 2 ) ));
+((fBy_z)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ));
+((fBy_z)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ));
+((fBy_z)[2] = 	(  5.00000000000000000e-01 * rz ));
+((fBz_z)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) ));
+((fBz_z)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) ));
+((fBz_z)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rz ) + 	pow ( rz , 2 ) ) ) ));
+((fBz_z)[3] = 	(  2.50000000000000000e-01 * 	pow ( rz , 2 ) ));
+((fBz_y)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ));
+((fBz_y)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ));
+((fBz_y)[2] = 	(  5.00000000000000000e-01 * ry ));
+((fBy_x)[0] = 1.00000000000000000e+00);
+((fBy_x)[1] = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx ) ) , 2 ) ) ));
+((fBy_x)[2] = 	(  	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx ) + 	pow ( rx , 2 ) ) ) ) ));
+((fBy_x)[3] = 	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ));
+((fBy_x)[4] = 0.00000000000000000e+00);
+	double  rxplus ;
+(rxplus = 	(  rx + 	(  Deltat * vx ) ));
+	double  rxplus_int = 	floor ( rxplus ) ;
+(rxplus = 	(  rxplus - rxplus_int ));
+	double  fByxplustmp0 ;
+	double  fByxplustmp1 ;
+	double  fByxplustmp2 ;
+(fByxplustmp0 = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rxplus ) ) , 2 ) ) ));
+(fByxplustmp1 = 	(  	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rxplus ) + 	pow ( rxplus , 2 ) ) ) ) ));
+(fByxplustmp2 = 	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ));
+	double  isrx_minus = ((	(  rxplus_int == -1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_zero = ((	(  rxplus_int == 0 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_plus = ((	(  rxplus_int == 1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+((fBy_xplus)[0] = 	(  	(  isrx_minus * fByxplustmp0 ) + 	(  1.00000000000000000e+00 - isrx_minus ) ));
+((fBy_xplus)[1] = 	(  	(  isrx_minus * fByxplustmp1 ) + 	(  	(  isrx_zero * fByxplustmp0 ) + isrx_plus ) ));
+((fBy_xplus)[2] = 	(  	(  isrx_minus * fByxplustmp2 ) + 	(  	(  isrx_zero * fByxplustmp1 ) + 	(  isrx_plus * fByxplustmp0 ) ) ));
+((fBy_xplus)[3] = 	(  	(  isrx_zero * fByxplustmp2 ) + 	(  isrx_plus * fByxplustmp1 ) ));
+((fBy_xplus)[4] = 	(  isrx_plus * fByxplustmp2 ));
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 5 ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 4 ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+(Iby = 	(  Iby + 	(  (shBy)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBy_z)[xyzx] ) ) ) ));
+(Ibz = 	(  Ibz + 	(  (shBz)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBz_z)[xyzy] * (fBz_y)[xyzx] ) ) ) ));
+{
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}	int  xyzx = 3 ;
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[1] = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] + 	(  Deltat * vx ) ));
+}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	double  inctmp = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < 	(  1 * IDX_OPT_MAX ) ) ; (i = 	(  i + 1 )))
+	{
+(inctmp = 	(  inctmp + (shJx_allidx)[	(  	(  	(  lg + idx ) * 	(  IDX_OPT_MAX * 1 ) ) + i )] ));
+}}((shJx)[	(  lg + idx )] = 	(  (shJx)[	(  lg + idx )] + inctmp ));
+}{
+	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1] = (shJx)[total_idx]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
+}}}}}}}
+	}else{
+		0;
+
+	 }
+}}}(allgid = idy);
+	for (0 ; 	(  allgid < numgrid_cu ) ; (allgid = 	(  allgid + ylen )))
+	{
+	int  load0 = (xyzw)[	(  4 * allgid )] ;
+	long  idy = 	(  allgid / numgrid ) ;
+	int  new_load = load0 ;
+	if (  load0  ){  
+			double  grid_geo = 	(  DELTA_Y / 	(  DELTA_Z * DELTA_X ) ) ;
+	double  grid_geo_py = 	(  1.00000000000000000e+00 / 	(  DELTA_Z * DELTA_Z ) ) ;
+	double  grid_geo_pz = 	(  1.00000000000000000e+00 / 	(  DELTA_X * DELTA_X ) ) ;
+	int  lg ;
+	double  xx = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  0 + 	(  0 * 6 ) )] ;
+	double  xy = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  1 + 	(  0 * 6 ) )] ;
+	double  xz = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  2 + 	(  0 * 6 ) )] ;
+	int  Bidz = 	floor ( xx ) ;
+	int  Bidx = 	floor ( xy ) ;
+	int  Bidy = 	floor ( xz ) ;
+	int  Midx = Bidx ;
+	int  Midy = Bidy ;
+	int  Midz = Bidz ;
+	int  left_bound = Midx ;
+	long  right_bound = 	(  left_bound + 1 ) ;
+(Bidx = 	(  Bidx - 2 ));
+(Bidy = 	(  Bidy - 1 ));
+(Bidz = 	(  Bidz - 1 ));
+	double  QE_MASS = 	(  Charge / Mass ) ;
+{
+{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 9 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 9 )  ){  
+		((	(  ByzJxtmp + 	(  	(  3 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[2] ;
+((shBy)[total_idx] = l1);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 3 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  total_idx * 4 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
+}}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
+	{
+((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
+}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
+	{
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	int  numcp = 1 ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}{
+	long  sort_cur = 0 ;
+{
+	int  g = 0 ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
+	double  Iby = 0 ;
+	double  Ibz = 0 ;
+	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
+((fBy_y)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) ));
+((fBy_y)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * ry ) + 	pow ( ry , 2 ) ) ) ));
+((fBy_y)[3] = 	(  2.50000000000000000e-01 * 	pow ( ry , 2 ) ));
+((fBy_z)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ));
+((fBy_z)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ));
+((fBy_z)[2] = 	(  5.00000000000000000e-01 * rz ));
+((fBz_z)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) ));
+((fBz_z)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) ));
+((fBz_z)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rz ) + 	pow ( rz , 2 ) ) ) ));
+((fBz_z)[3] = 	(  2.50000000000000000e-01 * 	pow ( rz , 2 ) ));
+((fBz_y)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ));
+((fBz_y)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ));
+((fBz_y)[2] = 	(  5.00000000000000000e-01 * ry ));
+((fBy_x)[0] = 1.00000000000000000e+00);
+((fBy_x)[1] = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx ) ) , 2 ) ) ));
+((fBy_x)[2] = 	(  	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx ) + 	pow ( rx , 2 ) ) ) ) ));
+((fBy_x)[3] = 	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ));
+((fBy_x)[4] = 0.00000000000000000e+00);
+	double  rxplus ;
+(rxplus = 	(  rx + 	(  Deltat * vx ) ));
+	double  rxplus_int = 	floor ( rxplus ) ;
+(rxplus = 	(  rxplus - rxplus_int ));
+	double  fByxplustmp0 ;
+	double  fByxplustmp1 ;
+	double  fByxplustmp2 ;
+(fByxplustmp0 = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rxplus ) ) , 2 ) ) ));
+(fByxplustmp1 = 	(  	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rxplus ) + 	pow ( rxplus , 2 ) ) ) ) ));
+(fByxplustmp2 = 	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ));
+	double  isrx_minus = ((	(  rxplus_int == -1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_zero = ((	(  rxplus_int == 0 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_plus = ((	(  rxplus_int == 1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+((fBy_xplus)[0] = 	(  	(  isrx_minus * fByxplustmp0 ) + 	(  1.00000000000000000e+00 - isrx_minus ) ));
+((fBy_xplus)[1] = 	(  	(  isrx_minus * fByxplustmp1 ) + 	(  	(  isrx_zero * fByxplustmp0 ) + isrx_plus ) ));
+((fBy_xplus)[2] = 	(  	(  isrx_minus * fByxplustmp2 ) + 	(  	(  isrx_zero * fByxplustmp1 ) + 	(  isrx_plus * fByxplustmp0 ) ) ));
+((fBy_xplus)[3] = 	(  	(  isrx_zero * fByxplustmp2 ) + 	(  isrx_plus * fByxplustmp1 ) ));
+((fBy_xplus)[4] = 	(  isrx_plus * fByxplustmp2 ));
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 5 ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 4 ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+(Iby = 	(  Iby + 	(  (shBy)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBy_z)[xyzx] ) ) ) ));
+(Ibz = 	(  Ibz + 	(  (shBz)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBz_z)[xyzy] * (fBz_y)[xyzx] ) ) ) ));
+{
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}	int  xyzx = 3 ;
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[1] = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] + 	(  Deltat * vx ) ));
+}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	double  inctmp = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < 	(  1 * IDX_OPT_MAX ) ) ; (i = 	(  i + 1 )))
+	{
+(inctmp = 	(  inctmp + (shJx_allidx)[	(  	(  	(  lg + idx ) * 	(  IDX_OPT_MAX * 1 ) ) + i )] ));
+}}((shJx)[	(  lg + idx )] = 	(  (shJx)[	(  lg + idx )] + inctmp ));
+}{
+	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1] = (shJx)[total_idx]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
+}}}}}}}
+	}else{
+		0;
+
+	 }
+	if (  	(  load0 != new_load )  ){  
+		((xyzw)[	(  4 * 	(  0 + allgid ) )] = new_load);
 
 	}else{
 		0;
@@ -3790,6 +5641,8 @@ void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	 }
 }}
 void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const int  IDX_LOCAL_XLEN = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
@@ -3801,7 +5654,7 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  numgrid_cu = 	(  numgrid * numvec ) ;
 	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
 	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
-	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [80][3];	long  allgid = idy ;
+	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];	long  allgid = idy ;
 	for (0 ; 	(  allgid < numvec ) ; (allgid = 	(  allgid + ylen )))
 	{
 	int  cu_load = (cu_xyzw)[	(  4 * allgid )] ;
@@ -3848,7 +5701,7 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  3 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  3 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -3861,7 +5714,7 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) )])[2] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[2] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -3878,7 +5731,7 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 4 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 4 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -3890,7 +5743,7 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) )])[0]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
 }{
 	long  lg = 0 ;
 	for (0 ; 	(  lg < 125 ) ; (lg = 	(  lg + xlen )))
@@ -3908,7 +5761,7 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -3919,15 +5772,15 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[1] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[2] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[0] - Midz ) ;
-	double  vx = ((a_rva)[g])[4] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[4] ;
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -3989,9 +5842,9 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[1] = 	(  ((a_rva)[g])[1] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[1] = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -4000,7 +5853,7 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -4069,7 +5922,7 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  3 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  3 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -4082,7 +5935,7 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) )])[2] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[2] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -4099,7 +5952,7 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 4 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 4 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -4111,7 +5964,7 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) )])[0]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
 }{
 	long  lg = 0 ;
 	for (0 ; 	(  lg < 125 ) ; (lg = 	(  lg + xlen )))
@@ -4129,7 +5982,7 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -4140,15 +5993,15 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[1] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[2] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[0] - Midz ) ;
-	double  vx = ((a_rva)[g])[4] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[4] ;
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -4210,9 +6063,9 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[1] = 	(  ((a_rva)[g])[1] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[1] = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -4221,7 +6074,7 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -4249,14 +6102,17 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 
 	 }
 	if (  	(  load0 != new_load )  ){  
-		((xyzw)[	(  4 * 	(  	(  idy * numgrid ) + allgid ) )] = new_load);
+		((xyzw)[	(  4 * 	(  0 + allgid ) )] = new_load);
 
 	}else{
 		0;
 
 	 }
 }}
-void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+void  c_split_pass_y_vlo_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
+	const int  IDX_LOCAL_XLEN = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -4267,7 +6123,697 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  numgrid_cu = 	(  numgrid * numvec ) ;
 	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
 	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
-	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [80][3];{
+	long  cu_offset = 	(  idy * numgrid ) ;
+	long  xyzalllen = numgrid ;
+	double   local_temp_particle_cache  [	(  768 * 6 )];	int   cu_xyzw_shared  [4];	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];	long  allgid = idy ;
+	for (0 ; 	(  allgid < numvec ) ; (allgid = 	(  allgid + ylen )))
+	{
+	int  cu_load = (cu_xyzw)[	(  4 * allgid )] ;
+{
+	long  l1 ;
+	for ((l1 = 0) ; 	(  l1 < cu_load ) ; (l1 = 	(  l1 + 1 )))
+	{
+	long  load0 = 1 ;
+	long  new_load = load0 ;
+	long  idy = allgid ;
+	if (  load0  ){  
+			double  grid_geo = 	(  DELTA_Y / 	(  DELTA_Z * DELTA_X ) ) ;
+	double  grid_geo_py = 	(  1.00000000000000000e+00 / 	(  DELTA_Z * DELTA_Z ) ) ;
+	double  grid_geo_pz = 	(  1.00000000000000000e+00 / 	(  DELTA_X * DELTA_X ) ) ;
+	int  lg ;
+	double  xx = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  0 + 	(  0 * 6 ) )] ;
+	double  xy = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  1 + 	(  0 * 6 ) )] ;
+	double  xz = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  2 + 	(  0 * 6 ) )] ;
+	int  Bidz = 	floor ( xx ) ;
+	int  Bidx = 	floor ( xy ) ;
+	int  Bidy = 	floor ( xz ) ;
+	int  Midx = Bidx ;
+	int  Midy = Bidy ;
+	int  Midz = Bidz ;
+	int  left_bound = Midx ;
+	long  right_bound = 	(  left_bound + 1 ) ;
+(Bidx = 	(  Bidx - 2 ));
+(Bidy = 	(  Bidy - 1 ));
+(Bidz = 	(  Bidz - 1 ));
+	double  QE_MASS = 	(  Charge / Mass ) ;
+{
+{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 9 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 9 )  ){  
+		((	(  ByzJxtmp + 	(  	(  3 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[2] ;
+((shBy)[total_idx] = l1);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 3 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  total_idx * 4 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
+}}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
+	{
+((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
+}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
+	{
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	int  numcp = 1 ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}{
+	long  sort_cur = 0 ;
+{
+	int  g = 0 ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	double  Iby = 0 ;
+	double  Ibz = 0 ;
+	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
+((fBy_y)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) ));
+((fBy_y)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * ry ) + 	pow ( ry , 2 ) ) ) ));
+((fBy_y)[3] = 	(  2.50000000000000000e-01 * 	pow ( ry , 2 ) ));
+((fBy_z)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ));
+((fBy_z)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ));
+((fBy_z)[2] = 	(  5.00000000000000000e-01 * rz ));
+((fBz_z)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) ));
+((fBz_z)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) ));
+((fBz_z)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rz ) + 	pow ( rz , 2 ) ) ) ));
+((fBz_z)[3] = 	(  2.50000000000000000e-01 * 	pow ( rz , 2 ) ));
+((fBz_y)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ));
+((fBz_y)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ));
+((fBz_y)[2] = 	(  5.00000000000000000e-01 * ry ));
+((fBy_x)[0] = 1.00000000000000000e+00);
+((fBy_x)[1] = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx ) ) , 2 ) ) ));
+((fBy_x)[2] = 	(  	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx ) + 	pow ( rx , 2 ) ) ) ) ));
+((fBy_x)[3] = 	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ));
+((fBy_x)[4] = 0.00000000000000000e+00);
+	double  rxplus ;
+(rxplus = 	(  rx + 	(  Deltat * vx ) ));
+	double  rxplus_int = 	floor ( rxplus ) ;
+(rxplus = 	(  rxplus - rxplus_int ));
+	double  fByxplustmp0 ;
+	double  fByxplustmp1 ;
+	double  fByxplustmp2 ;
+(fByxplustmp0 = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rxplus ) ) , 2 ) ) ));
+(fByxplustmp1 = 	(  	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rxplus ) + 	pow ( rxplus , 2 ) ) ) ) ));
+(fByxplustmp2 = 	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ));
+	double  isrx_minus = ((	(  rxplus_int == -1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_zero = ((	(  rxplus_int == 0 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_plus = ((	(  rxplus_int == 1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+((fBy_xplus)[0] = 	(  	(  isrx_minus * fByxplustmp0 ) + 	(  1.00000000000000000e+00 - isrx_minus ) ));
+((fBy_xplus)[1] = 	(  	(  isrx_minus * fByxplustmp1 ) + 	(  	(  isrx_zero * fByxplustmp0 ) + isrx_plus ) ));
+((fBy_xplus)[2] = 	(  	(  isrx_minus * fByxplustmp2 ) + 	(  	(  isrx_zero * fByxplustmp1 ) + 	(  isrx_plus * fByxplustmp0 ) ) ));
+((fBy_xplus)[3] = 	(  	(  isrx_zero * fByxplustmp2 ) + 	(  isrx_plus * fByxplustmp1 ) ));
+((fBy_xplus)[4] = 	(  isrx_plus * fByxplustmp2 ));
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 5 ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 4 ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+(Iby = 	(  Iby + 	(  (shBy)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBy_z)[xyzx] ) ) ) ));
+(Ibz = 	(  Ibz + 	(  (shBz)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBz_z)[xyzy] * (fBz_y)[xyzx] ) ) ) ));
+{
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}	int  xyzx = 3 ;
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[1] = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] + 	(  Deltat * vx ) ));
+}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	double  inctmp = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < 	(  1 * IDX_OPT_MAX ) ) ; (i = 	(  i + 1 )))
+	{
+(inctmp = 	(  inctmp + (shJx_allidx)[	(  	(  	(  lg + idx ) * 	(  IDX_OPT_MAX * 1 ) ) + i )] ));
+}}((shJx)[	(  lg + idx )] = 	(  (shJx)[	(  lg + idx )] + inctmp ));
+}{
+	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1] = (shJx)[total_idx]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
+}}}}}}}
+	}else{
+		0;
+
+	 }
+}}}{
+	double   local_pos_cache  [	(  64 * 6 )];	if (  	(  	(  idy < numvec ) && 	(  idx == 0 ) )  ){  
+			int  cu_cur_cache_load = (cu_xyzw)[	(  4 * idy )] ;
+{
+	int  num_cur_load = 0 ;
+	int  beg_to_left = 	(  	(  2 * cu_cache_length ) / 5 ) ;
+	int  cur_to_left = beg_to_left ;
+	int  cur_to_right = cu_cache_length ;
+	int  cur_this = 0 ;
+	int  lg ;
+	int  g ;
+	for (lg=0 ; 	(  lg < cu_cur_cache_load ) ; (lg = 	(  lg + 64 )))
+	{
+	long  num_read = ((	(  	(  lg + 64 ) > cu_cur_cache_load ))?(	(  cu_cur_cache_load - lg )):(64)) ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  num_read * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  local_pos_cache + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  lg * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}	for (g=0 ; 	(  g < num_read ) ; g++)
+	{
+	int  gall = 	(  g + lg ) ;
+	if (  	(  (	(  local_pos_cache + 	(  g * 6 ) ))[1] < 0 )  ){  
+		{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_left * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}(cur_to_left = 	(  cur_to_left + 1 ));
+
+	}else{
+			if (  	(  (	(  local_pos_cache + 	(  g * 6 ) ))[1] > YLEN )  ){  
+		cur_to_right--;
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_right * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}
+	}else{
+		{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_this * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}(cur_this = 	(  cur_this + 1 ));
+
+	 }
+
+	 }
+}}((cu_xyzw_shared)[0] = cur_this);
+((cu_xyzw_shared)[1] = beg_to_left);
+((cu_xyzw_shared)[2] = cur_to_left);
+((cu_xyzw_shared)[3] = cur_to_right);
+}
+	}else{
+		0;
+
+	 }
+	if (  	(  idy < numvec )  ){  
+		{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 4 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  cu_xyzw + 	(  4 * idy ) ))[Gll_P9918] = (cu_xyzw_shared)[Gll_P9918]);
+}}
+	}else{
+		0;
+
+	 }
+}(allgid = idy);
+	for (0 ; 	(  allgid < numgrid_cu ) ; (allgid = 	(  allgid + ylen )))
+	{
+	int  load0 = (xyzw)[	(  4 * allgid )] ;
+	long  idy = 	(  allgid / numgrid ) ;
+	int  new_load = load0 ;
+	if (  load0  ){  
+			double  grid_geo = 	(  DELTA_Y / 	(  DELTA_Z * DELTA_X ) ) ;
+	double  grid_geo_py = 	(  1.00000000000000000e+00 / 	(  DELTA_Z * DELTA_Z ) ) ;
+	double  grid_geo_pz = 	(  1.00000000000000000e+00 / 	(  DELTA_X * DELTA_X ) ) ;
+	int  lg ;
+	double  xx = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  0 + 	(  0 * 6 ) )] ;
+	double  xy = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  1 + 	(  0 * 6 ) )] ;
+	double  xz = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  2 + 	(  0 * 6 ) )] ;
+	int  Bidz = 	floor ( xx ) ;
+	int  Bidx = 	floor ( xy ) ;
+	int  Bidy = 	floor ( xz ) ;
+	int  cur_cache_usage = 0 ;
+	int  left_cache_usage = 0 ;
+	int  right_cache_usage = 	(  768 - 1 ) ;
+	int  Midx = Bidx ;
+	int  Midy = Bidy ;
+	int  Midz = Bidz ;
+	int  left_bound = Midx ;
+	long  right_bound = 	(  left_bound + 1 ) ;
+(Bidx = 	(  Bidx - 2 ));
+(Bidy = 	(  Bidy - 1 ));
+(Bidz = 	(  Bidz - 1 ));
+	double  QE_MASS = 	(  Charge / Mass ) ;
+{
+{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 9 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 9 )  ){  
+		((	(  ByzJxtmp + 	(  	(  3 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 3 ) + 	(  	(  bxyzy * 15 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[2] ;
+((shBy)[total_idx] = l1);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 3 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  total_idx * 4 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 20 ) ) ) * 3 ) ))[0]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
+}}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
+	{
+((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
+}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
+	{
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	int  numcp = 1 ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}{
+	long  sort_cur = 0 ;
+{
+	int  g = 0 ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	double  Iby = 0 ;
+	double  Ibz = 0 ;
+	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
+((fBy_y)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) ));
+((fBy_y)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * ry ) + 	pow ( ry , 2 ) ) ) ));
+((fBy_y)[3] = 	(  2.50000000000000000e-01 * 	pow ( ry , 2 ) ));
+((fBy_z)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ));
+((fBy_z)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ));
+((fBy_z)[2] = 	(  5.00000000000000000e-01 * rz ));
+((fBz_z)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) ));
+((fBz_z)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) ));
+((fBz_z)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rz ) + 	pow ( rz , 2 ) ) ) ));
+((fBz_z)[3] = 	(  2.50000000000000000e-01 * 	pow ( rz , 2 ) ));
+((fBz_y)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ));
+((fBz_y)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ));
+((fBz_y)[2] = 	(  5.00000000000000000e-01 * ry ));
+((fBy_x)[0] = 1.00000000000000000e+00);
+((fBy_x)[1] = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx ) ) , 2 ) ) ));
+((fBy_x)[2] = 	(  	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx ) + 	pow ( rx , 2 ) ) ) ) ));
+((fBy_x)[3] = 	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ));
+((fBy_x)[4] = 0.00000000000000000e+00);
+	double  rxplus ;
+(rxplus = 	(  rx + 	(  Deltat * vx ) ));
+	double  rxplus_int = 	floor ( rxplus ) ;
+(rxplus = 	(  rxplus - rxplus_int ));
+	double  fByxplustmp0 ;
+	double  fByxplustmp1 ;
+	double  fByxplustmp2 ;
+(fByxplustmp0 = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rxplus ) ) , 2 ) ) ));
+(fByxplustmp1 = 	(  	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rxplus ) + 	pow ( rxplus , 2 ) ) ) ) ));
+(fByxplustmp2 = 	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ));
+	double  isrx_minus = ((	(  rxplus_int == -1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_zero = ((	(  rxplus_int == 0 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_plus = ((	(  rxplus_int == 1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+((fBy_xplus)[0] = 	(  	(  isrx_minus * fByxplustmp0 ) + 	(  1.00000000000000000e+00 - isrx_minus ) ));
+((fBy_xplus)[1] = 	(  	(  isrx_minus * fByxplustmp1 ) + 	(  	(  isrx_zero * fByxplustmp0 ) + isrx_plus ) ));
+((fBy_xplus)[2] = 	(  	(  isrx_minus * fByxplustmp2 ) + 	(  	(  isrx_zero * fByxplustmp1 ) + 	(  isrx_plus * fByxplustmp0 ) ) ));
+((fBy_xplus)[3] = 	(  	(  isrx_zero * fByxplustmp2 ) + 	(  isrx_plus * fByxplustmp1 ) ));
+((fBy_xplus)[4] = 	(  isrx_plus * fByxplustmp2 ));
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 5 ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 4 ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+(Iby = 	(  Iby + 	(  (shBy)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBy_z)[xyzx] ) ) ) ));
+(Ibz = 	(  Ibz + 	(  (shBz)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBz_z)[xyzy] * (fBz_y)[xyzx] ) ) ) ));
+{
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}	int  xyzx = 3 ;
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[1] = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] + 	(  Deltat * vx ) ));
+	if (  	(  (	(  a_rva + 	(  g * 6 ) ))[1] < left_bound )  ){  
+		{
+	long  m ;
+	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
+	{
+((	(  local_temp_particle_cache + 	(  left_cache_usage * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
+}}(left_cache_usage = 	(  left_cache_usage + 1 ));
+
+	}else{
+			if (  	(  (	(  a_rva + 	(  g * 6 ) ))[1] > right_bound )  ){  
+		{
+	long  m ;
+	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
+	{
+((	(  local_temp_particle_cache + 	(  right_cache_usage * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
+}}(right_cache_usage = 	(  right_cache_usage + -1 ));
+
+	}else{
+			if (  	(  g != sort_cur )  ){  
+		{
+	long  m ;
+	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
+	{
+((	(  a_rva + 	(  sort_cur * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
+}}
+	}else{
+		0;
+
+	 }
+(sort_cur = 	(  sort_cur + 1 ));
+
+	 }
+
+	 }
+}	if (  sort_cur  ){  
+		{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  sort_cur * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  	(  6 * cur_cache_usage ) + 	(  lg * 0 ) ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}(cur_cache_usage = 	(  cur_cache_usage + sort_cur ));
+
+	}else{
+		0;
+
+	 }
+}}	int  x_main = cur_cache_usage ;
+	int  x_beg_minus = x_main ;
+	int  x_beg_plus = 	(  	(  	(  grid_cache_len - load0 ) / 2 ) + 	(  left_cache_usage + x_main ) ) ;
+	int  right_len = 	(  767 - right_cache_usage ) ;
+	int   xm4  [4];((xm4)[0] = x_main);
+((xm4)[1] = 	(  left_cache_usage + x_main ));
+((xm4)[2] = x_beg_plus);
+((xm4)[3] = 	(  right_len + x_beg_plus ));
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 4 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  xyzw + 	(  4 * 	(  0 + allgid ) ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (xm4)[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  left_cache_usage * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_minus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_temp_particle_cache + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  right_len * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_plus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_temp_particle_cache + 	(  	(  right_cache_usage + 1 ) * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	double  inctmp = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < 	(  1 * IDX_OPT_MAX ) ) ; (i = 	(  i + 1 )))
+	{
+(inctmp = 	(  inctmp + (shJx_allidx)[	(  	(  	(  lg + idx ) * 	(  IDX_OPT_MAX * 1 ) ) + i )] ));
+}}((shJx)[	(  lg + idx )] = 	(  (shJx)[	(  lg + idx )] + inctmp ));
+}{
+	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 4 ) + 	(  	(  bxyzy * 20 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1] = (shJx)[total_idx]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 4 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 5 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  5 * iz ) ) ;
+{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidz ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidx ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidy ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
+}}}}}}}
+	}else{
+		0;
+
+	 }
+	if (  	(  load0 != new_load )  ){  
+		((xyzw)[	(  4 * 	(  0 + allgid ) )] = new_load);
+
+	}else{
+		0;
+
+	 }
+}}
+void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
+	const long  idx = 0 ;
+	const long  idy = scmc_internal_g_idy ;
+	const long  xlen = 1 ;
+	const long  ylen = scmc_internal_g_ylen ;
+	const long  global_idx = 	(  idx + 	(  idy * xlen ) ) ;
+	long  numgrid = 	(  XLEN * 	(  YLEN * ZLEN ) ) ;
+	long  numallgrid = 	(  	(  XLEN + 	(  ovlp + ovlp ) ) * 	(  	(  YLEN + 	(  ovlp + ovlp ) ) * 	(  ZLEN + 	(  ovlp + ovlp ) ) ) ) ;
+	long  numgrid_cu = 	(  numgrid * numvec ) ;
+	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
+	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
+	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];{
 	long  l1 ;
 	for ((l1 = 0) ; 	(  l1 < cu_load ) ; (l1 = 	(  l1 + 1 )))
 	{
@@ -4309,7 +6855,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -4322,7 +6868,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[0] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[0] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -4339,7 +6885,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 3 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 3 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -4351,7 +6897,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) )])[1]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
@@ -4367,7 +6913,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  FoutJ + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -4379,13 +6925,13 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shJx)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[2]);
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2]);
 }}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
 	{
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -4396,15 +6942,22 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[2] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[0] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[1] - Midz ) ;
-	double  vx = ((a_rva)[g])[5] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[5] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -4466,9 +7019,9 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[2] = 	(  ((a_rva)[g])[2] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[2] = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -4477,7 +7030,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -4495,7 +7048,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-(((ByzJxtmp)[	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[2] = (shJx)[total_idx]);
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2] = (shJx)[total_idx]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
@@ -4509,7 +7062,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
-((	(  FoutJ + 	(  	(  3 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  3 * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[Gll_P9918] = ((ByzJxtmp)[	(  4 * total_idx )])[Gll_P9918]);
+((	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
 }}}}}}}
 	}else{
 		0;
@@ -4557,7 +7110,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -4570,7 +7123,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[0] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[0] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -4587,7 +7140,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 3 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 3 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -4599,7 +7152,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) )])[1]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
@@ -4615,7 +7168,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  FoutJ + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -4627,13 +7180,13 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shJx)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[2]);
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2]);
 }}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
 	{
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -4644,15 +7197,22 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[2] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[0] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[1] - Midz ) ;
-	double  vx = ((a_rva)[g])[5] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[5] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -4714,9 +7274,9 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[2] = 	(  ((a_rva)[g])[2] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[2] = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -4725,7 +7285,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -4743,7 +7303,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-(((ByzJxtmp)[	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[2] = (shJx)[total_idx]);
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2] = (shJx)[total_idx]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
@@ -4757,7 +7317,7 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
-((	(  FoutJ + 	(  	(  3 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  3 * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[Gll_P9918] = ((ByzJxtmp)[	(  4 * total_idx )])[Gll_P9918]);
+((	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
 }}}}}}}
 	}else{
 		0;
@@ -4772,6 +7332,8 @@ void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	 }
 }}}
 void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -4784,7 +7346,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
 	long  cu_offset = 	(  idy * numgrid ) ;
 	long  xyzalllen = numgrid ;
-	double   local_temp_particle_cache  [768][6];	int   cu_xyzw_shared  [4];	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [80][3];{
+	double   local_temp_particle_cache  [	(  768 * 6 )];	int   cu_xyzw_shared  [4];	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];{
 	long  l1 ;
 	for ((l1 = 0) ; 	(  l1 < cu_load ) ; (l1 = 	(  l1 + 1 )))
 	{
@@ -4826,7 +7388,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -4839,7 +7401,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[0] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[0] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -4856,7 +7418,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 3 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 3 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -4868,7 +7430,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) )])[1]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
@@ -4884,7 +7446,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  FoutJ + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -4896,13 +7458,13 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shJx)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[2]);
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2]);
 }}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
 	{
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -4913,15 +7475,15 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[2] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[0] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[1] - Midz ) ;
-	double  vx = ((a_rva)[g])[5] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[5] ;
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -4983,9 +7545,9 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[2] = 	(  ((a_rva)[g])[2] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[2] = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -4994,7 +7556,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -5012,7 +7574,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-(((ByzJxtmp)[	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[2] = (shJx)[total_idx]);
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2] = (shJx)[total_idx]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
@@ -5026,14 +7588,14 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
-((	(  FoutJ + 	(  	(  3 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  3 * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[Gll_P9918] = ((ByzJxtmp)[	(  4 * total_idx )])[Gll_P9918]);
+((	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
 }}}}}}}
 	}else{
 		0;
 
 	 }
 }}{
-	double   local_pos_cache  [64][6];	if (  	(  idx == 0 )  ){  
+	double   local_pos_cache  [	(  64 * 6 )];	if (  	(  	(  idy < numvec ) && 	(  idx == 0 ) )  ){  
 			int  cu_cur_cache_load = (cu_xyzw)[	(  4 * idy )] ;
 {
 	int  num_cur_load = 0 ;
@@ -5055,11 +7617,11 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((local_pos_cache)[0])[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  lg * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  local_pos_cache + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  lg * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}	for (g=0 ; 	(  g < num_read ) ; g++)
 	{
 	int  gall = 	(  g + lg ) ;
-	if (  	(  ((local_pos_cache)[g])[2] < 0 )  ){  
+	if (  	(  (	(  local_pos_cache + 	(  g * 6 ) ))[2] < 0 )  ){  
 		{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
@@ -5068,11 +7630,11 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_left * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_pos_cache)[g])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_left * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}(cur_to_left = 	(  cur_to_left + 1 ));
 
 	}else{
-			if (  	(  ((local_pos_cache)[g])[2] > ZLEN )  ){  
+			if (  	(  (	(  local_pos_cache + 	(  g * 6 ) ))[2] > ZLEN )  ){  
 		cur_to_right--;
 {
 	long  inner_step ;
@@ -5082,7 +7644,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_right * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_pos_cache)[g])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_right * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}
 	}else{
 		{
@@ -5093,7 +7655,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_this * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_pos_cache)[g])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_this * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}(cur_this = 	(  cur_this + 1 ));
 
 	 }
@@ -5108,12 +7670,18 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 		0;
 
 	 }
-{
+	if (  	(  idy < numvec )  ){  
+		{
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 4 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
 ((	(  cu_xyzw + 	(  4 * idy ) ))[Gll_P9918] = (cu_xyzw_shared)[Gll_P9918]);
-}}}{
+}}
+	}else{
+		0;
+
+	 }
+}{
 	long  allgid ;
 	for ((allgid = 0) ; 	(  allgid < numgrid ) ; (allgid = 	(  allgid + 1 )))
 	{
@@ -5158,7 +7726,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -5171,7 +7739,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[0] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[0] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -5188,7 +7756,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 3 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 3 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -5200,7 +7768,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) )])[1]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
@@ -5216,7 +7784,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  FoutJ + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -5228,13 +7796,13 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shJx)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[2]);
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2]);
 }}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
 	{
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -5245,15 +7813,15 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[2] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[0] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[1] - Midz ) ;
-	double  vx = ((a_rva)[g])[5] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[5] ;
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -5315,24 +7883,24 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[2] = 	(  ((a_rva)[g])[2] + 	(  Deltat * vx ) ));
-	if (  	(  ((a_rva)[g])[2] < left_bound )  ){  
+}}}}((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[2] = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] + 	(  Deltat * vx ) ));
+	if (  	(  (	(  a_rva + 	(  g * 6 ) ))[2] < left_bound )  ){  
 		{
 	long  m ;
 	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
 	{
-(((local_temp_particle_cache)[left_cache_usage])[m] = ((a_rva)[g])[m]);
+((	(  local_temp_particle_cache + 	(  left_cache_usage * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
 }}(left_cache_usage = 	(  left_cache_usage + 1 ));
 
 	}else{
-			if (  	(  ((a_rva)[g])[2] > right_bound )  ){  
+			if (  	(  (	(  a_rva + 	(  g * 6 ) ))[2] > right_bound )  ){  
 		{
 	long  m ;
 	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
 	{
-(((local_temp_particle_cache)[right_cache_usage])[m] = ((a_rva)[g])[m]);
+((	(  local_temp_particle_cache + 	(  right_cache_usage * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
 }}(right_cache_usage = 	(  right_cache_usage + -1 ));
 
 	}else{
@@ -5341,7 +7909,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  m ;
 	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
 	{
-(((a_rva)[sort_cur])[m] = ((a_rva)[g])[m]);
+((	(  a_rva + 	(  sort_cur * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
 }}
 	}else{
 		0;
@@ -5361,7 +7929,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  	(  6 * cur_cache_usage ) + 	(  lg * 0 ) ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  	(  6 * cur_cache_usage ) + 	(  lg * 0 ) ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}(cur_cache_usage = 	(  cur_cache_usage + sort_cur ));
 
 	}else{
@@ -5393,7 +7961,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_minus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_temp_particle_cache)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_minus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_temp_particle_cache + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  right_len * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -5402,7 +7970,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_plus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((local_temp_particle_cache)[	(  right_cache_usage + 1 )])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_plus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_temp_particle_cache + 	(  	(  right_cache_usage + 1 ) * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -5420,7 +7988,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-(((ByzJxtmp)[	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[2] = (shJx)[total_idx]);
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2] = (shJx)[total_idx]);
 }{
 	long  iz ;
 	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
@@ -5434,7 +8002,7 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	long  Gll_P9918 ;
 	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
 	{
-((	(  FoutJ + 	(  	(  3 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  3 * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[Gll_P9918] = ((ByzJxtmp)[	(  4 * total_idx )])[Gll_P9918]);
+((	(  FoutJ + 	(  0 + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
 }}}}}}}
 	}else{
 		0;
@@ -5449,6 +8017,8 @@ void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double * 
 	 }
 }}}
 void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const int  IDX_LOCAL_XLEN = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
@@ -5460,7 +8030,7 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  numgrid_cu = 	(  numgrid * numvec ) ;
 	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
 	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
-	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [80][3];	long  allgid = idy ;
+	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];	long  allgid = idy ;
 	for (0 ; 	(  allgid < numvec ) ; (allgid = 	(  allgid + ylen )))
 	{
 	int  cu_load = (cu_xyzw)[	(  4 * allgid )] ;
@@ -5507,7 +8077,7 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -5520,7 +8090,7 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[0] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[0] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -5537,7 +8107,7 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 3 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 3 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -5549,7 +8119,7 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) )])[1]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
 }{
 	long  lg = 0 ;
 	for (0 ; 	(  lg < 125 ) ; (lg = 	(  lg + xlen )))
@@ -5567,7 +8137,7 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -5578,15 +8148,22 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[2] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[0] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[1] - Midz ) ;
-	double  vx = ((a_rva)[g])[5] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[5] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -5648,9 +8225,9 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[2] = 	(  ((a_rva)[g])[2] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[2] = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -5659,7 +8236,7 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -5728,7 +8305,7 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -5741,7 +8318,7 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[0] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[0] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -5758,7 +8335,7 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 3 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 3 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -5770,7 +8347,7 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) )])[1]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
 }{
 	long  lg = 0 ;
 	for (0 ; 	(  lg < 125 ) ; (lg = 	(  lg + xlen )))
@@ -5788,7 +8365,7 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -5799,15 +8376,22 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[2] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[0] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[1] - Midz ) ;
-	double  vx = ((a_rva)[g])[5] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[5] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -5869,9 +8453,9 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[2] = 	(  ((a_rva)[g])[2] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[2] = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -5880,7 +8464,7 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -5908,7 +8492,544 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 
 	 }
 	if (  	(  load0 != new_load )  ){  
-		((xyzw)[	(  4 * 	(  	(  idy * numgrid ) + allgid ) )] = new_load);
+		((xyzw)[	(  4 * 	(  0 + allgid ) )] = new_load);
+
+	}else{
+		0;
+
+	 }
+}}
+void  c_split_pass_z_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
+	const int  IDX_LOCAL_XLEN = 1 ;
+	const long  idx = 0 ;
+	const long  idy = scmc_internal_g_idy ;
+	const long  xlen = 1 ;
+	const long  ylen = scmc_internal_g_ylen ;
+	const long  global_idx = 	(  idx + 	(  idy * xlen ) ) ;
+	long  numgrid = 	(  XLEN * 	(  YLEN * ZLEN ) ) ;
+	long  numallgrid = 	(  	(  XLEN + 	(  ovlp + ovlp ) ) * 	(  	(  YLEN + 	(  ovlp + ovlp ) ) * 	(  ZLEN + 	(  ovlp + ovlp ) ) ) ) ;
+	long  numgrid_cu = 	(  numgrid * numvec ) ;
+	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
+	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
+	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];	long  allgid = idy ;
+	for (0 ; 	(  allgid < numvec ) ; (allgid = 	(  allgid + ylen )))
+	{
+	int  cu_load = (cu_xyzw)[	(  4 * allgid )] ;
+{
+	long  l1 ;
+	for ((l1 = 0) ; 	(  l1 < cu_load ) ; (l1 = 	(  l1 + 1 )))
+	{
+	long  load0 = 1 ;
+	long  new_load = load0 ;
+	long  idy = allgid ;
+	if (  load0  ){  
+			double  grid_geo = 	(  DELTA_Z / 	(  DELTA_X * DELTA_Y ) ) ;
+	double  grid_geo_py = 	(  1.00000000000000000e+00 / 	(  DELTA_X * DELTA_X ) ) ;
+	double  grid_geo_pz = 	(  1.00000000000000000e+00 / 	(  DELTA_Y * DELTA_Y ) ) ;
+	int  lg ;
+	double  xx = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  0 + 	(  0 * 6 ) )] ;
+	double  xy = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  1 + 	(  0 * 6 ) )] ;
+	double  xz = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  2 + 	(  0 * 6 ) )] ;
+	int  Bidy = 	floor ( xx ) ;
+	int  Bidz = 	floor ( xy ) ;
+	int  Bidx = 	floor ( xz ) ;
+	int  Midx = Bidx ;
+	int  Midy = Bidy ;
+	int  Midz = Bidz ;
+	int  left_bound = Midx ;
+	long  right_bound = 	(  left_bound + 1 ) ;
+(Bidx = 	(  Bidx - 2 ));
+(Bidy = 	(  Bidy - 1 ));
+(Bidz = 	(  Bidz - 1 ));
+	double  QE_MASS = 	(  Charge / Mass ) ;
+{
+{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 3 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  3 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[0] ;
+((shBy)[total_idx] = l1);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 9 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 9 )  ){  
+		((	(  ByzJxtmp + 	(  	(  total_idx * 3 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2]);
+}}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
+	{
+((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
+}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
+	{
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	int  numcp = 1 ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}{
+	long  sort_cur = 0 ;
+{
+	int  g = 0 ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[5] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
+	double  Iby = 0 ;
+	double  Ibz = 0 ;
+	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
+((fBy_y)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) ));
+((fBy_y)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * ry ) + 	pow ( ry , 2 ) ) ) ));
+((fBy_y)[3] = 	(  2.50000000000000000e-01 * 	pow ( ry , 2 ) ));
+((fBy_z)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ));
+((fBy_z)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ));
+((fBy_z)[2] = 	(  5.00000000000000000e-01 * rz ));
+((fBz_z)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) ));
+((fBz_z)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) ));
+((fBz_z)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rz ) + 	pow ( rz , 2 ) ) ) ));
+((fBz_z)[3] = 	(  2.50000000000000000e-01 * 	pow ( rz , 2 ) ));
+((fBz_y)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ));
+((fBz_y)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ));
+((fBz_y)[2] = 	(  5.00000000000000000e-01 * ry ));
+((fBy_x)[0] = 1.00000000000000000e+00);
+((fBy_x)[1] = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx ) ) , 2 ) ) ));
+((fBy_x)[2] = 	(  	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx ) + 	pow ( rx , 2 ) ) ) ) ));
+((fBy_x)[3] = 	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ));
+((fBy_x)[4] = 0.00000000000000000e+00);
+	double  rxplus ;
+(rxplus = 	(  rx + 	(  Deltat * vx ) ));
+	double  rxplus_int = 	floor ( rxplus ) ;
+(rxplus = 	(  rxplus - rxplus_int ));
+	double  fByxplustmp0 ;
+	double  fByxplustmp1 ;
+	double  fByxplustmp2 ;
+(fByxplustmp0 = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rxplus ) ) , 2 ) ) ));
+(fByxplustmp1 = 	(  	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rxplus ) + 	pow ( rxplus , 2 ) ) ) ) ));
+(fByxplustmp2 = 	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ));
+	double  isrx_minus = ((	(  rxplus_int == -1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_zero = ((	(  rxplus_int == 0 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_plus = ((	(  rxplus_int == 1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+((fBy_xplus)[0] = 	(  	(  isrx_minus * fByxplustmp0 ) + 	(  1.00000000000000000e+00 - isrx_minus ) ));
+((fBy_xplus)[1] = 	(  	(  isrx_minus * fByxplustmp1 ) + 	(  	(  isrx_zero * fByxplustmp0 ) + isrx_plus ) ));
+((fBy_xplus)[2] = 	(  	(  isrx_minus * fByxplustmp2 ) + 	(  	(  isrx_zero * fByxplustmp1 ) + 	(  isrx_plus * fByxplustmp0 ) ) ));
+((fBy_xplus)[3] = 	(  	(  isrx_zero * fByxplustmp2 ) + 	(  isrx_plus * fByxplustmp1 ) ));
+((fBy_xplus)[4] = 	(  isrx_plus * fByxplustmp2 ));
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 5 ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 4 ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+(Iby = 	(  Iby + 	(  (shBy)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBy_z)[xyzx] ) ) ) ));
+(Ibz = 	(  Ibz + 	(  (shBz)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBz_z)[xyzy] * (fBz_y)[xyzx] ) ) ) ));
+{
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}	int  xyzx = 3 ;
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[2] = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] + 	(  Deltat * vx ) ));
+}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	double  inctmp = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < 	(  1 * IDX_OPT_MAX ) ) ; (i = 	(  i + 1 )))
+	{
+(inctmp = 	(  inctmp + (shJx_allidx)[	(  	(  	(  lg + idx ) * 	(  IDX_OPT_MAX * 1 ) ) + i )] ));
+}}((shJx)[	(  lg + idx )] = 	(  (shJx)[	(  lg + idx )] + inctmp ));
+}{
+	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2] = (shJx)[total_idx]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
+}}}}}}}
+	}else{
+		0;
+
+	 }
+}}}(allgid = idy);
+	for (0 ; 	(  allgid < numgrid_cu ) ; (allgid = 	(  allgid + ylen )))
+	{
+	int  load0 = (xyzw)[	(  4 * allgid )] ;
+	long  idy = 	(  allgid / numgrid ) ;
+	int  new_load = load0 ;
+	if (  load0  ){  
+			double  grid_geo = 	(  DELTA_Z / 	(  DELTA_X * DELTA_Y ) ) ;
+	double  grid_geo_py = 	(  1.00000000000000000e+00 / 	(  DELTA_X * DELTA_X ) ) ;
+	double  grid_geo_pz = 	(  1.00000000000000000e+00 / 	(  DELTA_Y * DELTA_Y ) ) ;
+	int  lg ;
+	double  xx = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  0 + 	(  0 * 6 ) )] ;
+	double  xy = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  1 + 	(  0 * 6 ) )] ;
+	double  xz = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  2 + 	(  0 * 6 ) )] ;
+	int  Bidy = 	floor ( xx ) ;
+	int  Bidz = 	floor ( xy ) ;
+	int  Bidx = 	floor ( xz ) ;
+	int  Midx = Bidx ;
+	int  Midy = Bidy ;
+	int  Midz = Bidz ;
+	int  left_bound = Midx ;
+	long  right_bound = 	(  left_bound + 1 ) ;
+(Bidx = 	(  Bidx - 2 ));
+(Bidy = 	(  Bidy - 1 ));
+(Bidz = 	(  Bidz - 1 ));
+	double  QE_MASS = 	(  Charge / Mass ) ;
+{
+{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 3 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  3 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[0] ;
+((shBy)[total_idx] = l1);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 9 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 9 )  ){  
+		((	(  ByzJxtmp + 	(  	(  total_idx * 3 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2]);
+}}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
+	{
+((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
+}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
+	{
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	int  numcp = 1 ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}{
+	long  sort_cur = 0 ;
+{
+	int  g = 0 ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[5] ;
+	if (  	(  	(  Deltat * 	(  vx * 	(  Deltat * vx ) ) ) > 2.50000000000000000e-01 )  ){  
+			fprintf ( stderr , "warning: vx=%e dt=%e\n" , vx , Deltat );
+
+	}else{
+		0;
+
+	 }
+	double  Iby = 0 ;
+	double  Ibz = 0 ;
+	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
+((fBy_y)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) ));
+((fBy_y)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * ry ) + 	pow ( ry , 2 ) ) ) ));
+((fBy_y)[3] = 	(  2.50000000000000000e-01 * 	pow ( ry , 2 ) ));
+((fBy_z)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ));
+((fBy_z)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ));
+((fBy_z)[2] = 	(  5.00000000000000000e-01 * rz ));
+((fBz_z)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) ));
+((fBz_z)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) ));
+((fBz_z)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rz ) + 	pow ( rz , 2 ) ) ) ));
+((fBz_z)[3] = 	(  2.50000000000000000e-01 * 	pow ( rz , 2 ) ));
+((fBz_y)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ));
+((fBz_y)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ));
+((fBz_y)[2] = 	(  5.00000000000000000e-01 * ry ));
+((fBy_x)[0] = 1.00000000000000000e+00);
+((fBy_x)[1] = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx ) ) , 2 ) ) ));
+((fBy_x)[2] = 	(  	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx ) + 	pow ( rx , 2 ) ) ) ) ));
+((fBy_x)[3] = 	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ));
+((fBy_x)[4] = 0.00000000000000000e+00);
+	double  rxplus ;
+(rxplus = 	(  rx + 	(  Deltat * vx ) ));
+	double  rxplus_int = 	floor ( rxplus ) ;
+(rxplus = 	(  rxplus - rxplus_int ));
+	double  fByxplustmp0 ;
+	double  fByxplustmp1 ;
+	double  fByxplustmp2 ;
+(fByxplustmp0 = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rxplus ) ) , 2 ) ) ));
+(fByxplustmp1 = 	(  	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rxplus ) + 	pow ( rxplus , 2 ) ) ) ) ));
+(fByxplustmp2 = 	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ));
+	double  isrx_minus = ((	(  rxplus_int == -1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_zero = ((	(  rxplus_int == 0 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_plus = ((	(  rxplus_int == 1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+((fBy_xplus)[0] = 	(  	(  isrx_minus * fByxplustmp0 ) + 	(  1.00000000000000000e+00 - isrx_minus ) ));
+((fBy_xplus)[1] = 	(  	(  isrx_minus * fByxplustmp1 ) + 	(  	(  isrx_zero * fByxplustmp0 ) + isrx_plus ) ));
+((fBy_xplus)[2] = 	(  	(  isrx_minus * fByxplustmp2 ) + 	(  	(  isrx_zero * fByxplustmp1 ) + 	(  isrx_plus * fByxplustmp0 ) ) ));
+((fBy_xplus)[3] = 	(  	(  isrx_zero * fByxplustmp2 ) + 	(  isrx_plus * fByxplustmp1 ) ));
+((fBy_xplus)[4] = 	(  isrx_plus * fByxplustmp2 ));
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 5 ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 4 ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+(Iby = 	(  Iby + 	(  (shBy)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBy_z)[xyzx] ) ) ) ));
+(Ibz = 	(  Ibz + 	(  (shBz)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBz_z)[xyzy] * (fBz_y)[xyzx] ) ) ) ));
+{
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}	int  xyzx = 3 ;
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[2] = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] + 	(  Deltat * vx ) ));
+}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	double  inctmp = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < 	(  1 * IDX_OPT_MAX ) ) ; (i = 	(  i + 1 )))
+	{
+(inctmp = 	(  inctmp + (shJx_allidx)[	(  	(  	(  lg + idx ) * 	(  IDX_OPT_MAX * 1 ) ) + i )] ));
+}}((shJx)[	(  lg + idx )] = 	(  (shJx)[	(  lg + idx )] + inctmp ));
+}{
+	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2] = (shJx)[total_idx]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
+}}}}}}}
+	}else{
+		0;
+
+	 }
+	if (  	(  load0 != new_load )  ){  
+		((xyzw)[	(  4 * 	(  0 + allgid ) )] = new_load);
 
 	}else{
 		0;
@@ -5916,6 +9037,8 @@ void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,d
 	 }
 }}
 void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const int  IDX_LOCAL_XLEN = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
@@ -5927,7 +9050,7 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  numgrid_cu = 	(  numgrid * numvec ) ;
 	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
 	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
-	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [80][3];	long  allgid = idy ;
+	double   shBy  [60];	double   shBz  [60];	double   shJx  [125];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];	long  allgid = idy ;
 	for (0 ; 	(  allgid < numvec ) ; (allgid = 	(  allgid + ylen )))
 	{
 	int  cu_load = (cu_xyzw)[	(  4 * allgid )] ;
@@ -5974,7 +9097,7 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -5987,7 +9110,7 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[0] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[0] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -6004,7 +9127,7 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 3 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 3 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -6016,7 +9139,7 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) )])[1]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
 }{
 	long  lg = 0 ;
 	for (0 ; 	(  lg < 125 ) ; (lg = 	(  lg + xlen )))
@@ -6034,7 +9157,7 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -6045,15 +9168,15 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[2] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[0] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[1] - Midz ) ;
-	double  vx = ((a_rva)[g])[5] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[5] ;
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -6115,9 +9238,9 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[2] = 	(  ((a_rva)[g])[2] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[2] = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -6126,7 +9249,7 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -6195,7 +9318,7 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 12 )  ){  
-		(((ByzJxtmp)[	(  4 * total_idx )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -6208,7 +9331,7 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-	double  l1 = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) )])[0] ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[0] ;
 ((shBy)[total_idx] = l1);
 }{
 	long  iz ;
@@ -6225,7 +9348,7 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	{
 	int  ridx = 	(  lg + idx ) ;
 	if (  	(  ridx < 9 )  ){  
-		(((ByzJxtmp)[	(  total_idx * 3 )])[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+		((	(  ByzJxtmp + 	(  	(  total_idx * 3 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
 
 	}else{
 		0;
@@ -6237,7 +9360,7 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  bxyzx = 	(  total_idx % 5 ) ;
 	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
 	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
-((shBz)[total_idx] = ((ByzJxtmp)[	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) )])[1]);
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
 }{
 	long  lg = 0 ;
 	for (0 ; 	(  lg < 125 ) ; (lg = 	(  lg + xlen )))
@@ -6255,7 +9378,7 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 ((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
 }	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -6266,15 +9389,15 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  sort_cur = 0 ;
 {
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[2] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[0] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[1] - Midz ) ;
-	double  vx = ((a_rva)[g])[5] ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[5] ;
 	double  Iby = 0 ;
 	double  Ibz = 0 ;
 	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
@@ -6336,9 +9459,9 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	double  Jx ;
 (Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
 ((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
-}}}}(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
-(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
-(((a_rva)[g])[2] = 	(  ((a_rva)[g])[2] + 	(  Deltat * vx ) ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[2] = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] + 	(  Deltat * vx ) ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -6347,7 +9470,7 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
 	{
 	double  inctmp = 0 ;
@@ -6375,7 +9498,698 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 
 	 }
 	if (  	(  load0 != new_load )  ){  
-		((xyzw)[	(  4 * 	(  	(  idy * numgrid ) + allgid ) )] = new_load);
+		((xyzw)[	(  4 * 	(  0 + allgid ) )] = new_load);
+
+	}else{
+		0;
+
+	 }
+}}
+void  c_split_pass_z_vlo_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
+	const int  IDX_LOCAL_XLEN = 1 ;
+	const long  idx = 0 ;
+	const long  idy = scmc_internal_g_idy ;
+	const long  xlen = 1 ;
+	const long  ylen = scmc_internal_g_ylen ;
+	const long  global_idx = 	(  idx + 	(  idy * xlen ) ) ;
+	long  numgrid = 	(  XLEN * 	(  YLEN * ZLEN ) ) ;
+	long  numallgrid = 	(  	(  XLEN + 	(  ovlp + ovlp ) ) * 	(  	(  YLEN + 	(  ovlp + ovlp ) ) * 	(  ZLEN + 	(  ovlp + ovlp ) ) ) ) ;
+	long  numgrid_cu = 	(  numgrid * numvec ) ;
+	long  grid_base_offset = 	(  idy * 	(  numgrid * 	(  grid_cache_len * 6 ) ) ) ;
+	int  cu_load = (cu_xyzw)[	(  4 * idy )] ;
+	long  cu_offset = 	(  idy * numgrid ) ;
+	long  xyzalllen = numgrid ;
+	double   local_temp_particle_cache  [	(  768 * 6 )];	int   cu_xyzw_shared  [4];	double   shBy  [60];	double   shBz  [60];	double   shJx  [80];	double   shJx_allidx  [	(  80 * 	(  IDX_OPT_MAX * 1 ) )];	double   ByzJxtmp  [	(  80 * 3 )];	long  allgid = idy ;
+	for (0 ; 	(  allgid < numvec ) ; (allgid = 	(  allgid + ylen )))
+	{
+	int  cu_load = (cu_xyzw)[	(  4 * allgid )] ;
+{
+	long  l1 ;
+	for ((l1 = 0) ; 	(  l1 < cu_load ) ; (l1 = 	(  l1 + 1 )))
+	{
+	long  load0 = 1 ;
+	long  new_load = load0 ;
+	long  idy = allgid ;
+	if (  load0  ){  
+			double  grid_geo = 	(  DELTA_Z / 	(  DELTA_X * DELTA_Y ) ) ;
+	double  grid_geo_py = 	(  1.00000000000000000e+00 / 	(  DELTA_X * DELTA_X ) ) ;
+	double  grid_geo_pz = 	(  1.00000000000000000e+00 / 	(  DELTA_Y * DELTA_Y ) ) ;
+	int  lg ;
+	double  xx = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  0 + 	(  0 * 6 ) )] ;
+	double  xy = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  1 + 	(  0 * 6 ) )] ;
+	double  xz = (	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[	(  2 + 	(  0 * 6 ) )] ;
+	int  Bidy = 	floor ( xx ) ;
+	int  Bidz = 	floor ( xy ) ;
+	int  Bidx = 	floor ( xz ) ;
+	int  Midx = Bidx ;
+	int  Midy = Bidy ;
+	int  Midz = Bidz ;
+	int  left_bound = Midx ;
+	long  right_bound = 	(  left_bound + 1 ) ;
+(Bidx = 	(  Bidx - 2 ));
+(Bidy = 	(  Bidy - 1 ));
+(Bidz = 	(  Bidz - 1 ));
+	double  QE_MASS = 	(  Charge / Mass ) ;
+{
+{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 3 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  3 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[0] ;
+((shBy)[total_idx] = l1);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 9 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 9 )  ){  
+		((	(  ByzJxtmp + 	(  	(  total_idx * 3 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2]);
+}}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
+	{
+((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
+}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
+	{
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	int  numcp = 1 ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}{
+	long  sort_cur = 0 ;
+{
+	int  g = 0 ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[5] ;
+	double  Iby = 0 ;
+	double  Ibz = 0 ;
+	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
+((fBy_y)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) ));
+((fBy_y)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * ry ) + 	pow ( ry , 2 ) ) ) ));
+((fBy_y)[3] = 	(  2.50000000000000000e-01 * 	pow ( ry , 2 ) ));
+((fBy_z)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ));
+((fBy_z)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ));
+((fBy_z)[2] = 	(  5.00000000000000000e-01 * rz ));
+((fBz_z)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) ));
+((fBz_z)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) ));
+((fBz_z)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rz ) + 	pow ( rz , 2 ) ) ) ));
+((fBz_z)[3] = 	(  2.50000000000000000e-01 * 	pow ( rz , 2 ) ));
+((fBz_y)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ));
+((fBz_y)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ));
+((fBz_y)[2] = 	(  5.00000000000000000e-01 * ry ));
+((fBy_x)[0] = 1.00000000000000000e+00);
+((fBy_x)[1] = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx ) ) , 2 ) ) ));
+((fBy_x)[2] = 	(  	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx ) + 	pow ( rx , 2 ) ) ) ) ));
+((fBy_x)[3] = 	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ));
+((fBy_x)[4] = 0.00000000000000000e+00);
+	double  rxplus ;
+(rxplus = 	(  rx + 	(  Deltat * vx ) ));
+	double  rxplus_int = 	floor ( rxplus ) ;
+(rxplus = 	(  rxplus - rxplus_int ));
+	double  fByxplustmp0 ;
+	double  fByxplustmp1 ;
+	double  fByxplustmp2 ;
+(fByxplustmp0 = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rxplus ) ) , 2 ) ) ));
+(fByxplustmp1 = 	(  	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rxplus ) + 	pow ( rxplus , 2 ) ) ) ) ));
+(fByxplustmp2 = 	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ));
+	double  isrx_minus = ((	(  rxplus_int == -1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_zero = ((	(  rxplus_int == 0 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_plus = ((	(  rxplus_int == 1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+((fBy_xplus)[0] = 	(  	(  isrx_minus * fByxplustmp0 ) + 	(  1.00000000000000000e+00 - isrx_minus ) ));
+((fBy_xplus)[1] = 	(  	(  isrx_minus * fByxplustmp1 ) + 	(  	(  isrx_zero * fByxplustmp0 ) + isrx_plus ) ));
+((fBy_xplus)[2] = 	(  	(  isrx_minus * fByxplustmp2 ) + 	(  	(  isrx_zero * fByxplustmp1 ) + 	(  isrx_plus * fByxplustmp0 ) ) ));
+((fBy_xplus)[3] = 	(  	(  isrx_zero * fByxplustmp2 ) + 	(  isrx_plus * fByxplustmp1 ) ));
+((fBy_xplus)[4] = 	(  isrx_plus * fByxplustmp2 ));
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 5 ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 4 ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+(Iby = 	(  Iby + 	(  (shBy)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBy_z)[xyzx] ) ) ) ));
+(Ibz = 	(  Ibz + 	(  (shBz)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBz_z)[xyzy] * (fBz_y)[xyzx] ) ) ) ));
+{
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}	int  xyzx = 3 ;
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[2] = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] + 	(  Deltat * vx ) ));
+}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  	(  allgid * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * idx_all_base ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	double  inctmp = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < 	(  1 * IDX_OPT_MAX ) ) ; (i = 	(  i + 1 )))
+	{
+(inctmp = 	(  inctmp + (shJx_allidx)[	(  	(  	(  lg + idx ) * 	(  IDX_OPT_MAX * 1 ) ) + i )] ));
+}}((shJx)[	(  lg + idx )] = 	(  (shJx)[	(  lg + idx )] + inctmp ));
+}{
+	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2] = (shJx)[total_idx]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
+}}}}}}}
+	}else{
+		0;
+
+	 }
+}}}{
+	double   local_pos_cache  [	(  64 * 6 )];	if (  	(  	(  idy < numvec ) && 	(  idx == 0 ) )  ){  
+			int  cu_cur_cache_load = (cu_xyzw)[	(  4 * idy )] ;
+{
+	int  num_cur_load = 0 ;
+	int  beg_to_left = 	(  	(  2 * cu_cache_length ) / 5 ) ;
+	int  cur_to_left = beg_to_left ;
+	int  cur_to_right = cu_cache_length ;
+	int  cur_this = 0 ;
+	int  lg ;
+	int  g ;
+	for (lg=0 ; 	(  lg < cu_cur_cache_load ) ; (lg = 	(  lg + 64 )))
+	{
+	long  num_read = ((	(  	(  lg + 64 ) > cu_cur_cache_load ))?(	(  cu_cur_cache_load - lg )):(64)) ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  num_read * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  local_pos_cache + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  lg * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}	for (g=0 ; 	(  g < num_read ) ; g++)
+	{
+	int  gall = 	(  g + lg ) ;
+	if (  	(  (	(  local_pos_cache + 	(  g * 6 ) ))[2] < 0 )  ){  
+		{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_left * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}(cur_to_left = 	(  cur_to_left + 1 ));
+
+	}else{
+			if (  	(  (	(  local_pos_cache + 	(  g * 6 ) ))[2] > ZLEN )  ){  
+		cur_to_right--;
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_to_right * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}
+	}else{
+		{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  idy * 	(  6 * cu_cache_length ) ) ) + 	(  cur_this * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_pos_cache + 	(  g * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}(cur_this = 	(  cur_this + 1 ));
+
+	 }
+
+	 }
+}}((cu_xyzw_shared)[0] = cur_this);
+((cu_xyzw_shared)[1] = beg_to_left);
+((cu_xyzw_shared)[2] = cur_to_left);
+((cu_xyzw_shared)[3] = cur_to_right);
+}
+	}else{
+		0;
+
+	 }
+	if (  	(  idy < numvec )  ){  
+		{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 4 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  cu_xyzw + 	(  4 * idy ) ))[Gll_P9918] = (cu_xyzw_shared)[Gll_P9918]);
+}}
+	}else{
+		0;
+
+	 }
+}(allgid = idy);
+	for (0 ; 	(  allgid < numgrid_cu ) ; (allgid = 	(  allgid + ylen )))
+	{
+	int  load0 = (xyzw)[	(  4 * allgid )] ;
+	long  idy = 	(  allgid / numgrid ) ;
+	int  new_load = load0 ;
+	if (  load0  ){  
+			double  grid_geo = 	(  DELTA_Z / 	(  DELTA_X * DELTA_Y ) ) ;
+	double  grid_geo_py = 	(  1.00000000000000000e+00 / 	(  DELTA_X * DELTA_X ) ) ;
+	double  grid_geo_pz = 	(  1.00000000000000000e+00 / 	(  DELTA_Y * DELTA_Y ) ) ;
+	int  lg ;
+	double  xx = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  0 + 	(  0 * 6 ) )] ;
+	double  xy = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  1 + 	(  0 * 6 ) )] ;
+	double  xz = (	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[	(  2 + 	(  0 * 6 ) )] ;
+	int  Bidy = 	floor ( xx ) ;
+	int  Bidz = 	floor ( xy ) ;
+	int  Bidx = 	floor ( xz ) ;
+	int  cur_cache_usage = 0 ;
+	int  left_cache_usage = 0 ;
+	int  right_cache_usage = 	(  768 - 1 ) ;
+	int  Midx = Bidx ;
+	int  Midy = Bidy ;
+	int  Midz = Bidz ;
+	int  left_bound = Midx ;
+	long  right_bound = 	(  left_bound + 1 ) ;
+(Bidx = 	(  Bidx - 2 ));
+(Bidy = 	(  Bidy - 1 ));
+(Bidz = 	(  Bidz - 1 ));
+	double  QE_MASS = 	(  Charge / Mass ) ;
+{
+{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 3 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  3 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+	double  l1 = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[0] ;
+((shBy)[total_idx] = l1);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 9 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 9 )  ){  
+		((	(  ByzJxtmp + 	(  	(  total_idx * 3 ) * 3 ) ))[ridx] = (	(  fieldB + 	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 60 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shBz)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 12 ) + 	(  	(  bxyzy * 3 ) + 	(  bxyzz * 1 ) ) ) * 3 ) ))[1]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  lg = 0 ;
+	for (0 ; 	(  lg < 12 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  ridx = 	(  lg + idx ) ;
+	if (  	(  ridx < 12 )  ){  
+		((	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[ridx] = (	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[ridx]);
+
+	}else{
+		0;
+
+	 }
+}}}}}}	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((shJx)[total_idx] = (	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2]);
+}}	for (lg=0 ; 	(  lg < 	(  80 * 1 ) ) ; (lg = 	(  lg + 1 )))
+	{
+((shJx_allidx)[	(  	(  lg * IDX_OPT_MAX ) + idx )] = 0);
+}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
+	{
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	int  numcp = 1 ;
+{
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}{
+	long  sort_cur = 0 ;
+{
+	int  g = 0 ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midz ) ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[5] ;
+	double  Iby = 0 ;
+	double  Ibz = 0 ;
+	double   fBy_y  [4];	double   fBy_z  [3];	double   fBz_z  [4];	double   fBz_y  [3];	double   fBy_x  [5];	double   fBy_xplus  [5];((fBy_y)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) ));
+((fBy_y)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) ));
+((fBy_y)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * ry ) + 	pow ( ry , 2 ) ) ) ));
+((fBy_y)[3] = 	(  2.50000000000000000e-01 * 	pow ( ry , 2 ) ));
+((fBy_z)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ));
+((fBy_z)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ));
+((fBy_z)[2] = 	(  5.00000000000000000e-01 * rz ));
+((fBz_z)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) ));
+((fBz_z)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rz ) ) ) ) ) ));
+((fBz_z)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rz ) + 	pow ( rz , 2 ) ) ) ));
+((fBz_z)[3] = 	(  2.50000000000000000e-01 * 	pow ( rz , 2 ) ));
+((fBz_y)[0] = 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ));
+((fBz_y)[1] = 	(  	(  2.50000000000000000e-01 * 	(  2.00000000000000000e+00 + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ) ) + 	(  5.00000000000000000e-01 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * ry ) ) ) ));
+((fBz_y)[2] = 	(  5.00000000000000000e-01 * ry ));
+((fBy_x)[0] = 1.00000000000000000e+00);
+((fBy_x)[1] = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx ) ) , 2 ) ) ));
+((fBy_x)[2] = 	(  	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx ) + 	pow ( rx , 2 ) ) ) ) ));
+((fBy_x)[3] = 	(  2.50000000000000000e-01 * 	pow ( rx , 2 ) ));
+((fBy_x)[4] = 0.00000000000000000e+00);
+	double  rxplus ;
+(rxplus = 	(  rx + 	(  Deltat * vx ) ));
+	double  rxplus_int = 	floor ( rxplus ) ;
+(rxplus = 	(  rxplus - rxplus_int ));
+	double  fByxplustmp0 ;
+	double  fByxplustmp1 ;
+	double  fByxplustmp2 ;
+(fByxplustmp0 = 	(  1.00000000000000000e+00 + 	(  -2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rxplus ) ) , 2 ) ) ));
+(fByxplustmp1 = 	(  	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ) + 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rxplus ) + 	pow ( rxplus , 2 ) ) ) ) ));
+(fByxplustmp2 = 	(  2.50000000000000000e-01 * 	pow ( rxplus , 2 ) ));
+	double  isrx_minus = ((	(  rxplus_int == -1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_zero = ((	(  rxplus_int == 0 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+	double  isrx_plus = ((	(  rxplus_int == 1 ))?(1.00000000000000000e+00):(0.00000000000000000e+00)) ;
+((fBy_xplus)[0] = 	(  	(  isrx_minus * fByxplustmp0 ) + 	(  1.00000000000000000e+00 - isrx_minus ) ));
+((fBy_xplus)[1] = 	(  	(  isrx_minus * fByxplustmp1 ) + 	(  	(  isrx_zero * fByxplustmp0 ) + isrx_plus ) ));
+((fBy_xplus)[2] = 	(  	(  isrx_minus * fByxplustmp2 ) + 	(  	(  isrx_zero * fByxplustmp1 ) + 	(  isrx_plus * fByxplustmp0 ) ) ));
+((fBy_xplus)[3] = 	(  	(  isrx_zero * fByxplustmp2 ) + 	(  isrx_plus * fByxplustmp1 ) ));
+((fBy_xplus)[4] = 	(  isrx_plus * fByxplustmp2 ));
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 5 ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 4 ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+(Iby = 	(  Iby + 	(  (shBy)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBy_z)[xyzx] ) ) ) ));
+(Ibz = 	(  Ibz + 	(  (shBz)[	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) )] * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBz_z)[xyzy] * (fBz_y)[xyzx] ) ) ) ));
+{
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}	int  xyzx = 3 ;
+	double  Jx ;
+(Jx = 	(  Charge * 	(  grid_geo * 	(  	(  (fBy_xplus)[xyzz] - (fBy_x)[xyzz] ) * 	(  (fBy_y)[xyzy] * (fBz_z)[xyzx] ) ) ) ));
+((shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] = 	(  (shJx_allidx)[	(  	(  	(  	(  IDX_OPT_MAX * 	(  0 + 	(  1 * 	(  xyzz + 	(  5 * 	(  xyzy + 	(  4 * xyzx ) ) ) ) ) ) ) + idx ) * 1 ) + 	(  lg % 1 ) )] + Jx ));
+}}}}((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + 	(  QE_MASS * 	(  	+ ( Iby ) * grid_geo_pz ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + 	(  QE_MASS * 	(  	- ( Ibz ) * grid_geo_py ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[2] = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] + 	(  Deltat * vx ) ));
+	if (  	(  (	(  a_rva + 	(  g * 6 ) ))[2] < left_bound )  ){  
+		{
+	long  m ;
+	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
+	{
+((	(  local_temp_particle_cache + 	(  left_cache_usage * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
+}}(left_cache_usage = 	(  left_cache_usage + 1 ));
+
+	}else{
+			if (  	(  (	(  a_rva + 	(  g * 6 ) ))[2] > right_bound )  ){  
+		{
+	long  m ;
+	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
+	{
+((	(  local_temp_particle_cache + 	(  right_cache_usage * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
+}}(right_cache_usage = 	(  right_cache_usage + -1 ));
+
+	}else{
+			if (  	(  g != sort_cur )  ){  
+		{
+	long  m ;
+	for ((m = 0) ; 	(  m < 6 ) ; (m = 	(  m + 1 )))
+	{
+((	(  a_rva + 	(  sort_cur * 6 ) ))[m] = (	(  a_rva + 	(  g * 6 ) ))[m]);
+}}
+	}else{
+		0;
+
+	 }
+(sort_cur = 	(  sort_cur + 1 ));
+
+	 }
+
+	 }
+}	if (  sort_cur  ){  
+		{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  sort_cur * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  	(  6 * cur_cache_usage ) + 	(  lg * 0 ) ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}(cur_cache_usage = 	(  cur_cache_usage + sort_cur ));
+
+	}else{
+		0;
+
+	 }
+}}	int  x_main = cur_cache_usage ;
+	int  x_beg_minus = x_main ;
+	int  x_beg_plus = 	(  	(  	(  grid_cache_len - load0 ) / 2 ) + 	(  left_cache_usage + x_main ) ) ;
+	int  right_len = 	(  767 - right_cache_usage ) ;
+	int   xm4  [4];((xm4)[0] = x_main);
+((xm4)[1] = 	(  left_cache_usage + x_main ));
+((xm4)[2] = x_beg_plus);
+((xm4)[3] = 	(  right_len + x_beg_plus ));
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 4 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  xyzw + 	(  4 * 	(  0 + allgid ) ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (xm4)[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  left_cache_usage * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_minus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_temp_particle_cache + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 	(  right_len * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  inoutput + 	(  0 + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * x_beg_plus ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  local_temp_particle_cache + 	(  	(  right_cache_usage + 1 ) * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}	for (lg=0 ; 	(  	(  lg + idx ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	double  inctmp = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < 	(  1 * IDX_OPT_MAX ) ) ; (i = 	(  i + 1 )))
+	{
+(inctmp = 	(  inctmp + (shJx_allidx)[	(  	(  	(  lg + idx ) * 	(  IDX_OPT_MAX * 1 ) ) + i )] ));
+}}((shJx)[	(  lg + idx )] = 	(  (shJx)[	(  lg + idx )] + inctmp ));
+}{
+	int  lg ;
+	for ((lg = 0) ; 	(  	(  idx + lg ) < 80 ) ; (lg = 	(  lg + xlen )))
+	{
+	int  total_idx = 	(  idx + lg ) ;
+	long  bxyzx = 	(  total_idx % 5 ) ;
+	long  bxyzy = 	(  	(  total_idx / 5 ) % 4 ) ;
+	long  bxyzz = 	(  total_idx / 	(  5 * 4 ) ) ;
+((	(  ByzJxtmp + 	(  	(  	(  bxyzx * 16 ) + 	(  	(  bxyzy * 1 ) + 	(  bxyzz * 4 ) ) ) * 3 ) ))[2] = (shJx)[total_idx]);
+}{
+	long  iz ;
+	for ((iz = 0) ; 	(  iz < 5 ) ; (iz = 	(  iz + 1 )))
+	{
+{
+	long  iy ;
+	for ((iy = 0) ; 	(  iy < 4 ) ; (iy = 	(  iy + 1 )))
+	{
+	int  total_idx = 	(  iy + 	(  4 * iz ) ) ;
+{
+	long  Gll_P9918 ;
+	for ((Gll_P9918 = 0) ; 	(  Gll_P9918 < 12 ) ; (Gll_P9918 = 	(  Gll_P9918 + 1 )))
+	{
+((	(  LFoutJ + 	(  	(  num_ele * 	(  numallgrid * pscmc_compute_unit_id ) ) + 	(  	(  	(  num_ele * pscmc_num_compute_units ) * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  	(  0 + Bidy ) + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  	(  iy + Bidz ) + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  	(  iz + Bidx ) + ovlp ) ) ) ) ) ) ) ) ) ))[Gll_P9918] = (	(  ByzJxtmp + 	(  	(  4 * total_idx ) * 3 ) ))[Gll_P9918]);
+}}}}}}}
+	}else{
+		0;
+
+	 }
+	if (  	(  load0 != new_load )  ){  
+		((xyzw)[	(  4 * 	(  0 + allgid ) )] = new_load);
 
 	}else{
 		0;
@@ -6383,6 +10197,8 @@ void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 	 }
 }}
 void  c_split_pass_E_particle_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -6437,7 +10253,7 @@ void  c_split_pass_E_particle_scmc_kernel (double *  inoutput ,int *  xyzw ,doub
 	 }
 }}}}}}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -6448,12 +10264,12 @@ void  c_split_pass_E_particle_scmc_kernel (double *  inoutput ,int *  xyzw ,doub
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}{
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[0] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[1] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[2] - Midz ) ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
 	double   fEx  [4];	double   fEy  [4];	double   fEz  [4];	double   fdEx  [3];	double   fdEy  [3];	double   fdEz  [3];	double  AllEx = 0 ;
 	double  AllEy = 0 ;
 	double  AllEz = 0 ;
@@ -6499,9 +10315,9 @@ void  c_split_pass_E_particle_scmc_kernel (double *  inoutput ,int *  xyzw ,doub
 (allincfvx = 	(  	(  Deltat * 	(  QE_MASS * AllEx ) ) / 	(  DELTA_X * DELTA_X ) ));
 (allincfvy = 	(  	(  Deltat * 	(  QE_MASS * AllEy ) ) / 	(  DELTA_Y * DELTA_Y ) ));
 (allincfvz = 	(  	(  Deltat * 	(  QE_MASS * AllEz ) ) / 	(  DELTA_Z * DELTA_Z ) ));
-(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + allincfvx ));
-(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + allincfvy ));
-(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + allincfvz ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + allincfvx ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + allincfvy ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + allincfvz ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -6510,7 +10326,7 @@ void  c_split_pass_E_particle_scmc_kernel (double *  inoutput ,int *  xyzw ,doub
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}
 	}else{
 		0;
@@ -6560,7 +10376,7 @@ void  c_split_pass_E_particle_scmc_kernel (double *  inoutput ,int *  xyzw ,doub
 	 }
 }}}}}}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -6571,12 +10387,12 @@ void  c_split_pass_E_particle_scmc_kernel (double *  inoutput ,int *  xyzw ,doub
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}{
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[0] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[1] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[2] - Midz ) ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
 	double   fEx  [4];	double   fEy  [4];	double   fEz  [4];	double   fdEx  [3];	double   fdEy  [3];	double   fdEz  [3];	double  AllEx = 0 ;
 	double  AllEy = 0 ;
 	double  AllEz = 0 ;
@@ -6622,9 +10438,9 @@ void  c_split_pass_E_particle_scmc_kernel (double *  inoutput ,int *  xyzw ,doub
 (allincfvx = 	(  	(  Deltat * 	(  QE_MASS * AllEx ) ) / 	(  DELTA_X * DELTA_X ) ));
 (allincfvy = 	(  	(  Deltat * 	(  QE_MASS * AllEy ) ) / 	(  DELTA_Y * DELTA_Y ) ));
 (allincfvz = 	(  	(  Deltat * 	(  QE_MASS * AllEz ) ) / 	(  DELTA_Z * DELTA_Z ) ));
-(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + allincfvx ));
-(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + allincfvy ));
-(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + allincfvz ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + allincfvx ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + allincfvy ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + allincfvz ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -6633,7 +10449,7 @@ void  c_split_pass_E_particle_scmc_kernel (double *  inoutput ,int *  xyzw ,doub
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}
 	}else{
 		0;
@@ -6648,6 +10464,8 @@ void  c_split_pass_E_particle_scmc_kernel (double *  inoutput ,int *  xyzw ,doub
 	 }
 }}}
 void  c_split_pass_E_particle_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -6702,7 +10520,7 @@ void  c_split_pass_E_particle_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,
 	 }
 }}}}}}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -6713,12 +10531,12 @@ void  c_split_pass_E_particle_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}{
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[0] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[1] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[2] - Midz ) ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
 	double   fEx  [4];	double   fEy  [4];	double   fEz  [4];	double   fdEx  [3];	double   fdEy  [3];	double   fdEz  [3];	double  AllEx = 0 ;
 	double  AllEy = 0 ;
 	double  AllEz = 0 ;
@@ -6764,9 +10582,9 @@ void  c_split_pass_E_particle_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,
 (allincfvx = 	(  	(  Deltat * 	(  QE_MASS * AllEx ) ) / 	(  DELTA_X * DELTA_X ) ));
 (allincfvy = 	(  	(  Deltat * 	(  QE_MASS * AllEy ) ) / 	(  DELTA_Y * DELTA_Y ) ));
 (allincfvz = 	(  	(  Deltat * 	(  QE_MASS * AllEz ) ) / 	(  DELTA_Z * DELTA_Z ) ));
-(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + allincfvx ));
-(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + allincfvy ));
-(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + allincfvz ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + allincfvx ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + allincfvy ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + allincfvz ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -6775,7 +10593,7 @@ void  c_split_pass_E_particle_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}
 	}else{
 		0;
@@ -6825,7 +10643,7 @@ void  c_split_pass_E_particle_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,
 	 }
 }}}}}}	for (lg=0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -6836,12 +10654,12 @@ void  c_split_pass_E_particle_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}{
 	int  g = 0 ;
-	double  rx = 	(  ((a_rva)[g])[0] - Midx ) ;
-	double  ry = 	(  ((a_rva)[g])[1] - Midy ) ;
-	double  rz = 	(  ((a_rva)[g])[2] - Midz ) ;
+	double  rx = 	(  (	(  a_rva + 	(  g * 6 ) ))[0] - Midx ) ;
+	double  ry = 	(  (	(  a_rva + 	(  g * 6 ) ))[1] - Midy ) ;
+	double  rz = 	(  (	(  a_rva + 	(  g * 6 ) ))[2] - Midz ) ;
 	double   fEx  [4];	double   fEy  [4];	double   fEz  [4];	double   fdEx  [3];	double   fdEy  [3];	double   fdEz  [3];	double  AllEx = 0 ;
 	double  AllEy = 0 ;
 	double  AllEz = 0 ;
@@ -6887,9 +10705,9 @@ void  c_split_pass_E_particle_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,
 (allincfvx = 	(  	(  Deltat * 	(  QE_MASS * AllEx ) ) / 	(  DELTA_X * DELTA_X ) ));
 (allincfvy = 	(  	(  Deltat * 	(  QE_MASS * AllEy ) ) / 	(  DELTA_Y * DELTA_Y ) ));
 (allincfvz = 	(  	(  Deltat * 	(  QE_MASS * AllEz ) ) / 	(  DELTA_Z * DELTA_Z ) ));
-(((a_rva)[g])[3] = 	(  ((a_rva)[g])[3] + allincfvx ));
-(((a_rva)[g])[4] = 	(  ((a_rva)[g])[4] + allincfvy ));
-(((a_rva)[g])[5] = 	(  ((a_rva)[g])[5] + allincfvz ));
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  (	(  a_rva + 	(  g * 6 ) ))[3] + allincfvx ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  (	(  a_rva + 	(  g * 6 ) ))[4] + allincfvy ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  (	(  a_rva + 	(  g * 6 ) ))[5] + allincfvz ));
 }{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < 	(  numcp * 6 ) ) ; (inner_step = 	(  inner_step + 1 )))
@@ -6898,7 +10716,7 @@ void  c_split_pass_E_particle_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}}
 	}else{
 		0;
@@ -6913,6 +10731,8 @@ void  c_split_pass_E_particle_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,
 	 }
 }}}
 void  c_boris_yee_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass0 ,double  Charge0 ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -6987,12 +10807,12 @@ void  c_boris_yee_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cac
 
 	 }
 }}}}}}}}{
-	long  gMYGEN146 = 0 ;
-	for (0 ; 	(  	(  gMYGEN146 + 	(  idx * 1 ) ) < load0 ) ; (gMYGEN146 = 	(  gMYGEN146 + 	(  1 * xlen ) )))
+	long  gMYGEN206 = 0 ;
+	for (0 ; 	(  	(  gMYGEN206 + 	(  idx * 1 ) ) < load0 ) ; (gMYGEN206 = 	(  gMYGEN206 + 	(  1 * xlen ) )))
 	{
-	long  iba_tmp = 	(  	(  idx * 1 ) + gMYGEN146 ) ;
+	long  iba_tmp = 	(  	(  idx * 1 ) + gMYGEN206 ) ;
 	long  numcp = 1 ;
-	double   local_particle_head  [1][6];{
+	double   local_particle_head  [	(  1 * 6 )];{
 {
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
@@ -7001,20 +10821,20 @@ void  c_boris_yee_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cac
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((local_particle_head)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  local_particle_head + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  xx0 = ((local_particle_head)[g])[0] ;
-	double  xy0 = ((local_particle_head)[g])[1] ;
-	double  xz0 = ((local_particle_head)[g])[2] ;
+	double  xx0 = (	(  local_particle_head + 	(  g * 6 ) ))[0] ;
+	double  xy0 = (	(  local_particle_head + 	(  g * 6 ) ))[1] ;
+	double  xz0 = (	(  local_particle_head + 	(  g * 6 ) ))[2] ;
 	double  rx0 = 	(  xx0 - Midx ) ;
 	double  ry0 = 	(  xy0 - Midy ) ;
 	double  rz0 = 	(  xz0 - Midz ) ;
-	double  vx0 = ((local_particle_head)[g])[3] ;
-	double  vy0 = ((local_particle_head)[g])[4] ;
-	double  vz0 = ((local_particle_head)[g])[5] ;
+	double  vx0 = (	(  local_particle_head + 	(  g * 6 ) ))[3] ;
+	double  vy0 = (	(  local_particle_head + 	(  g * 6 ) ))[4] ;
+	double  vz0 = (	(  local_particle_head + 	(  g * 6 ) ))[5] ;
 	double   f_x_arr  [4];((f_x_arr)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx0 ) ) , 2 ) ));
 ((f_x_arr)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx0 ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx0 ) ) ) ) ) ));
 ((f_x_arr)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx0 ) + 	pow ( rx0 , 2 ) ) ) ));
@@ -7142,12 +10962,12 @@ void  c_boris_yee_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cac
 	double  xx1 = 	(  xx0 + 	(  Deltat * vx1 ) ) ;
 	double  xy1 = 	(  xy0 + 	(  Deltat * vy1 ) ) ;
 	double  xz1 = 	(  xz0 + 	(  Deltat * vz1 ) ) ;
-(((local_particle_head)[g])[0] = xx1);
-(((local_particle_head)[g])[1] = xy1);
-(((local_particle_head)[g])[2] = xz1);
-(((local_particle_head)[g])[3] = vx1);
-(((local_particle_head)[g])[4] = vy1);
-(((local_particle_head)[g])[5] = vz1);
+((	(  local_particle_head + 	(  g * 6 ) ))[0] = xx1);
+((	(  local_particle_head + 	(  g * 6 ) ))[1] = xy1);
+((	(  local_particle_head + 	(  g * 6 ) ))[2] = xz1);
+((	(  local_particle_head + 	(  g * 6 ) ))[3] = vx1);
+((	(  local_particle_head + 	(  g * 6 ) ))[4] = vy1);
+((	(  local_particle_head + 	(  g * 6 ) ))[5] = vz1);
 {
 	long  xyzz ;
 	for ((xyzz = 0) ; 	(  xyzz < 4 ) ; (xyzz = 	(  xyzz + 1 )))
@@ -7205,7 +11025,7 @@ void  c_boris_yee_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cac
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = ((local_particle_head)[0])[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  local_particle_head + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}}
 	}else{
 		0;
@@ -7275,12 +11095,12 @@ void  c_boris_yee_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cac
 
 	 }
 }}}}}}}}{
-	long  gMYGEN153 = 0 ;
-	for (0 ; 	(  	(  gMYGEN153 + 	(  idx * 1 ) ) < load0 ) ; (gMYGEN153 = 	(  gMYGEN153 + 	(  1 * xlen ) )))
+	long  gMYGEN213 = 0 ;
+	for (0 ; 	(  	(  gMYGEN213 + 	(  idx * 1 ) ) < load0 ) ; (gMYGEN213 = 	(  gMYGEN213 + 	(  1 * xlen ) )))
 	{
-	long  iba_tmp = 	(  	(  idx * 1 ) + gMYGEN153 ) ;
+	long  iba_tmp = 	(  	(  idx * 1 ) + gMYGEN213 ) ;
 	long  numcp = 1 ;
-	double   local_particle_head  [1][6];{
+	double   local_particle_head  [	(  1 * 6 )];{
 {
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
@@ -7289,20 +11109,20 @@ void  c_boris_yee_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cac
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((local_particle_head)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  local_particle_head + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  xx0 = ((local_particle_head)[g])[0] ;
-	double  xy0 = ((local_particle_head)[g])[1] ;
-	double  xz0 = ((local_particle_head)[g])[2] ;
+	double  xx0 = (	(  local_particle_head + 	(  g * 6 ) ))[0] ;
+	double  xy0 = (	(  local_particle_head + 	(  g * 6 ) ))[1] ;
+	double  xz0 = (	(  local_particle_head + 	(  g * 6 ) ))[2] ;
 	double  rx0 = 	(  xx0 - Midx ) ;
 	double  ry0 = 	(  xy0 - Midy ) ;
 	double  rz0 = 	(  xz0 - Midz ) ;
-	double  vx0 = ((local_particle_head)[g])[3] ;
-	double  vy0 = ((local_particle_head)[g])[4] ;
-	double  vz0 = ((local_particle_head)[g])[5] ;
+	double  vx0 = (	(  local_particle_head + 	(  g * 6 ) ))[3] ;
+	double  vy0 = (	(  local_particle_head + 	(  g * 6 ) ))[4] ;
+	double  vz0 = (	(  local_particle_head + 	(  g * 6 ) ))[5] ;
 	double   f_x_arr  [4];((f_x_arr)[0] = 	(  2.50000000000000000e-01 * 	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx0 ) ) , 2 ) ));
 ((f_x_arr)[1] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx0 ) ) , 2 ) + 	(  -2.00000000000000000e+00 * 	(  1.00000000000000000e+00 + 	(  -1.00000000000000000e+00 * rx0 ) ) ) ) ) ));
 ((f_x_arr)[2] = 	(  -2.50000000000000000e-01 * 	(  -1.00000000000000000e+00 + 	(  	(  -2.00000000000000000e+00 * rx0 ) + 	pow ( rx0 , 2 ) ) ) ));
@@ -7430,12 +11250,12 @@ void  c_boris_yee_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cac
 	double  xx1 = 	(  xx0 + 	(  Deltat * vx1 ) ) ;
 	double  xy1 = 	(  xy0 + 	(  Deltat * vy1 ) ) ;
 	double  xz1 = 	(  xz0 + 	(  Deltat * vz1 ) ) ;
-(((local_particle_head)[g])[0] = xx1);
-(((local_particle_head)[g])[1] = xy1);
-(((local_particle_head)[g])[2] = xz1);
-(((local_particle_head)[g])[3] = vx1);
-(((local_particle_head)[g])[4] = vy1);
-(((local_particle_head)[g])[5] = vz1);
+((	(  local_particle_head + 	(  g * 6 ) ))[0] = xx1);
+((	(  local_particle_head + 	(  g * 6 ) ))[1] = xy1);
+((	(  local_particle_head + 	(  g * 6 ) ))[2] = xz1);
+((	(  local_particle_head + 	(  g * 6 ) ))[3] = vx1);
+((	(  local_particle_head + 	(  g * 6 ) ))[4] = vy1);
+((	(  local_particle_head + 	(  g * 6 ) ))[5] = vz1);
 {
 	long  xyzz ;
 	for ((xyzz = 0) ; 	(  xyzz < 4 ) ; (xyzz = 	(  xyzz + 1 )))
@@ -7493,7 +11313,7 @@ void  c_boris_yee_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cac
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = ((local_particle_head)[0])[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  local_particle_head + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}}
 	}else{
 		0;
@@ -7508,6 +11328,8 @@ void  c_boris_yee_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cac
 	 }
 }}}
 void  c_krook_collision_remove_small_speed_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  mu_freq ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -7528,16 +11350,29 @@ void  c_krook_collision_remove_small_speed_scmc_kernel (double *  inoutput ,int 
 			int  Midx = 	floor ( (	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[0] ) ;
 	int  Midy = 	floor ( (	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[1] ) ;
 	int  Midz = 	floor ( (	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[2] ) ;
+	int  mode = 0 ;
 	double  mu_freq1 ;
-	if (  	(  ! (fieldE)[	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )] )  ){  
-		continue;
+	double  v_t_gen ;
+	int  num_gen = 0 ;
+	if (  (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]  ){  
+		(mode = 1);
+(mu_freq1 = mu_freq);
+	if (  	(  mu_freq == 0 )  ){  
+		(mu_freq1 = (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  1 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]);
 
 	}else{
-		(mu_freq1 = mu_freq);
+		0;
 
 	 }
-	if (  	(  mu_freq == 0 )  ){  
-		(mu_freq1 = (fieldE)[	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  1 + 	(  num_ele * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]);
+
+	}else{
+		0;
+
+	 }
+	if (  (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  3 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]  ){  
+		(mode = 2);
+(v_t_gen = (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  3 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]);
+(num_gen = (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  2 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]);
 
 	}else{
 		0;
@@ -7546,9 +11381,10 @@ void  c_krook_collision_remove_small_speed_scmc_kernel (double *  inoutput ,int 
 	int  lg = 0 ;
 	int  idx_all_remove = 0 ;
 	if (  	(  idx == 0 )  ){  
+			if (  	(  mode == 1 )  ){  
 			for (0 ; 	(  	(  1 + lg ) < load0 ) ; (lg = 	(  lg + 1 )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -7559,22 +11395,22 @@ void  c_krook_collision_remove_small_speed_scmc_kernel (double *  inoutput ,int 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}	int  numcp_remove = 0 ;
 {
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  vx = ((a_rva)[g])[3] ;
-	double  vy = ((a_rva)[g])[4] ;
-	double  vz = ((a_rva)[g])[5] ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	double  vy = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	double  vz = (	(  a_rva + 	(  g * 6 ) ))[5] ;
 	if (  	(  	(  Mass0 * 	(  	(  vx * vx ) + 	(  	(  vy * vy ) + 	(  vz * vz ) ) ) ) > 	(  mu_freq1 * mu_freq1 ) )  ){  
 			if (  	(  numcp_remove != g )  ){  
 		{
 	long  s ;
 	for ((s = 0) ; 	(  s < 6 ) ; (s = 	(  s + 1 )))
 	{
-(((a_rva)[numcp_remove])[s] = ((a_rva)[g])[s]);
+((	(  a_rva + 	(  numcp_remove * 6 ) ))[s] = (	(  a_rva + 	(  g * 6 ) ))[s]);
 }}
 	}else{
 		0;
@@ -7594,9 +11430,51 @@ void  c_krook_collision_remove_small_speed_scmc_kernel (double *  inoutput ,int 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_remove * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_remove * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}(idx_all_remove = 	(  idx_all_remove + numcp_remove ));
 }
+	}else{
+			if (  	(  mode == 2 )  ){  
+			if (  	(  num_gen > new_load )  ){  
+		{
+	long  g ;
+	for ((g = num_gen) ; 	(  g < new_load ) ; (g = 	(  g + 1 )))
+	{
+	double   a_rva  [6];((a_rva)[0] = 	c_rand01_k ( Midx , 	(  Midx + 1 ) ));
+((a_rva)[1] = 	c_rand01_k ( Midy , 	(  Midy + 1 ) ));
+((a_rva)[2] = 	c_rand01_k ( Midz , 	(  Midz + 1 ) ));
+((a_rva)[3] = 	c_maxwell_dist_k ( 0 , v_t_gen ));
+((a_rva)[4] = 	c_maxwell_dist_k ( 0 , v_t_gen ));
+((a_rva)[5] = 	c_maxwell_dist_k ( 0 , v_t_gen ));
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  6 * g ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (a_rva)[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}}
+	}else{
+		0;
+
+	 }
+	if (  num_gen  ){  
+		(new_load = num_gen);
+
+	}else{
+		0;
+
+	 }
+
+	}else{
+		0;
+
+	 }
+
+	 }
+
 	}else{
 		0;
 
@@ -7616,16 +11494,29 @@ void  c_krook_collision_remove_small_speed_scmc_kernel (double *  inoutput ,int 
 			int  Midx = 	floor ( (	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[0] ) ;
 	int  Midy = 	floor ( (	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[1] ) ;
 	int  Midz = 	floor ( (	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[2] ) ;
+	int  mode = 0 ;
 	double  mu_freq1 ;
-	if (  	(  ! (fieldE)[	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )] )  ){  
-		continue;
+	double  v_t_gen ;
+	int  num_gen = 0 ;
+	if (  (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]  ){  
+		(mode = 1);
+(mu_freq1 = mu_freq);
+	if (  	(  mu_freq == 0 )  ){  
+		(mu_freq1 = (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  1 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]);
 
 	}else{
-		(mu_freq1 = mu_freq);
+		0;
 
 	 }
-	if (  	(  mu_freq == 0 )  ){  
-		(mu_freq1 = (fieldE)[	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  1 + 	(  num_ele * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]);
+
+	}else{
+		0;
+
+	 }
+	if (  (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  3 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]  ){  
+		(mode = 2);
+(v_t_gen = (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  3 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]);
+(num_gen = (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  2 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]);
 
 	}else{
 		0;
@@ -7634,9 +11525,10 @@ void  c_krook_collision_remove_small_speed_scmc_kernel (double *  inoutput ,int 
 	int  lg = 0 ;
 	int  idx_all_remove = 0 ;
 	if (  	(  idx == 0 )  ){  
+			if (  	(  mode == 1 )  ){  
 			for (0 ; 	(  	(  1 + lg ) < load0 ) ; (lg = 	(  lg + 1 )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -7647,22 +11539,22 @@ void  c_krook_collision_remove_small_speed_scmc_kernel (double *  inoutput ,int 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}	int  numcp_remove = 0 ;
 {
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  vx = ((a_rva)[g])[3] ;
-	double  vy = ((a_rva)[g])[4] ;
-	double  vz = ((a_rva)[g])[5] ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	double  vy = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	double  vz = (	(  a_rva + 	(  g * 6 ) ))[5] ;
 	if (  	(  	(  Mass0 * 	(  	(  vx * vx ) + 	(  	(  vy * vy ) + 	(  vz * vz ) ) ) ) > 	(  mu_freq1 * mu_freq1 ) )  ){  
 			if (  	(  numcp_remove != g )  ){  
 		{
 	long  s ;
 	for ((s = 0) ; 	(  s < 6 ) ; (s = 	(  s + 1 )))
 	{
-(((a_rva)[numcp_remove])[s] = ((a_rva)[g])[s]);
+((	(  a_rva + 	(  numcp_remove * 6 ) ))[s] = (	(  a_rva + 	(  g * 6 ) ))[s]);
 }}
 	}else{
 		0;
@@ -7682,9 +11574,51 @@ void  c_krook_collision_remove_small_speed_scmc_kernel (double *  inoutput ,int 
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_remove * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 1 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_remove * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 1 ) + inner_g )]);
 }}}}(idx_all_remove = 	(  idx_all_remove + numcp_remove ));
 }
+	}else{
+			if (  	(  mode == 2 )  ){  
+			if (  	(  num_gen > new_load )  ){  
+		{
+	long  g ;
+	for ((g = num_gen) ; 	(  g < new_load ) ; (g = 	(  g + 1 )))
+	{
+	double   a_rva  [6];((a_rva)[0] = 	c_rand01_k ( Midx , 	(  Midx + 1 ) ));
+((a_rva)[1] = 	c_rand01_k ( Midy , 	(  Midy + 1 ) ));
+((a_rva)[2] = 	c_rand01_k ( Midz , 	(  Midz + 1 ) ));
+((a_rva)[3] = 	c_maxwell_dist_k ( 0 , v_t_gen ));
+((a_rva)[4] = 	c_maxwell_dist_k ( 0 , v_t_gen ));
+((a_rva)[5] = 	c_maxwell_dist_k ( 0 , v_t_gen ));
+{
+	long  inner_step ;
+	for ((inner_step = 0) ; 	(  inner_step < 6 ) ; (inner_step = 	(  inner_step + 1 )))
+	{
+{
+	long  inner_g ;
+	for ((inner_g = 0) ; 	(  inner_g < 1 ) ; (inner_g = 	(  inner_g + 1 )))
+	{
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  6 * g ) ))[	(  	(  inner_step * 1 ) + inner_g )] = (a_rva)[	(  	(  inner_step * 1 ) + inner_g )]);
+}}}}}}
+	}else{
+		0;
+
+	 }
+	if (  num_gen  ){  
+		(new_load = num_gen);
+
+	}else{
+		0;
+
+	 }
+
+	}else{
+		0;
+
+	 }
+
+	 }
+
 	}else{
 		0;
 
@@ -7703,6 +11637,8 @@ void  c_krook_collision_remove_small_speed_scmc_kernel (double *  inoutput ,int 
 	 }
 }}}
 void  c_krook_collision_test_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  mu_freq ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -7724,7 +11660,7 @@ void  c_krook_collision_test_scmc_kernel (double *  inoutput ,int *  xyzw ,doubl
 	int  Midy = 	floor ( (	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[1] ) ;
 	int  Midz = 	floor ( (	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ))[2] ) ;
 	double  mu_freq1 ;
-	if (  	(  ! (fieldE)[	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )] )  ){  
+	if (  	(  ! (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )] )  ){  
 		continue;
 
 	}else{
@@ -7732,7 +11668,7 @@ void  c_krook_collision_test_scmc_kernel (double *  inoutput ,int *  xyzw ,doubl
 
 	 }
 	if (  	(  mu_freq == 0 )  ){  
-		(mu_freq1 = (fieldE)[	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  1 + 	(  num_ele * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]);
+		(mu_freq1 = (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  1 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]);
 
 	}else{
 		0;
@@ -7741,7 +11677,7 @@ void  c_krook_collision_test_scmc_kernel (double *  inoutput ,int *  xyzw ,doubl
 	long  lg = 0 ;
 	for (0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -7752,17 +11688,17 @@ void  c_krook_collision_test_scmc_kernel (double *  inoutput ,int *  xyzw ,doubl
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  vx = ((a_rva)[g])[3] ;
-	double  vy = ((a_rva)[g])[4] ;
-	double  vz = ((a_rva)[g])[5] ;
-(((a_rva)[g])[3] = 	(  vx * 	(  1 - 	(  Deltat * mu_freq1 ) ) ));
-(((a_rva)[g])[4] = 	(  vy * 	(  1 - 	(  Deltat * mu_freq1 ) ) ));
-(((a_rva)[g])[5] = 	(  vz * 	(  1 - 	(  Deltat * mu_freq1 ) ) ));
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	double  vy = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	double  vz = (	(  a_rva + 	(  g * 6 ) ))[5] ;
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  vx * 	(  1 - 	(  Deltat * mu_freq1 ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  vy * 	(  1 - 	(  Deltat * mu_freq1 ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  vz * 	(  1 - 	(  Deltat * mu_freq1 ) ) ));
 }}{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
@@ -7771,7 +11707,7 @@ void  c_krook_collision_test_scmc_kernel (double *  inoutput ,int *  xyzw ,doubl
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}
 	}else{
 		0;
@@ -7788,7 +11724,7 @@ void  c_krook_collision_test_scmc_kernel (double *  inoutput ,int *  xyzw ,doubl
 	int  Midy = 	floor ( (	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[1] ) ;
 	int  Midz = 	floor ( (	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ))[2] ) ;
 	double  mu_freq1 ;
-	if (  	(  ! (fieldE)[	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  num_ele * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )] )  ){  
+	if (  	(  ! (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  0 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )] )  ){  
 		continue;
 
 	}else{
@@ -7796,7 +11732,7 @@ void  c_krook_collision_test_scmc_kernel (double *  inoutput ,int *  xyzw ,doubl
 
 	 }
 	if (  	(  mu_freq == 0 )  ){  
-		(mu_freq1 = (fieldE)[	(  	(  num_ele * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  1 + 	(  num_ele * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]);
+		(mu_freq1 = (fieldE)[	(  	(  6 * 	(  idy * 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  ZLEN + 	(  2 * ovlp ) ) ) ) ) ) + 	(  1 + 	(  6 * 	(  	(  Midx + ovlp ) + 	(  	(  XLEN + 	(  2 * ovlp ) ) * 	(  	(  Midy + ovlp ) + 	(  	(  YLEN + 	(  2 * ovlp ) ) * 	(  Midz + ovlp ) ) ) ) ) ) ) )]);
 
 	}else{
 		0;
@@ -7805,7 +11741,7 @@ void  c_krook_collision_test_scmc_kernel (double *  inoutput ,int *  xyzw ,doubl
 	long  lg = 0 ;
 	for (0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -7816,17 +11752,17 @@ void  c_krook_collision_test_scmc_kernel (double *  inoutput ,int *  xyzw ,doubl
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  vx = ((a_rva)[g])[3] ;
-	double  vy = ((a_rva)[g])[4] ;
-	double  vz = ((a_rva)[g])[5] ;
-(((a_rva)[g])[3] = 	(  vx * 	(  1 - 	(  Deltat * mu_freq1 ) ) ));
-(((a_rva)[g])[4] = 	(  vy * 	(  1 - 	(  Deltat * mu_freq1 ) ) ));
-(((a_rva)[g])[5] = 	(  vz * 	(  1 - 	(  Deltat * mu_freq1 ) ) ));
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	double  vy = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	double  vz = (	(  a_rva + 	(  g * 6 ) ))[5] ;
+((	(  a_rva + 	(  g * 6 ) ))[3] = 	(  vx * 	(  1 - 	(  Deltat * mu_freq1 ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[4] = 	(  vy * 	(  1 - 	(  Deltat * mu_freq1 ) ) ));
+((	(  a_rva + 	(  g * 6 ) ))[5] = 	(  vz * 	(  1 - 	(  Deltat * mu_freq1 ) ) ));
 }}{
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
@@ -7835,7 +11771,7 @@ void  c_krook_collision_test_scmc_kernel (double *  inoutput ,int *  xyzw ,doubl
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = ((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}
 	}else{
 		0;
@@ -7850,6 +11786,8 @@ void  c_krook_collision_test_scmc_kernel (double *  inoutput ,int *  xyzw ,doubl
 	 }
 }}}
 void  c_calculate_rho_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -7905,12 +11843,12 @@ void  c_calculate_rho_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu
 
 	 }
 }}}}}}}}{
-	long  gMYGEN166 = 0 ;
-	for (0 ; 	(  	(  gMYGEN166 + 	(  idx * 1 ) ) < load0 ) ; (gMYGEN166 = 	(  gMYGEN166 + 	(  1 * xlen ) )))
+	long  gMYGEN232 = 0 ;
+	for (0 ; 	(  	(  gMYGEN232 + 	(  idx * 1 ) ) < load0 ) ; (gMYGEN232 = 	(  gMYGEN232 + 	(  1 * xlen ) )))
 	{
-	long  iba_tmp = 	(  	(  idx * 1 ) + gMYGEN166 ) ;
+	long  iba_tmp = 	(  	(  idx * 1 ) + gMYGEN232 ) ;
 	long  numcp = 1 ;
-	double   local_particle_head  [1][6];{
+	double   local_particle_head  [	(  1 * 6 )];{
 {
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
@@ -7919,14 +11857,14 @@ void  c_calculate_rho_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((local_particle_head)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  local_particle_head + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  xx0 = ((local_particle_head)[g])[0] ;
-	double  xy0 = ((local_particle_head)[g])[1] ;
-	double  xz0 = ((local_particle_head)[g])[2] ;
+	double  xx0 = (	(  local_particle_head + 	(  g * 6 ) ))[0] ;
+	double  xy0 = (	(  local_particle_head + 	(  g * 6 ) ))[1] ;
+	double  xz0 = (	(  local_particle_head + 	(  g * 6 ) ))[2] ;
 	double  rx0 = 	(  xx0 - Midx ) ;
 	double  ry0 = 	(  xy0 - Midy ) ;
 	double  rz0 = 	(  xz0 - Midz ) ;
@@ -7970,7 +11908,7 @@ void  c_calculate_rho_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = ((local_particle_head)[0])[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  local_particle_head + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}}{
 	long  xyzz ;
 	for ((xyzz = 0) ; 	(  xyzz < 4 ) ; (xyzz = 	(  xyzz + 1 )))
@@ -8043,12 +11981,12 @@ void  c_calculate_rho_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu
 
 	 }
 }}}}}}}}{
-	long  gMYGEN171 = 0 ;
-	for (0 ; 	(  	(  gMYGEN171 + 	(  idx * 1 ) ) < load0 ) ; (gMYGEN171 = 	(  gMYGEN171 + 	(  1 * xlen ) )))
+	long  gMYGEN237 = 0 ;
+	for (0 ; 	(  	(  gMYGEN237 + 	(  idx * 1 ) ) < load0 ) ; (gMYGEN237 = 	(  gMYGEN237 + 	(  1 * xlen ) )))
 	{
-	long  iba_tmp = 	(  	(  idx * 1 ) + gMYGEN171 ) ;
+	long  iba_tmp = 	(  	(  idx * 1 ) + gMYGEN237 ) ;
 	long  numcp = 1 ;
-	double   local_particle_head  [1][6];{
+	double   local_particle_head  [	(  1 * 6 )];{
 {
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
@@ -8057,14 +11995,14 @@ void  c_calculate_rho_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((local_particle_head)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  local_particle_head + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}{
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  xx0 = ((local_particle_head)[g])[0] ;
-	double  xy0 = ((local_particle_head)[g])[1] ;
-	double  xz0 = ((local_particle_head)[g])[2] ;
+	double  xx0 = (	(  local_particle_head + 	(  g * 6 ) ))[0] ;
+	double  xy0 = (	(  local_particle_head + 	(  g * 6 ) ))[1] ;
+	double  xz0 = (	(  local_particle_head + 	(  g * 6 ) ))[2] ;
 	double  rx0 = 	(  xx0 - Midx ) ;
 	double  ry0 = 	(  xy0 - Midy ) ;
 	double  rz0 = 	(  xz0 - Midz ) ;
@@ -8108,7 +12046,7 @@ void  c_calculate_rho_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = ((local_particle_head)[0])[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  local_particle_head + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}}{
 	long  xyzz ;
 	for ((xyzz = 0) ; 	(  xyzz < 4 ) ; (xyzz = 	(  xyzz + 1 )))
@@ -8145,6 +12083,8 @@ void  c_calculate_rho_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu
 	 }
 }}}
 void  c_dump_ene_num_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -8182,7 +12122,7 @@ void  c_dump_ene_num_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 }}((numcpvec)[	(  1 * idx )] = 0);
 	for (0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -8193,7 +12133,7 @@ void  c_dump_ene_num_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}	double  ene0_x = 0.00000000000000000e+00 ;
 	double  ene0_y = 0.00000000000000000e+00 ;
 	double  ene0_z = 0.00000000000000000e+00 ;
@@ -8204,9 +12144,9 @@ void  c_dump_ene_num_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  vx = ((a_rva)[g])[3] ;
-	double  vy = ((a_rva)[g])[4] ;
-	double  vz = ((a_rva)[g])[5] ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	double  vy = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	double  vz = (	(  a_rva + 	(  g * 6 ) ))[5] ;
 	double  curene_x = 	(  Mass * 	(  5.00000000000000000e-01 * 	+ ( 	(  vx * vx ) ) ) ) ;
 	double  curene_y = 	(  Mass * 	(  5.00000000000000000e-01 * 	+ ( 	(  vy * vy ) ) ) ) ;
 	double  curene_z = 	(  Mass * 	(  5.00000000000000000e-01 * 	+ ( 	(  vz * vz ) ) ) ) ;
@@ -8279,7 +12219,7 @@ void  c_dump_ene_num_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 }}((numcpvec)[	(  1 * idx )] = 0);
 	for (0 ; 	(  	(  	(  idx * 1 ) + lg ) < load0 ) ; (lg = 	(  lg + 	(  xlen * 1 ) )))
 	{
-	double   a_rva  [1][6];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
+	double   a_rva  [	(  1 * 6 )];	int  idx_all_base = 	(  	(  idx * 1 ) + lg ) ;
 	int  numcp = 1 ;
 {
 {
@@ -8290,7 +12230,7 @@ void  c_dump_ene_num_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((a_rva)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  a_rva + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  idx_all_base * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}}	double  ene0_x = 0.00000000000000000e+00 ;
 	double  ene0_y = 0.00000000000000000e+00 ;
 	double  ene0_z = 0.00000000000000000e+00 ;
@@ -8301,9 +12241,9 @@ void  c_dump_ene_num_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  vx = ((a_rva)[g])[3] ;
-	double  vy = ((a_rva)[g])[4] ;
-	double  vz = ((a_rva)[g])[5] ;
+	double  vx = (	(  a_rva + 	(  g * 6 ) ))[3] ;
+	double  vy = (	(  a_rva + 	(  g * 6 ) ))[4] ;
+	double  vz = (	(  a_rva + 	(  g * 6 ) ))[5] ;
 	double  curene_x = 	(  Mass * 	(  5.00000000000000000e-01 * 	+ ( 	(  vx * vx ) ) ) ) ;
 	double  curene_y = 	(  Mass * 	(  5.00000000000000000e-01 * 	+ ( 	(  vy * vy ) ) ) ) ;
 	double  curene_z = 	(  Mass * 	(  5.00000000000000000e-01 * 	+ ( 	(  vz * vz ) ) ) ) ;

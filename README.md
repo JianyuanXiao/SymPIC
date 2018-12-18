@@ -21,7 +21,7 @@ To build the program, run the following command:
 
 ./compile.sh
 
-We have only tested the clang5.0/6.0 compiler.
+We have only tested the clang5.0/6.0, gcc-7.3.1 and icc-11 compiler.
 
 Configuration files are executable scheme (a dialect of lisp) codes. To run
 the example, 

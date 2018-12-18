@@ -10,6 +10,8 @@ void  c_geo_rel_1st_bwd_get_struct_len (size_t *  len ){
 }
 int  c_geo_rel_1st_bwd_get_xlen (){
 	return  1 ;}
+int  c_geo_rel_1st_bwd_get_num_compute_units (c_geo_rel_1st_bwd_struct *  kerstr ){
+	return  1 ;}
 int  c_geo_rel_1st_bwd_exec (c_geo_rel_1st_bwd_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -109,6 +111,8 @@ void  c_geo_rel_1st_fwd_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(c_geo_rel_1st_fwd_struct ));
 }
 int  c_geo_rel_1st_fwd_get_xlen (){
+	return  1 ;}
+int  c_geo_rel_1st_fwd_get_num_compute_units (c_geo_rel_1st_fwd_struct *  kerstr ){
 	return  1 ;}
 int  c_geo_rel_1st_fwd_exec (c_geo_rel_1st_fwd_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {

@@ -9,6 +9,8 @@ int  openmp_move_back_kernel_init (openmp_pscmc_env *  pe ,openmp_move_back_kern
 void  openmp_move_back_kernel_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_move_back_kernel_struct ));
 }
+int  openmp_move_back_kernel_get_num_compute_units (openmp_move_back_kernel_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_move_back_kernel_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_move_back_kernel_exec (openmp_move_back_kernel_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){

@@ -10,6 +10,8 @@ void  c_cu_swap_r_get_struct_len (size_t *  len ){
 }
 int  c_cu_swap_r_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_cu_swap_r_get_num_compute_units (c_cu_swap_r_struct *  kerstr ){
+	return  1 ;}
 int  c_cu_swap_r_exec (c_cu_swap_r_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -47,6 +49,8 @@ void  c_cu_swap_l_get_struct_len (size_t *  len ){
 }
 int  c_cu_swap_l_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_cu_swap_l_get_num_compute_units (c_cu_swap_l_struct *  kerstr ){
+	return  1 ;}
 int  c_cu_swap_l_exec (c_cu_swap_l_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -84,6 +88,8 @@ void  c_sort_one_grid_z_vlo_get_struct_len (size_t *  len ){
 }
 int  c_sort_one_grid_z_vlo_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_sort_one_grid_z_vlo_get_num_compute_units (c_sort_one_grid_z_vlo_struct *  kerstr ){
+	return  1 ;}
 int  c_sort_one_grid_z_vlo_exec (c_sort_one_grid_z_vlo_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -139,6 +145,8 @@ void  c_sort_one_grid_y_vlo_get_struct_len (size_t *  len ){
 }
 int  c_sort_one_grid_y_vlo_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_sort_one_grid_y_vlo_get_num_compute_units (c_sort_one_grid_y_vlo_struct *  kerstr ){
+	return  1 ;}
 int  c_sort_one_grid_y_vlo_exec (c_sort_one_grid_y_vlo_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -194,6 +202,8 @@ void  c_sort_one_grid_x_vlo_get_struct_len (size_t *  len ){
 }
 int  c_sort_one_grid_x_vlo_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_sort_one_grid_x_vlo_get_num_compute_units (c_sort_one_grid_x_vlo_struct *  kerstr ){
+	return  1 ;}
 int  c_sort_one_grid_x_vlo_exec (c_sort_one_grid_x_vlo_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -249,6 +259,8 @@ void  c_sort_one_grid_z_get_struct_len (size_t *  len ){
 }
 int  c_sort_one_grid_z_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_sort_one_grid_z_get_num_compute_units (c_sort_one_grid_z_struct *  kerstr ){
+	return  1 ;}
 int  c_sort_one_grid_z_exec (c_sort_one_grid_z_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -304,6 +316,8 @@ void  c_sort_one_grid_y_get_struct_len (size_t *  len ){
 }
 int  c_sort_one_grid_y_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_sort_one_grid_y_get_num_compute_units (c_sort_one_grid_y_struct *  kerstr ){
+	return  1 ;}
 int  c_sort_one_grid_y_exec (c_sort_one_grid_y_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -359,6 +373,8 @@ void  c_sort_one_grid_x_get_struct_len (size_t *  len ){
 }
 int  c_sort_one_grid_x_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_sort_one_grid_x_get_num_compute_units (c_sort_one_grid_x_struct *  kerstr ){
+	return  1 ;}
 int  c_sort_one_grid_x_exec (c_sort_one_grid_x_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;

@@ -6,6 +6,8 @@ void  c_blas_sum_get_struct_len (size_t *  len )
 ;
 int  c_blas_sum_get_xlen ()
 ;
+int  c_blas_sum_get_num_compute_units (c_blas_sum_struct *  kerstr )
+;
 int  c_blas_sum_exec (c_blas_sum_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;
 int  c_blas_sum_scmc_set_parameter_y (c_blas_sum_struct *  kerstr ,c_pscmc_mem *  pm )
@@ -37,6 +39,8 @@ int  c_blas_dot_init (c_pscmc_env *  pe ,c_blas_dot_struct *  kerstr )
 void  c_blas_dot_get_struct_len (size_t *  len )
 ;
 int  c_blas_dot_get_xlen ()
+;
+int  c_blas_dot_get_num_compute_units (c_blas_dot_struct *  kerstr )
 ;
 int  c_blas_dot_exec (c_blas_dot_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;
@@ -72,6 +76,8 @@ void  c_blas_findmax_get_struct_len (size_t *  len )
 ;
 int  c_blas_findmax_get_xlen ()
 ;
+int  c_blas_findmax_get_num_compute_units (c_blas_findmax_struct *  kerstr )
+;
 int  c_blas_findmax_exec (c_blas_findmax_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;
 int  c_blas_findmax_scmc_set_parameter_y (c_blas_findmax_struct *  kerstr ,c_pscmc_mem *  pm )
@@ -104,6 +110,8 @@ void  c_blas_mulxy_get_struct_len (size_t *  len )
 ;
 int  c_blas_mulxy_get_xlen ()
 ;
+int  c_blas_mulxy_get_num_compute_units (c_blas_mulxy_struct *  kerstr )
+;
 int  c_blas_mulxy_exec (c_blas_mulxy_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;
 int  c_blas_mulxy_scmc_set_parameter_y (c_blas_mulxy_struct *  kerstr ,c_pscmc_mem *  pm )
@@ -135,6 +143,8 @@ int  c_blas_axpby_init (c_pscmc_env *  pe ,c_blas_axpby_struct *  kerstr )
 void  c_blas_axpby_get_struct_len (size_t *  len )
 ;
 int  c_blas_axpby_get_xlen ()
+;
+int  c_blas_axpby_get_num_compute_units (c_blas_axpby_struct *  kerstr )
 ;
 int  c_blas_axpby_exec (c_blas_axpby_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;
@@ -172,6 +182,8 @@ void  c_blas_axpy_get_struct_len (size_t *  len )
 ;
 int  c_blas_axpy_get_xlen ()
 ;
+int  c_blas_axpy_get_num_compute_units (c_blas_axpy_struct *  kerstr )
+;
 int  c_blas_axpy_exec (c_blas_axpy_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;
 int  c_blas_axpy_scmc_set_parameter_y (c_blas_axpy_struct *  kerstr ,c_pscmc_mem *  pm )
@@ -205,6 +217,8 @@ int  c_blas_yisax_init (c_pscmc_env *  pe ,c_blas_yisax_struct *  kerstr )
 void  c_blas_yisax_get_struct_len (size_t *  len )
 ;
 int  c_blas_yisax_get_xlen ()
+;
+int  c_blas_yisax_get_num_compute_units (c_blas_yisax_struct *  kerstr )
 ;
 int  c_blas_yisax_exec (c_blas_yisax_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;
@@ -240,6 +254,8 @@ void  c_blas_invy_get_struct_len (size_t *  len )
 ;
 int  c_blas_invy_get_xlen ()
 ;
+int  c_blas_invy_get_num_compute_units (c_blas_invy_struct *  kerstr )
+;
 int  c_blas_invy_exec (c_blas_invy_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;
 int  c_blas_invy_scmc_set_parameter_y (c_blas_invy_struct *  kerstr ,c_pscmc_mem *  pm )
@@ -269,6 +285,8 @@ int  c_blas_get_ITG_Potential_init (c_pscmc_env *  pe ,c_blas_get_ITG_Potential_
 void  c_blas_get_ITG_Potential_get_struct_len (size_t *  len )
 ;
 int  c_blas_get_ITG_Potential_get_xlen ()
+;
+int  c_blas_get_ITG_Potential_get_num_compute_units (c_blas_get_ITG_Potential_struct *  kerstr )
 ;
 int  c_blas_get_ITG_Potential_exec (c_blas_get_ITG_Potential_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;
@@ -306,6 +324,8 @@ void  c_blas_yisconst_get_struct_len (size_t *  len )
 ;
 int  c_blas_yisconst_get_xlen ()
 ;
+int  c_blas_yisconst_get_num_compute_units (c_blas_yisconst_struct *  kerstr )
+;
 int  c_blas_yisconst_exec (c_blas_yisconst_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;
 int  c_blas_yisconst_scmc_set_parameter_y (c_blas_yisconst_struct *  kerstr ,c_pscmc_mem *  pm )
@@ -338,6 +358,8 @@ void  c_blas_yiszero_get_struct_len (size_t *  len )
 ;
 int  c_blas_yiszero_get_xlen ()
 ;
+int  c_blas_yiszero_get_num_compute_units (c_blas_yiszero_struct *  kerstr )
+;
 int  c_blas_yiszero_exec (c_blas_yiszero_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;
 int  c_blas_yiszero_scmc_set_parameter_y (c_blas_yiszero_struct *  kerstr ,c_pscmc_mem *  pm )
@@ -367,6 +389,8 @@ int  c_blas_yiszero_synced_init (c_pscmc_env *  pe ,c_blas_yiszero_synced_struct
 void  c_blas_yiszero_synced_get_struct_len (size_t *  len )
 ;
 int  c_blas_yiszero_synced_get_xlen ()
+;
+int  c_blas_yiszero_synced_get_num_compute_units (c_blas_yiszero_synced_struct *  kerstr )
 ;
 int  c_blas_yiszero_synced_exec (c_blas_yiszero_synced_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;

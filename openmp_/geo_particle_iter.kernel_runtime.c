@@ -9,6 +9,8 @@ int  openmp_geo_rel_1st_bwd_init (openmp_pscmc_env *  pe ,openmp_geo_rel_1st_bwd
 void  openmp_geo_rel_1st_bwd_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_geo_rel_1st_bwd_struct ));
 }
+int  openmp_geo_rel_1st_bwd_get_num_compute_units (openmp_geo_rel_1st_bwd_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_geo_rel_1st_bwd_get_xlen (){
 	return  1 ;}
 int  openmp_geo_rel_1st_bwd_exec (openmp_geo_rel_1st_bwd_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -114,6 +116,8 @@ int  openmp_geo_rel_1st_fwd_init (openmp_pscmc_env *  pe ,openmp_geo_rel_1st_fwd
 void  openmp_geo_rel_1st_fwd_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_geo_rel_1st_fwd_struct ));
 }
+int  openmp_geo_rel_1st_fwd_get_num_compute_units (openmp_geo_rel_1st_fwd_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_geo_rel_1st_fwd_get_xlen (){
 	return  1 ;}
 int  openmp_geo_rel_1st_fwd_exec (openmp_geo_rel_1st_fwd_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){

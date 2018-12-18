@@ -10,6 +10,8 @@ void  c_blas_sum_get_struct_len (size_t *  len ){
 }
 int  c_blas_sum_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_blas_sum_get_num_compute_units (c_blas_sum_struct *  kerstr ){
+	return  1 ;}
 int  c_blas_sum_exec (c_blas_sum_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -65,6 +67,8 @@ void  c_blas_dot_get_struct_len (size_t *  len ){
 }
 int  c_blas_dot_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_blas_dot_get_num_compute_units (c_blas_dot_struct *  kerstr ){
+	return  1 ;}
 int  c_blas_dot_exec (c_blas_dot_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -123,6 +127,8 @@ void  c_blas_findmax_get_struct_len (size_t *  len ){
 }
 int  c_blas_findmax_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_blas_findmax_get_num_compute_units (c_blas_findmax_struct *  kerstr ){
+	return  1 ;}
 int  c_blas_findmax_exec (c_blas_findmax_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -178,6 +184,8 @@ void  c_blas_mulxy_get_struct_len (size_t *  len ){
 }
 int  c_blas_mulxy_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_blas_mulxy_get_num_compute_units (c_blas_mulxy_struct *  kerstr ){
+	return  1 ;}
 int  c_blas_mulxy_exec (c_blas_mulxy_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -233,6 +241,8 @@ void  c_blas_axpby_get_struct_len (size_t *  len ){
 }
 int  c_blas_axpby_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_blas_axpby_get_num_compute_units (c_blas_axpby_struct *  kerstr ){
+	return  1 ;}
 int  c_blas_axpby_exec (c_blas_axpby_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -294,6 +304,8 @@ void  c_blas_axpy_get_struct_len (size_t *  len ){
 }
 int  c_blas_axpy_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_blas_axpy_get_num_compute_units (c_blas_axpy_struct *  kerstr ){
+	return  1 ;}
 int  c_blas_axpy_exec (c_blas_axpy_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -352,6 +364,8 @@ void  c_blas_yisax_get_struct_len (size_t *  len ){
 }
 int  c_blas_yisax_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_blas_yisax_get_num_compute_units (c_blas_yisax_struct *  kerstr ){
+	return  1 ;}
 int  c_blas_yisax_exec (c_blas_yisax_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -410,6 +424,8 @@ void  c_blas_invy_get_struct_len (size_t *  len ){
 }
 int  c_blas_invy_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_blas_invy_get_num_compute_units (c_blas_invy_struct *  kerstr ){
+	return  1 ;}
 int  c_blas_invy_exec (c_blas_invy_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -462,6 +478,8 @@ void  c_blas_get_ITG_Potential_get_struct_len (size_t *  len ){
 }
 int  c_blas_get_ITG_Potential_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_blas_get_ITG_Potential_get_num_compute_units (c_blas_get_ITG_Potential_struct *  kerstr ){
+	return  1 ;}
 int  c_blas_get_ITG_Potential_exec (c_blas_get_ITG_Potential_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -523,6 +541,8 @@ void  c_blas_yisconst_get_struct_len (size_t *  len ){
 }
 int  c_blas_yisconst_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_blas_yisconst_get_num_compute_units (c_blas_yisconst_struct *  kerstr ){
+	return  1 ;}
 int  c_blas_yisconst_exec (c_blas_yisconst_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -578,6 +598,8 @@ void  c_blas_yiszero_get_struct_len (size_t *  len ){
 }
 int  c_blas_yiszero_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_blas_yiszero_get_num_compute_units (c_blas_yiszero_struct *  kerstr ){
+	return  1 ;}
 int  c_blas_yiszero_exec (c_blas_yiszero_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -630,6 +652,8 @@ void  c_blas_yiszero_synced_get_struct_len (size_t *  len ){
 }
 int  c_blas_yiszero_synced_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_blas_yiszero_synced_get_num_compute_units (c_blas_yiszero_synced_struct *  kerstr ){
+	return  1 ;}
 int  c_blas_yiszero_synced_exec (c_blas_yiszero_synced_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;

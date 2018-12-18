@@ -10,6 +10,8 @@ void  c_RECT_YEE_CURL_L_get_struct_len (size_t *  len ){
 }
 int  c_RECT_YEE_CURL_L_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_RECT_YEE_CURL_L_get_num_compute_units (c_RECT_YEE_CURL_L_struct *  kerstr ){
+	return  1 ;}
 int  c_RECT_YEE_CURL_L_exec (c_RECT_YEE_CURL_L_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;

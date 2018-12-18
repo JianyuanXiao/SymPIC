@@ -14,7 +14,7 @@ int  delete_particle_mpi (Field3D_MPI *  pthis )
 ;
 int  generate_random_self_particle (One_Particle_Collection *  pthis )
 ;
-int  init_maxwell_dist_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load ,double  VT )
+int  init_maxwell_dist_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load ,double  VT ,int  use_lost_cone ,double  mu0 ,double  delta )
 ;
 int  init_maxwell_dist_particle_fmpi (Field3D_MPI *  pthis )
 ;
@@ -26,5 +26,5 @@ int  init_single_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load
 ;
 int  init_single_particle_fmpi (Field3D_MPI *  pthis )
 ;
-void  init_global_particles (Particle_in_Cell_MPI *  pthis ,Field3D_MPI *  fE ,Field3D_MPI *  fEN ,int  use_small_num_grids ,double  deltat ,int  num_spec ,double *  massp ,double *  chargep ,double *  npm ,long *  grid_cache_len ,long *  cu_cache_len )
+void  init_global_particles (Particle_in_Cell_MPI *  pthis ,Field3D_MPI *  fE ,Field3D_MPI *  fEN ,int  use_small_num_grids ,int  pml_abc_dir ,int  pml_level ,double  pml_sigma_max ,double  deltat ,int  num_spec ,long *  allxyzmax ,double *  massp ,double *  chargep ,double *  npm ,long *  grid_cache_len ,long *  cu_cache_len )
 ;

@@ -12,6 +12,8 @@ int  c_pscmc_get_local_len ()
 ;
 int  c_pscmc_mem_destroy (c_pscmc_mem *  pm )
 ;
+int  c_pscmc_get_num_compute_units (c_pscmc_env *  pe )
+;
 int  c_pscmc_mem_sync_d2h (c_pscmc_mem *  pm )
 ;
 int  c_pscmc_mem_sync_h2d (c_pscmc_mem *  pm )

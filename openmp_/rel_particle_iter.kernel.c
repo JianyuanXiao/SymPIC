@@ -16,6 +16,8 @@ int  openmp_floory (double  x ){
 	 }
 	return  ax ;}
 void  openmp_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const int  IDX_LOCAL_XLEN = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
@@ -114,7 +116,7 @@ void  openmp_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  c
 	{
 	long  iba_tmp = 	(  	(  idx * 1 ) + gMYGEN102 ) ;
 	long  numcp = 1 ;
-	double   local_particle_head  [1][6];{
+	double   local_particle_head  [	(  1 * 6 )];{
 {
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
@@ -123,18 +125,18 @@ void  openmp_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  c
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((local_particle_head)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
-}}}}}	double   a_f  [1][3];0;
+((	(  local_particle_head + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}	double   a_f  [	(  1 * 3 )];0;
 {
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  vx0 = ((local_particle_head)[g])[3] ;
-	double  vy0 = ((local_particle_head)[g])[4] ;
-	double  vz0 = ((local_particle_head)[g])[5] ;
-	double  xx1 = 	(  ((local_particle_head)[g])[0] - 5.00000000000000000e-01 ) ;
-	double  xy1 = 	(  ((local_particle_head)[g])[1] - 5.00000000000000000e-01 ) ;
-	double  xz1 = 	(  ((local_particle_head)[g])[2] - 5.00000000000000000e-01 ) ;
+	double  vx0 = (	(  local_particle_head + 	(  g * 6 ) ))[3] ;
+	double  vy0 = (	(  local_particle_head + 	(  g * 6 ) ))[4] ;
+	double  vz0 = (	(  local_particle_head + 	(  g * 6 ) ))[5] ;
+	double  xx1 = 	(  (	(  local_particle_head + 	(  g * 6 ) ))[0] - 5.00000000000000000e-01 ) ;
+	double  xy1 = 	(  (	(  local_particle_head + 	(  g * 6 ) ))[1] - 5.00000000000000000e-01 ) ;
+	double  xz1 = 	(  (	(  local_particle_head + 	(  g * 6 ) ))[2] - 5.00000000000000000e-01 ) ;
 	double  xx0 = 	(  xx1 - 	(  Deltat * vx0 ) ) ;
 	double  xy0 = 	(  xy1 - 	(  Deltat * vy0 ) ) ;
 	double  xz0 = 	(  xz1 - 	(  Deltat * vz0 ) ) ;
@@ -416,7 +418,7 @@ void  openmp_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  c
 	int  allidx = 	(  xyzx + 	(  5 * 	(  xyzy + 	(  5 * xyzz ) ) ) ) ;
 (sum0 = 	(  sum0 + 	(  (shB0)[	(  	(  allidx * 3 ) + 2 )] * 	(  (f0_z0)[xyzz] * 	(  	(  (if1_y1)[xyzy] - (if1_y0)[xyzy] ) * (f1_x1)[xyzx] ) ) ) ));
 }}}}}}(B0z_intyX1Y0Z0Y1 = sum0);
-}(((a_f)[	(  g % 1 )])[0] = 	(  	(  Charge * Ex1 ) + 	(  	(  Charge * 	(  	pow ( DELTAT , -1 ) * 	(  B0z_intyX1Y0Z0Y1 + 	(  -1.00000000000000000e+00 * B0y_intzX1Y1Z0Z1 ) ) ) ) + 	(  Mass * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	(  	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) * 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) , -1.00000000000000000e+00 ) * 	sqrt ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ));
+}((	(  a_f + 	(  	(  g % 1 ) * 3 ) ))[0] = 	(  	(  Charge * Ex1 ) + 	(  	(  Charge * 	(  	pow ( DELTAT , -1 ) * 	(  B0z_intyX1Y0Z0Y1 + 	(  -1.00000000000000000e+00 * B0y_intzX1Y1Z0Z1 ) ) ) ) + 	(  Mass * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	(  	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) * 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) , -1.00000000000000000e+00 ) * 	sqrt ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ));
 }{
 	double  B0x_intzX1Y1Z0Z1 ;
 {
@@ -436,21 +438,21 @@ void  openmp_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  c
 	int  allidx = 	(  xyzx + 	(  5 * 	(  xyzy + 	(  5 * xyzz ) ) ) ) ;
 (sum0 = 	(  sum0 + 	(  (shB0)[	(  	(  allidx * 3 ) + 0 )] * 	(  (f0_x1)[xyzx] * 	(  	(  (if1_z1)[xyzz] - (if1_z0)[xyzz] ) * (f1_y1)[xyzy] ) ) ) ));
 }}}}}}(B0x_intzX1Y1Z0Z1 = sum0);
-}(((a_f)[	(  g % 1 )])[1] = 	(  	(  Charge * Ey1 ) + 	(  	(  Charge * 	(  	pow ( DELTAT , -1 ) * B0x_intzX1Y1Z0Z1 ) ) + 	(  Mass * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	(  	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) * 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) , -1.00000000000000000e+00 ) * 	sqrt ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ));
-}(((a_f)[	(  g % 1 )])[2] = 	(  	(  Charge * Ez1 ) + 	(  Mass * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	(  	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) * 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) , -1.00000000000000000e+00 ) * 	sqrt ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) ) ) ) ) ) ) ));
+}((	(  a_f + 	(  	(  g % 1 ) * 3 ) ))[1] = 	(  	(  Charge * Ey1 ) + 	(  	(  Charge * 	(  	pow ( DELTAT , -1 ) * B0x_intzX1Y1Z0Z1 ) ) + 	(  Mass * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	(  	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) * 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) , -1.00000000000000000e+00 ) * 	sqrt ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ));
+}((	(  a_f + 	(  	(  g % 1 ) * 3 ) ))[2] = 	(  	(  Charge * Ez1 ) + 	(  Mass * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	(  	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) * 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) , -1.00000000000000000e+00 ) * 	sqrt ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) ) ) ) ) ) ) ));
 }}}{
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  res_0 = ((a_f)[	(  g % 1 )])[0] ;
-	double  res_1 = ((a_f)[	(  g % 1 )])[1] ;
-	double  res_2 = ((a_f)[	(  g % 1 )])[2] ;
-	double  vx0 = ((local_particle_head)[g])[3] ;
-	double  vy0 = ((local_particle_head)[g])[4] ;
-	double  vz0 = ((local_particle_head)[g])[5] ;
-	double  xx1 = 	(  ((local_particle_head)[g])[0] - 5.00000000000000000e-01 ) ;
-	double  xy1 = 	(  ((local_particle_head)[g])[1] - 5.00000000000000000e-01 ) ;
-	double  xz1 = 	(  ((local_particle_head)[g])[2] - 5.00000000000000000e-01 ) ;
+	double  res_0 = (	(  a_f + 	(  	(  g % 1 ) * 3 ) ))[0] ;
+	double  res_1 = (	(  a_f + 	(  	(  g % 1 ) * 3 ) ))[1] ;
+	double  res_2 = (	(  a_f + 	(  	(  g % 1 ) * 3 ) ))[2] ;
+	double  vx0 = (	(  local_particle_head + 	(  g * 6 ) ))[3] ;
+	double  vy0 = (	(  local_particle_head + 	(  g * 6 ) ))[4] ;
+	double  vz0 = (	(  local_particle_head + 	(  g * 6 ) ))[5] ;
+	double  xx1 = 	(  (	(  local_particle_head + 	(  g * 6 ) ))[0] - 5.00000000000000000e-01 ) ;
+	double  xy1 = 	(  (	(  local_particle_head + 	(  g * 6 ) ))[1] - 5.00000000000000000e-01 ) ;
+	double  xz1 = 	(  (	(  local_particle_head + 	(  g * 6 ) ))[2] - 5.00000000000000000e-01 ) ;
 	double  xx0 = 	(  xx1 - 	(  Deltat * vx0 ) ) ;
 	double  xy0 = 	(  xy1 - 	(  Deltat * vy0 ) ) ;
 	double  xz0 = 	(  xz1 - 	(  Deltat * vz0 ) ) ;
@@ -1122,12 +1124,12 @@ void  openmp_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  c
 (X2 = 	(  X2 - (L_RES)[0] ));
 (Y2 = 	(  Y2 - (L_RES)[1] ));
 (Z2 = 	(  Z2 - (L_RES)[2] ));
-}}}(((local_particle_head)[g])[0] = 	(  X2 + 5.00000000000000000e-01 ));
-(((local_particle_head)[g])[1] = 	(  Y2 + 5.00000000000000000e-01 ));
-(((local_particle_head)[g])[2] = 	(  Z2 + 5.00000000000000000e-01 ));
-(((local_particle_head)[g])[3] = 	(  	(  X2 - xx1 ) / Deltat ));
-(((local_particle_head)[g])[4] = 	(  	(  Y2 - xy1 ) / Deltat ));
-(((local_particle_head)[g])[5] = 	(  	(  Z2 - xz1 ) / Deltat ));
+}}}((	(  local_particle_head + 	(  g * 6 ) ))[0] = 	(  X2 + 5.00000000000000000e-01 ));
+((	(  local_particle_head + 	(  g * 6 ) ))[1] = 	(  Y2 + 5.00000000000000000e-01 ));
+((	(  local_particle_head + 	(  g * 6 ) ))[2] = 	(  Z2 + 5.00000000000000000e-01 ));
+((	(  local_particle_head + 	(  g * 6 ) ))[3] = 	(  	(  X2 - xx1 ) / Deltat ));
+((	(  local_particle_head + 	(  g * 6 ) ))[4] = 	(  	(  Y2 - xy1 ) / Deltat ));
+((	(  local_particle_head + 	(  g * 6 ) ))[5] = 	(  	(  Z2 - xz1 ) / Deltat ));
 {
 {
 	long  xyzz ;
@@ -1159,7 +1161,7 @@ void  openmp_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  c
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = ((local_particle_head)[0])[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  	(  cu_cache + 	(  	(  idy * 	(  6 * cu_cache_length ) ) + 	(  l1 * 6 ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  local_particle_head + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}0;
 }}{
 	long  xyzz ;
@@ -1271,7 +1273,7 @@ void  openmp_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  c
 	{
 	long  iba_tmp = 	(  	(  idx * 1 ) + gMYGEN115 ) ;
 	long  numcp = 1 ;
-	double   local_particle_head  [1][6];{
+	double   local_particle_head  [	(  1 * 6 )];{
 {
 	long  inner_step ;
 	for ((inner_step = 0) ; 	(  inner_step < numcp ) ; (inner_step = 	(  inner_step + 1 )))
@@ -1280,18 +1282,18 @@ void  openmp_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  c
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-(((local_particle_head)[0])[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
-}}}}}	double   a_f  [1][3];0;
+((	(  local_particle_head + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
+}}}}}	double   a_f  [	(  1 * 3 )];0;
 {
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  vx0 = ((local_particle_head)[g])[3] ;
-	double  vy0 = ((local_particle_head)[g])[4] ;
-	double  vz0 = ((local_particle_head)[g])[5] ;
-	double  xx1 = 	(  ((local_particle_head)[g])[0] - 5.00000000000000000e-01 ) ;
-	double  xy1 = 	(  ((local_particle_head)[g])[1] - 5.00000000000000000e-01 ) ;
-	double  xz1 = 	(  ((local_particle_head)[g])[2] - 5.00000000000000000e-01 ) ;
+	double  vx0 = (	(  local_particle_head + 	(  g * 6 ) ))[3] ;
+	double  vy0 = (	(  local_particle_head + 	(  g * 6 ) ))[4] ;
+	double  vz0 = (	(  local_particle_head + 	(  g * 6 ) ))[5] ;
+	double  xx1 = 	(  (	(  local_particle_head + 	(  g * 6 ) ))[0] - 5.00000000000000000e-01 ) ;
+	double  xy1 = 	(  (	(  local_particle_head + 	(  g * 6 ) ))[1] - 5.00000000000000000e-01 ) ;
+	double  xz1 = 	(  (	(  local_particle_head + 	(  g * 6 ) ))[2] - 5.00000000000000000e-01 ) ;
 	double  xx0 = 	(  xx1 - 	(  Deltat * vx0 ) ) ;
 	double  xy0 = 	(  xy1 - 	(  Deltat * vy0 ) ) ;
 	double  xz0 = 	(  xz1 - 	(  Deltat * vz0 ) ) ;
@@ -1573,7 +1575,7 @@ void  openmp_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  c
 	int  allidx = 	(  xyzx + 	(  5 * 	(  xyzy + 	(  5 * xyzz ) ) ) ) ;
 (sum0 = 	(  sum0 + 	(  (shB0)[	(  	(  allidx * 3 ) + 2 )] * 	(  (f0_z0)[xyzz] * 	(  	(  (if1_y1)[xyzy] - (if1_y0)[xyzy] ) * (f1_x1)[xyzx] ) ) ) ));
 }}}}}}(B0z_intyX1Y0Z0Y1 = sum0);
-}(((a_f)[	(  g % 1 )])[0] = 	(  	(  Charge * Ex1 ) + 	(  	(  Charge * 	(  	pow ( DELTAT , -1 ) * 	(  B0z_intyX1Y0Z0Y1 + 	(  -1.00000000000000000e+00 * B0y_intzX1Y1Z0Z1 ) ) ) ) + 	(  Mass * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	(  	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) * 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) , -1.00000000000000000e+00 ) * 	sqrt ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ));
+}((	(  a_f + 	(  	(  g % 1 ) * 3 ) ))[0] = 	(  	(  Charge * Ex1 ) + 	(  	(  Charge * 	(  	pow ( DELTAT , -1 ) * 	(  B0z_intyX1Y0Z0Y1 + 	(  -1.00000000000000000e+00 * B0y_intzX1Y1Z0Z1 ) ) ) ) + 	(  Mass * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	(  	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) * 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) , -1.00000000000000000e+00 ) * 	sqrt ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ));
 }{
 	double  B0x_intzX1Y1Z0Z1 ;
 {
@@ -1593,21 +1595,21 @@ void  openmp_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  c
 	int  allidx = 	(  xyzx + 	(  5 * 	(  xyzy + 	(  5 * xyzz ) ) ) ) ;
 (sum0 = 	(  sum0 + 	(  (shB0)[	(  	(  allidx * 3 ) + 0 )] * 	(  (f0_x1)[xyzx] * 	(  	(  (if1_z1)[xyzz] - (if1_z0)[xyzz] ) * (f1_y1)[xyzy] ) ) ) ));
 }}}}}}(B0x_intzX1Y1Z0Z1 = sum0);
-}(((a_f)[	(  g % 1 )])[1] = 	(  	(  Charge * Ey1 ) + 	(  	(  Charge * 	(  	pow ( DELTAT , -1 ) * B0x_intzX1Y1Z0Z1 ) ) + 	(  Mass * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	(  	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) * 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) , -1.00000000000000000e+00 ) * 	sqrt ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ));
-}(((a_f)[	(  g % 1 )])[2] = 	(  	(  Charge * Ez1 ) + 	(  Mass * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	(  	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) * 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) , -1.00000000000000000e+00 ) * 	sqrt ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) ) ) ) ) ) ) ));
+}((	(  a_f + 	(  	(  g % 1 ) * 3 ) ))[1] = 	(  	(  Charge * Ey1 ) + 	(  	(  Charge * 	(  	pow ( DELTAT , -1 ) * B0x_intzX1Y1Z0Z1 ) ) + 	(  Mass * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	(  	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) * 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) , -1.00000000000000000e+00 ) * 	sqrt ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ));
+}((	(  a_f + 	(  	(  g % 1 ) * 3 ) ))[2] = 	(  	(  Charge * Ez1 ) + 	(  Mass * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	(  	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) * 	(  	pow ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) , -1.00000000000000000e+00 ) * 	sqrt ( 	(  1.00000000000000000e+00 + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_X , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * X0 ) + X1 ) , 2 ) ) ) ) + 	(  	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Y , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Y0 ) + Y1 ) , 2 ) ) ) ) + 	(  -1.00000000000000000e+00 * 	(  	pow ( DELTA_Z , 2 ) * 	(  	pow ( DELTAT , -2 ) * 	pow ( 	(  	(  -1.00000000000000000e+00 * Z0 ) + Z1 ) , 2 ) ) ) ) ) ) ) ) ) ) ) ) ) ));
 }}}{
 	long  g ;
 	for ((g = 0) ; 	(  g < numcp ) ; (g = 	(  g + 1 )))
 	{
-	double  res_0 = ((a_f)[	(  g % 1 )])[0] ;
-	double  res_1 = ((a_f)[	(  g % 1 )])[1] ;
-	double  res_2 = ((a_f)[	(  g % 1 )])[2] ;
-	double  vx0 = ((local_particle_head)[g])[3] ;
-	double  vy0 = ((local_particle_head)[g])[4] ;
-	double  vz0 = ((local_particle_head)[g])[5] ;
-	double  xx1 = 	(  ((local_particle_head)[g])[0] - 5.00000000000000000e-01 ) ;
-	double  xy1 = 	(  ((local_particle_head)[g])[1] - 5.00000000000000000e-01 ) ;
-	double  xz1 = 	(  ((local_particle_head)[g])[2] - 5.00000000000000000e-01 ) ;
+	double  res_0 = (	(  a_f + 	(  	(  g % 1 ) * 3 ) ))[0] ;
+	double  res_1 = (	(  a_f + 	(  	(  g % 1 ) * 3 ) ))[1] ;
+	double  res_2 = (	(  a_f + 	(  	(  g % 1 ) * 3 ) ))[2] ;
+	double  vx0 = (	(  local_particle_head + 	(  g * 6 ) ))[3] ;
+	double  vy0 = (	(  local_particle_head + 	(  g * 6 ) ))[4] ;
+	double  vz0 = (	(  local_particle_head + 	(  g * 6 ) ))[5] ;
+	double  xx1 = 	(  (	(  local_particle_head + 	(  g * 6 ) ))[0] - 5.00000000000000000e-01 ) ;
+	double  xy1 = 	(  (	(  local_particle_head + 	(  g * 6 ) ))[1] - 5.00000000000000000e-01 ) ;
+	double  xz1 = 	(  (	(  local_particle_head + 	(  g * 6 ) ))[2] - 5.00000000000000000e-01 ) ;
 	double  xx0 = 	(  xx1 - 	(  Deltat * vx0 ) ) ;
 	double  xy0 = 	(  xy1 - 	(  Deltat * vy0 ) ) ;
 	double  xz0 = 	(  xz1 - 	(  Deltat * vz0 ) ) ;
@@ -2279,12 +2281,12 @@ void  openmp_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  c
 (X2 = 	(  X2 - (L_RES)[0] ));
 (Y2 = 	(  Y2 - (L_RES)[1] ));
 (Z2 = 	(  Z2 - (L_RES)[2] ));
-}}}(((local_particle_head)[g])[0] = 	(  X2 + 5.00000000000000000e-01 ));
-(((local_particle_head)[g])[1] = 	(  Y2 + 5.00000000000000000e-01 ));
-(((local_particle_head)[g])[2] = 	(  Z2 + 5.00000000000000000e-01 ));
-(((local_particle_head)[g])[3] = 	(  	(  X2 - xx1 ) / Deltat ));
-(((local_particle_head)[g])[4] = 	(  	(  Y2 - xy1 ) / Deltat ));
-(((local_particle_head)[g])[5] = 	(  	(  Z2 - xz1 ) / Deltat ));
+}}}((	(  local_particle_head + 	(  g * 6 ) ))[0] = 	(  X2 + 5.00000000000000000e-01 ));
+((	(  local_particle_head + 	(  g * 6 ) ))[1] = 	(  Y2 + 5.00000000000000000e-01 ));
+((	(  local_particle_head + 	(  g * 6 ) ))[2] = 	(  Z2 + 5.00000000000000000e-01 ));
+((	(  local_particle_head + 	(  g * 6 ) ))[3] = 	(  	(  X2 - xx1 ) / Deltat ));
+((	(  local_particle_head + 	(  g * 6 ) ))[4] = 	(  	(  Y2 - xy1 ) / Deltat ));
+((	(  local_particle_head + 	(  g * 6 ) ))[5] = 	(  	(  Z2 - xz1 ) / Deltat ));
 {
 {
 	long  xyzz ;
@@ -2316,7 +2318,7 @@ void  openmp_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  c
 	long  inner_g ;
 	for ((inner_g = 0) ; 	(  inner_g < 6 ) ; (inner_g = 	(  inner_g + 1 )))
 	{
-((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = ((local_particle_head)[0])[	(  	(  inner_step * 6 ) + inner_g )]);
+((	(  	(  inoutput + 	(  grid_base_offset + 	(  6 * 	(  allgid * grid_cache_len ) ) ) ) + 	(  iba_tmp * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )] = (	(  local_particle_head + 	(  0 * 6 ) ))[	(  	(  inner_step * 6 ) + inner_g )]);
 }}}}0;
 }}{
 	long  xyzz ;

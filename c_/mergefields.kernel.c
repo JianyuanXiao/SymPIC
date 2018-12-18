@@ -1,4 +1,6 @@
 void  c_yee_local_scmc_kernel (double *  inout ,long  numvec ,int  num_ele ,long  xblock ,long  yblock ,long  zblock ,int  ovlp ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -12,6 +14,8 @@ void  c_yee_local_scmc_kernel (double *  inout ,long  numvec ,int  num_ele ,long
 	long  xyzz = 	(  idx / 	(  xb * yb ) ) ;
 }
 void  c_sync_ovlp_o2m_scmc_kernel (double *  vecmain ,double *  vecovlp ,int  ovlpindex ,long  numvec ,int  num_ele ,long  xblock ,long  yblock ,long  zblock ,int  ovlp ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -143,6 +147,8 @@ void  c_sync_ovlp_o2m_scmc_kernel (double *  vecmain ,double *  vecovlp ,int  ov
 ((vecmain)[	(  	(  i * blk_all_len ) + 	(  realidx + 	(  num_ele * 	(  lxyzx + 	(  xb * 	(  lxyzy + 	(  yb * lxyzz ) ) ) ) ) ) )] = (vecovlp)[	(  	(  i * ovlpalllen ) + 	(  realidx + 	(  num_ele * 	(  xyzx + 	(  ovlpxma * 	(  xyzy + 	(  ovlpyma * xyzz ) ) ) ) ) ) )]);
 }}}}}}}}}}
 void  c_sync_ovlp_m2o_scmc_kernel (double *  vecmain ,double *  vecovlp ,int  ovlpindex ,long  numvec ,int  num_ele ,long  xblock ,long  yblock ,long  zblock ,int  ovlp ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -274,6 +280,8 @@ void  c_sync_ovlp_m2o_scmc_kernel (double *  vecmain ,double *  vecovlp ,int  ov
 ((vecovlp)[	(  	(  i * ovlpalllen ) + 	(  realidx + 	(  num_ele * 	(  xyzx + 	(  ovlpxma * 	(  xyzy + 	(  ovlpyma * xyzz ) ) ) ) ) ) )] = (vecmain)[	(  	(  i * blk_all_len ) + 	(  realidx + 	(  num_ele * 	(  lxyzx + 	(  xb * 	(  lxyzy + 	(  yb * lxyzz ) ) ) ) ) ) )]);
 }}}}}}}}}}
 void  c_merge_ovlp_o2m_scmc_kernel (double *  vecmain ,double *  vecovlp ,int  ovlpindex ,long  numvec ,int  num_ele ,long  xblock ,long  yblock ,long  zblock ,int  ovlp ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -405,6 +413,8 @@ void  c_merge_ovlp_o2m_scmc_kernel (double *  vecmain ,double *  vecovlp ,int  o
 ((vecmain)[	(  	(  i * blk_all_len ) + 	(  realidx + 	(  num_ele * 	(  lxyzx + 	(  xb * 	(  lxyzy + 	(  yb * lxyzz ) ) ) ) ) ) )] = 	(  (vecmain)[	(  	(  i * blk_all_len ) + 	(  realidx + 	(  num_ele * 	(  lxyzx + 	(  xb * 	(  lxyzy + 	(  yb * lxyzz ) ) ) ) ) ) )] + (vecovlp)[	(  	(  i * ovlpalllen ) + 	(  realidx + 	(  num_ele * 	(  xyzx + 	(  ovlpxma * 	(  xyzy + 	(  ovlpyma * xyzz ) ) ) ) ) ) )] ));
 }}}}}}}}}}
 void  c_merge_ovlp_m2o_scmc_kernel (double *  vecmain ,double *  vecovlp ,int  ovlpindex ,long  numvec ,int  num_ele ,long  xblock ,long  yblock ,long  zblock ,int  ovlp ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;

@@ -4,6 +4,8 @@
 #include <stdio.h>
 #define IDX_OPT_MAX 1
 void  c_blas_yiszero_synced_scmc_kernel (double *  y ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -44,6 +46,8 @@ void  c_blas_yiszero_synced_scmc_kernel (double *  y ,long  y_cpu_core ,long  nu
 ((	(  y + 	(  blk_offset_t1 + j ) ))[Gll_P9918] = (zeros)[Gll_P9918]);
 }}}}}}
 void  c_blas_yiszero_scmc_kernel (double *  y ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -91,6 +95,8 @@ void  c_blas_yiszero_scmc_kernel (double *  y ,long  y_cpu_core ,long  numvec ,l
 ((y)[	(  blk_offset + realidx )] = 0);
 }}}}}}}}}}}
 void  c_blas_yisconst_scmc_kernel (double *  y ,double  a ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -138,6 +144,8 @@ void  c_blas_yisconst_scmc_kernel (double *  y ,double  a ,long  y_cpu_core ,lon
 ((y)[	(  blk_offset + realidx )] = a);
 }}}}}}}}}}}
 void  c_blas_get_ITG_Potential_scmc_kernel (double *  y ,double *  x ,double *  u ,double  minus_over_q_e ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -191,6 +199,8 @@ void  c_blas_get_ITG_Potential_scmc_kernel (double *  y ,double *  x ,double *  
 	 }
 }}}}}}}}}}}
 void  c_blas_invy_scmc_kernel (double *  y ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -244,6 +254,8 @@ void  c_blas_invy_scmc_kernel (double *  y ,long  y_cpu_core ,long  numvec ,long
 	 }
 }}}}}}}}}}}
 void  c_blas_yisax_scmc_kernel (double *  y ,double *  x ,double  a ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -291,6 +303,8 @@ void  c_blas_yisax_scmc_kernel (double *  y ,double *  x ,double  a ,long  y_cpu
 ((y)[	(  blk_offset + realidx )] = 	(  a * (x)[	(  blk_offset + realidx )] ));
 }}}}}}}}}}}
 void  c_blas_axpy_scmc_kernel (double *  y ,double *  x ,double  a ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -338,6 +352,8 @@ void  c_blas_axpy_scmc_kernel (double *  y ,double *  x ,double  a ,long  y_cpu_
 ((y)[	(  blk_offset + realidx )] = 	(  (y)[	(  blk_offset + realidx )] + 	(  a * (x)[	(  blk_offset + realidx )] ) ));
 }}}}}}}}}}}
 void  c_blas_axpby_scmc_kernel (double *  y ,double *  x ,double  a ,double  b ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -385,6 +401,8 @@ void  c_blas_axpby_scmc_kernel (double *  y ,double *  x ,double  a ,double  b ,
 ((y)[	(  blk_offset + realidx )] = 	(  	(  a * (x)[	(  blk_offset + realidx )] ) + 	(  b * (y)[	(  blk_offset + realidx )] ) ));
 }}}}}}}}}}}
 void  c_blas_mulxy_scmc_kernel (double *  y ,double *  x ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -432,6 +450,8 @@ void  c_blas_mulxy_scmc_kernel (double *  y ,double *  x ,long  y_cpu_core ,long
 ((y)[	(  blk_offset + realidx )] = 	(  (x)[	(  blk_offset + realidx )] * (y)[	(  blk_offset + realidx )] ));
 }}}}}}}}}}}
 void  c_blas_findmax_scmc_kernel (double *  y ,double *  rdcd ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -492,6 +512,8 @@ void  c_blas_findmax_scmc_kernel (double *  y ,double *  rdcd ,long  y_cpu_core 
 	 }
 }
 void  c_blas_dot_scmc_kernel (double *  y ,double *  x ,double *  rdcd ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -552,6 +574,8 @@ void  c_blas_dot_scmc_kernel (double *  y ,double *  x ,double *  rdcd ,long  y_
 	 }
 }
 void  c_blas_sum_scmc_kernel (double *  y ,double *  rdcd ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 0 ;
+	const long  pscmc_num_compute_units = 1 ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;

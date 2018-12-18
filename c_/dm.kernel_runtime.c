@@ -10,6 +10,8 @@ void  c_dm_1st_eqn_right_get_struct_len (size_t *  len ){
 }
 int  c_dm_1st_eqn_right_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_dm_1st_eqn_right_get_num_compute_units (c_dm_1st_eqn_right_struct *  kerstr ){
+	return  1 ;}
 int  c_dm_1st_eqn_right_exec (c_dm_1st_eqn_right_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -92,6 +94,8 @@ void  c_dm_1st_eqn_core_get_struct_len (size_t *  len ){
 }
 int  c_dm_1st_eqn_core_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_dm_1st_eqn_core_get_num_compute_units (c_dm_1st_eqn_core_struct *  kerstr ){
+	return  1 ;}
 int  c_dm_1st_eqn_core_exec (c_dm_1st_eqn_core_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -174,6 +178,8 @@ void  c_dm_1st_eqn_fdtd_get_struct_len (size_t *  len ){
 }
 int  c_dm_1st_eqn_fdtd_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_dm_1st_eqn_fdtd_get_num_compute_units (c_dm_1st_eqn_fdtd_struct *  kerstr ){
+	return  1 ;}
 int  c_dm_1st_eqn_fdtd_exec (c_dm_1st_eqn_fdtd_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;

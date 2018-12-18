@@ -10,6 +10,8 @@ void  c_dump_ene_num_get_struct_len (size_t *  len ){
 }
 int  c_dump_ene_num_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_dump_ene_num_get_num_compute_units (c_dump_ene_num_struct *  kerstr ){
+	return  1 ;}
 int  c_dump_ene_num_exec (c_dump_ene_num_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -101,6 +103,8 @@ void  c_calculate_rho_get_struct_len (size_t *  len ){
 }
 int  c_calculate_rho_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_calculate_rho_get_num_compute_units (c_calculate_rho_struct *  kerstr ){
+	return  1 ;}
 int  c_calculate_rho_exec (c_calculate_rho_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -192,6 +196,8 @@ void  c_krook_collision_test_get_struct_len (size_t *  len ){
 }
 int  c_krook_collision_test_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_krook_collision_test_get_num_compute_units (c_krook_collision_test_struct *  kerstr ){
+	return  1 ;}
 int  c_krook_collision_test_exec (c_krook_collision_test_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -268,6 +274,8 @@ void  c_krook_collision_remove_small_speed_get_struct_len (size_t *  len ){
 }
 int  c_krook_collision_remove_small_speed_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_krook_collision_remove_small_speed_get_num_compute_units (c_krook_collision_remove_small_speed_struct *  kerstr ){
+	return  1 ;}
 int  c_krook_collision_remove_small_speed_exec (c_krook_collision_remove_small_speed_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -344,6 +352,8 @@ void  c_boris_yee_get_struct_len (size_t *  len ){
 }
 int  c_boris_yee_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_boris_yee_get_num_compute_units (c_boris_yee_struct *  kerstr ){
+	return  1 ;}
 int  c_boris_yee_exec (c_boris_yee_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -417,6 +427,8 @@ void  c_split_pass_E_particle_vlo_get_struct_len (size_t *  len ){
 }
 int  c_split_pass_E_particle_vlo_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_split_pass_E_particle_vlo_get_num_compute_units (c_split_pass_E_particle_vlo_struct *  kerstr ){
+	return  1 ;}
 int  c_split_pass_E_particle_vlo_exec (c_split_pass_E_particle_vlo_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -508,6 +520,8 @@ void  c_split_pass_E_particle_get_struct_len (size_t *  len ){
 }
 int  c_split_pass_E_particle_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_split_pass_E_particle_get_num_compute_units (c_split_pass_E_particle_struct *  kerstr ){
+	return  1 ;}
 int  c_split_pass_E_particle_exec (c_split_pass_E_particle_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -592,12 +606,107 @@ int  c_split_pass_E_particle_scmc_set_parameter_DELTA_Z (c_split_pass_E_particle
 int  c_split_pass_E_particle_scmc_set_parameter_Deltat (c_split_pass_E_particle_struct *  kerstr ,c_pscmc_mem *  pm ){
 (	( kerstr )->Deltat = pm->d_data);
 }
+int  c_split_pass_z_vlo_sg2_small_grids_init (c_pscmc_env *  pe ,c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ){
+	return  0 ;}
+void  c_split_pass_z_vlo_sg2_small_grids_get_struct_len (size_t *  len ){
+((len)[0] = sizeof(c_split_pass_z_vlo_sg2_small_grids_struct ));
+}
+int  c_split_pass_z_vlo_sg2_small_grids_get_xlen (){
+	return  1 ;}
+int  c_split_pass_z_vlo_sg2_small_grids_get_num_compute_units (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ){
+	return  1 ;}
+int  c_split_pass_z_vlo_sg2_small_grids_exec (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
+{
+	int  yid ;
+	int  numt = 1 ;
+	int  tid = 0 ;
+	int  ysingle = 	(  	(  scmc_internal_g_ylen + 	(  numt - 1 ) ) / numt ) ;
+	int  ymin = 	(  tid * ysingle ) ;
+	int  ymax = 	(  	(  1 + tid ) * ysingle ) ;
+	for ((yid = ymin) ; 	(  	(  yid < ymax ) && 	(  yid < scmc_internal_g_ylen ) ) ; (yid = 	(  yid + 1 )))
+	{
+	c_split_pass_z_vlo_sg2_small_grids_scmc_kernel ( 	( kerstr )->inoutput , 	( kerstr )->xyzw , 	( kerstr )->cu_cache , 	( kerstr )->cu_xyzw , 	( kerstr )->fieldE , 	( kerstr )->fieldB , 	( kerstr )->LFoutJ , 	( kerstr )->FoutEN , (	( kerstr )->XLEN)[0] , (	( kerstr )->YLEN)[0] , (	( kerstr )->ZLEN)[0] , (	( kerstr )->ovlp)[0] , (	( kerstr )->numvec)[0] , (	( kerstr )->num_ele)[0] , (	( kerstr )->grid_cache_len)[0] , (	( kerstr )->cu_cache_length)[0] , (	( kerstr )->Mass)[0] , (	( kerstr )->Charge)[0] , (	( kerstr )->SPEC)[0] , (	( kerstr )->NUM_SPEC)[0] , (	( kerstr )->DELTA_X)[0] , (	( kerstr )->DELTA_Y)[0] , (	( kerstr )->DELTA_Z)[0] , (	( kerstr )->Deltat)[0] , yid , scmc_internal_g_ylen );
+}}	return  0 ;}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_inoutput (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->inoutput = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_xyzw (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->xyzw = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_cu_cache (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_cache = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_cu_xyzw (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_xyzw = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_fieldE (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->fieldE = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_fieldB (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->fieldB = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_LFoutJ (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->LFoutJ = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_FoutEN (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->FoutEN = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_XLEN (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->XLEN = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_YLEN (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->YLEN = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_ZLEN (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->ZLEN = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_ovlp (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->ovlp = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_numvec (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->numvec = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_num_ele (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->num_ele = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_grid_cache_len (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->grid_cache_len = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_cu_cache_length (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_cache_length = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_Mass (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Mass = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_Charge (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Charge = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_SPEC (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->SPEC = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_NUM_SPEC (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->NUM_SPEC = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_DELTA_X (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_X = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_DELTA_Y (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_Y = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_Z = pm->d_data);
+}
+int  c_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_Deltat (c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Deltat = pm->d_data);
+}
 int  c_split_pass_z_vlo_small_grids_init (c_pscmc_env *  pe ,c_split_pass_z_vlo_small_grids_struct *  kerstr ){
 	return  0 ;}
 void  c_split_pass_z_vlo_small_grids_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(c_split_pass_z_vlo_small_grids_struct ));
 }
 int  c_split_pass_z_vlo_small_grids_get_xlen (){
+	return  1 ;}
+int  c_split_pass_z_vlo_small_grids_get_num_compute_units (c_split_pass_z_vlo_small_grids_struct *  kerstr ){
 	return  1 ;}
 int  c_split_pass_z_vlo_small_grids_exec (c_split_pass_z_vlo_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
@@ -683,12 +792,107 @@ int  c_split_pass_z_vlo_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_z_v
 int  c_split_pass_z_vlo_small_grids_scmc_set_parameter_Deltat (c_split_pass_z_vlo_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
 (	( kerstr )->Deltat = pm->d_data);
 }
+int  c_split_pass_z_sg2_small_grids_init (c_pscmc_env *  pe ,c_split_pass_z_sg2_small_grids_struct *  kerstr ){
+	return  0 ;}
+void  c_split_pass_z_sg2_small_grids_get_struct_len (size_t *  len ){
+((len)[0] = sizeof(c_split_pass_z_sg2_small_grids_struct ));
+}
+int  c_split_pass_z_sg2_small_grids_get_xlen (){
+	return  1 ;}
+int  c_split_pass_z_sg2_small_grids_get_num_compute_units (c_split_pass_z_sg2_small_grids_struct *  kerstr ){
+	return  1 ;}
+int  c_split_pass_z_sg2_small_grids_exec (c_split_pass_z_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
+{
+	int  yid ;
+	int  numt = 1 ;
+	int  tid = 0 ;
+	int  ysingle = 	(  	(  scmc_internal_g_ylen + 	(  numt - 1 ) ) / numt ) ;
+	int  ymin = 	(  tid * ysingle ) ;
+	int  ymax = 	(  	(  1 + tid ) * ysingle ) ;
+	for ((yid = ymin) ; 	(  	(  yid < ymax ) && 	(  yid < scmc_internal_g_ylen ) ) ; (yid = 	(  yid + 1 )))
+	{
+	c_split_pass_z_sg2_small_grids_scmc_kernel ( 	( kerstr )->inoutput , 	( kerstr )->xyzw , 	( kerstr )->cu_cache , 	( kerstr )->cu_xyzw , 	( kerstr )->fieldE , 	( kerstr )->fieldB , 	( kerstr )->LFoutJ , 	( kerstr )->FoutEN , (	( kerstr )->XLEN)[0] , (	( kerstr )->YLEN)[0] , (	( kerstr )->ZLEN)[0] , (	( kerstr )->ovlp)[0] , (	( kerstr )->numvec)[0] , (	( kerstr )->num_ele)[0] , (	( kerstr )->grid_cache_len)[0] , (	( kerstr )->cu_cache_length)[0] , (	( kerstr )->Mass)[0] , (	( kerstr )->Charge)[0] , (	( kerstr )->SPEC)[0] , (	( kerstr )->NUM_SPEC)[0] , (	( kerstr )->DELTA_X)[0] , (	( kerstr )->DELTA_Y)[0] , (	( kerstr )->DELTA_Z)[0] , (	( kerstr )->Deltat)[0] , yid , scmc_internal_g_ylen );
+}}	return  0 ;}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_inoutput (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->inoutput = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_xyzw (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->xyzw = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_cu_cache (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_cache = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_cu_xyzw (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_xyzw = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_fieldE (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->fieldE = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_fieldB (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->fieldB = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_LFoutJ (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->LFoutJ = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_FoutEN (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->FoutEN = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_XLEN (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->XLEN = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_YLEN (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->YLEN = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_ZLEN (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->ZLEN = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_ovlp (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->ovlp = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_numvec (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->numvec = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_num_ele (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->num_ele = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_grid_cache_len (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->grid_cache_len = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_cu_cache_length (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_cache_length = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_Mass (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Mass = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_Charge (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Charge = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_SPEC (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->SPEC = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_NUM_SPEC (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->NUM_SPEC = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_DELTA_X (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_X = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_DELTA_Y (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_Y = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_Z = pm->d_data);
+}
+int  c_split_pass_z_sg2_small_grids_scmc_set_parameter_Deltat (c_split_pass_z_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Deltat = pm->d_data);
+}
 int  c_split_pass_z_small_grids_init (c_pscmc_env *  pe ,c_split_pass_z_small_grids_struct *  kerstr ){
 	return  0 ;}
 void  c_split_pass_z_small_grids_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(c_split_pass_z_small_grids_struct ));
 }
 int  c_split_pass_z_small_grids_get_xlen (){
+	return  1 ;}
+int  c_split_pass_z_small_grids_get_num_compute_units (c_split_pass_z_small_grids_struct *  kerstr ){
 	return  1 ;}
 int  c_split_pass_z_small_grids_exec (c_split_pass_z_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
@@ -781,6 +985,8 @@ void  c_split_pass_z_vlo_get_struct_len (size_t *  len ){
 }
 int  c_split_pass_z_vlo_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_split_pass_z_vlo_get_num_compute_units (c_split_pass_z_vlo_struct *  kerstr ){
+	return  1 ;}
 int  c_split_pass_z_vlo_exec (c_split_pass_z_vlo_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -872,6 +1078,8 @@ void  c_split_pass_z_get_struct_len (size_t *  len ){
 }
 int  c_split_pass_z_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_split_pass_z_get_num_compute_units (c_split_pass_z_struct *  kerstr ){
+	return  1 ;}
 int  c_split_pass_z_exec (c_split_pass_z_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -956,12 +1164,107 @@ int  c_split_pass_z_scmc_set_parameter_DELTA_Z (c_split_pass_z_struct *  kerstr 
 int  c_split_pass_z_scmc_set_parameter_Deltat (c_split_pass_z_struct *  kerstr ,c_pscmc_mem *  pm ){
 (	( kerstr )->Deltat = pm->d_data);
 }
+int  c_split_pass_y_vlo_sg2_small_grids_init (c_pscmc_env *  pe ,c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ){
+	return  0 ;}
+void  c_split_pass_y_vlo_sg2_small_grids_get_struct_len (size_t *  len ){
+((len)[0] = sizeof(c_split_pass_y_vlo_sg2_small_grids_struct ));
+}
+int  c_split_pass_y_vlo_sg2_small_grids_get_xlen (){
+	return  1 ;}
+int  c_split_pass_y_vlo_sg2_small_grids_get_num_compute_units (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ){
+	return  1 ;}
+int  c_split_pass_y_vlo_sg2_small_grids_exec (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
+{
+	int  yid ;
+	int  numt = 1 ;
+	int  tid = 0 ;
+	int  ysingle = 	(  	(  scmc_internal_g_ylen + 	(  numt - 1 ) ) / numt ) ;
+	int  ymin = 	(  tid * ysingle ) ;
+	int  ymax = 	(  	(  1 + tid ) * ysingle ) ;
+	for ((yid = ymin) ; 	(  	(  yid < ymax ) && 	(  yid < scmc_internal_g_ylen ) ) ; (yid = 	(  yid + 1 )))
+	{
+	c_split_pass_y_vlo_sg2_small_grids_scmc_kernel ( 	( kerstr )->inoutput , 	( kerstr )->xyzw , 	( kerstr )->cu_cache , 	( kerstr )->cu_xyzw , 	( kerstr )->fieldE , 	( kerstr )->fieldB , 	( kerstr )->LFoutJ , 	( kerstr )->FoutEN , (	( kerstr )->XLEN)[0] , (	( kerstr )->YLEN)[0] , (	( kerstr )->ZLEN)[0] , (	( kerstr )->ovlp)[0] , (	( kerstr )->numvec)[0] , (	( kerstr )->num_ele)[0] , (	( kerstr )->grid_cache_len)[0] , (	( kerstr )->cu_cache_length)[0] , (	( kerstr )->Mass)[0] , (	( kerstr )->Charge)[0] , (	( kerstr )->SPEC)[0] , (	( kerstr )->NUM_SPEC)[0] , (	( kerstr )->DELTA_X)[0] , (	( kerstr )->DELTA_Y)[0] , (	( kerstr )->DELTA_Z)[0] , (	( kerstr )->Deltat)[0] , yid , scmc_internal_g_ylen );
+}}	return  0 ;}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_inoutput (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->inoutput = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_xyzw (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->xyzw = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_cu_cache (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_cache = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_cu_xyzw (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_xyzw = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_fieldE (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->fieldE = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_fieldB (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->fieldB = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_LFoutJ (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->LFoutJ = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_FoutEN (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->FoutEN = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_XLEN (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->XLEN = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_YLEN (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->YLEN = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_ZLEN (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->ZLEN = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_ovlp (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->ovlp = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_numvec (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->numvec = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_num_ele (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->num_ele = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_grid_cache_len (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->grid_cache_len = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_cu_cache_length (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_cache_length = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_Mass (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Mass = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_Charge (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Charge = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_SPEC (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->SPEC = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_NUM_SPEC (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->NUM_SPEC = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_DELTA_X (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_X = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_DELTA_Y (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_Y = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_Z = pm->d_data);
+}
+int  c_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_Deltat (c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Deltat = pm->d_data);
+}
 int  c_split_pass_y_vlo_small_grids_init (c_pscmc_env *  pe ,c_split_pass_y_vlo_small_grids_struct *  kerstr ){
 	return  0 ;}
 void  c_split_pass_y_vlo_small_grids_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(c_split_pass_y_vlo_small_grids_struct ));
 }
 int  c_split_pass_y_vlo_small_grids_get_xlen (){
+	return  1 ;}
+int  c_split_pass_y_vlo_small_grids_get_num_compute_units (c_split_pass_y_vlo_small_grids_struct *  kerstr ){
 	return  1 ;}
 int  c_split_pass_y_vlo_small_grids_exec (c_split_pass_y_vlo_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
@@ -1047,12 +1350,107 @@ int  c_split_pass_y_vlo_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_y_v
 int  c_split_pass_y_vlo_small_grids_scmc_set_parameter_Deltat (c_split_pass_y_vlo_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
 (	( kerstr )->Deltat = pm->d_data);
 }
+int  c_split_pass_y_sg2_small_grids_init (c_pscmc_env *  pe ,c_split_pass_y_sg2_small_grids_struct *  kerstr ){
+	return  0 ;}
+void  c_split_pass_y_sg2_small_grids_get_struct_len (size_t *  len ){
+((len)[0] = sizeof(c_split_pass_y_sg2_small_grids_struct ));
+}
+int  c_split_pass_y_sg2_small_grids_get_xlen (){
+	return  1 ;}
+int  c_split_pass_y_sg2_small_grids_get_num_compute_units (c_split_pass_y_sg2_small_grids_struct *  kerstr ){
+	return  1 ;}
+int  c_split_pass_y_sg2_small_grids_exec (c_split_pass_y_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
+{
+	int  yid ;
+	int  numt = 1 ;
+	int  tid = 0 ;
+	int  ysingle = 	(  	(  scmc_internal_g_ylen + 	(  numt - 1 ) ) / numt ) ;
+	int  ymin = 	(  tid * ysingle ) ;
+	int  ymax = 	(  	(  1 + tid ) * ysingle ) ;
+	for ((yid = ymin) ; 	(  	(  yid < ymax ) && 	(  yid < scmc_internal_g_ylen ) ) ; (yid = 	(  yid + 1 )))
+	{
+	c_split_pass_y_sg2_small_grids_scmc_kernel ( 	( kerstr )->inoutput , 	( kerstr )->xyzw , 	( kerstr )->cu_cache , 	( kerstr )->cu_xyzw , 	( kerstr )->fieldE , 	( kerstr )->fieldB , 	( kerstr )->LFoutJ , 	( kerstr )->FoutEN , (	( kerstr )->XLEN)[0] , (	( kerstr )->YLEN)[0] , (	( kerstr )->ZLEN)[0] , (	( kerstr )->ovlp)[0] , (	( kerstr )->numvec)[0] , (	( kerstr )->num_ele)[0] , (	( kerstr )->grid_cache_len)[0] , (	( kerstr )->cu_cache_length)[0] , (	( kerstr )->Mass)[0] , (	( kerstr )->Charge)[0] , (	( kerstr )->SPEC)[0] , (	( kerstr )->NUM_SPEC)[0] , (	( kerstr )->DELTA_X)[0] , (	( kerstr )->DELTA_Y)[0] , (	( kerstr )->DELTA_Z)[0] , (	( kerstr )->Deltat)[0] , yid , scmc_internal_g_ylen );
+}}	return  0 ;}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_inoutput (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->inoutput = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_xyzw (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->xyzw = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_cu_cache (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_cache = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_cu_xyzw (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_xyzw = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_fieldE (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->fieldE = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_fieldB (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->fieldB = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_LFoutJ (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->LFoutJ = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_FoutEN (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->FoutEN = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_XLEN (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->XLEN = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_YLEN (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->YLEN = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_ZLEN (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->ZLEN = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_ovlp (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->ovlp = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_numvec (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->numvec = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_num_ele (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->num_ele = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_grid_cache_len (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->grid_cache_len = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_cu_cache_length (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_cache_length = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_Mass (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Mass = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_Charge (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Charge = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_SPEC (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->SPEC = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_NUM_SPEC (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->NUM_SPEC = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_DELTA_X (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_X = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_DELTA_Y (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_Y = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_Z = pm->d_data);
+}
+int  c_split_pass_y_sg2_small_grids_scmc_set_parameter_Deltat (c_split_pass_y_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Deltat = pm->d_data);
+}
 int  c_split_pass_y_small_grids_init (c_pscmc_env *  pe ,c_split_pass_y_small_grids_struct *  kerstr ){
 	return  0 ;}
 void  c_split_pass_y_small_grids_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(c_split_pass_y_small_grids_struct ));
 }
 int  c_split_pass_y_small_grids_get_xlen (){
+	return  1 ;}
+int  c_split_pass_y_small_grids_get_num_compute_units (c_split_pass_y_small_grids_struct *  kerstr ){
 	return  1 ;}
 int  c_split_pass_y_small_grids_exec (c_split_pass_y_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
@@ -1145,6 +1543,8 @@ void  c_split_pass_y_vlo_get_struct_len (size_t *  len ){
 }
 int  c_split_pass_y_vlo_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_split_pass_y_vlo_get_num_compute_units (c_split_pass_y_vlo_struct *  kerstr ){
+	return  1 ;}
 int  c_split_pass_y_vlo_exec (c_split_pass_y_vlo_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -1236,6 +1636,8 @@ void  c_split_pass_y_get_struct_len (size_t *  len ){
 }
 int  c_split_pass_y_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_split_pass_y_get_num_compute_units (c_split_pass_y_struct *  kerstr ){
+	return  1 ;}
 int  c_split_pass_y_exec (c_split_pass_y_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -1320,12 +1722,107 @@ int  c_split_pass_y_scmc_set_parameter_DELTA_Z (c_split_pass_y_struct *  kerstr 
 int  c_split_pass_y_scmc_set_parameter_Deltat (c_split_pass_y_struct *  kerstr ,c_pscmc_mem *  pm ){
 (	( kerstr )->Deltat = pm->d_data);
 }
+int  c_split_pass_x_vlo_sg2_small_grids_init (c_pscmc_env *  pe ,c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ){
+	return  0 ;}
+void  c_split_pass_x_vlo_sg2_small_grids_get_struct_len (size_t *  len ){
+((len)[0] = sizeof(c_split_pass_x_vlo_sg2_small_grids_struct ));
+}
+int  c_split_pass_x_vlo_sg2_small_grids_get_xlen (){
+	return  1 ;}
+int  c_split_pass_x_vlo_sg2_small_grids_get_num_compute_units (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ){
+	return  1 ;}
+int  c_split_pass_x_vlo_sg2_small_grids_exec (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
+{
+	int  yid ;
+	int  numt = 1 ;
+	int  tid = 0 ;
+	int  ysingle = 	(  	(  scmc_internal_g_ylen + 	(  numt - 1 ) ) / numt ) ;
+	int  ymin = 	(  tid * ysingle ) ;
+	int  ymax = 	(  	(  1 + tid ) * ysingle ) ;
+	for ((yid = ymin) ; 	(  	(  yid < ymax ) && 	(  yid < scmc_internal_g_ylen ) ) ; (yid = 	(  yid + 1 )))
+	{
+	c_split_pass_x_vlo_sg2_small_grids_scmc_kernel ( 	( kerstr )->inoutput , 	( kerstr )->xyzw , 	( kerstr )->cu_cache , 	( kerstr )->cu_xyzw , 	( kerstr )->fieldE , 	( kerstr )->fieldB , 	( kerstr )->LFoutJ , 	( kerstr )->FoutEN , (	( kerstr )->XLEN)[0] , (	( kerstr )->YLEN)[0] , (	( kerstr )->ZLEN)[0] , (	( kerstr )->ovlp)[0] , (	( kerstr )->numvec)[0] , (	( kerstr )->num_ele)[0] , (	( kerstr )->grid_cache_len)[0] , (	( kerstr )->cu_cache_length)[0] , (	( kerstr )->Mass)[0] , (	( kerstr )->Charge)[0] , (	( kerstr )->SPEC)[0] , (	( kerstr )->NUM_SPEC)[0] , (	( kerstr )->DELTA_X)[0] , (	( kerstr )->DELTA_Y)[0] , (	( kerstr )->DELTA_Z)[0] , (	( kerstr )->Deltat)[0] , yid , scmc_internal_g_ylen );
+}}	return  0 ;}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_inoutput (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->inoutput = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_xyzw (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->xyzw = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_cu_cache (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_cache = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_cu_xyzw (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_xyzw = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_fieldE (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->fieldE = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_fieldB (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->fieldB = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_LFoutJ (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->LFoutJ = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_FoutEN (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->FoutEN = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_XLEN (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->XLEN = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_YLEN (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->YLEN = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_ZLEN (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->ZLEN = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_ovlp (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->ovlp = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_numvec (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->numvec = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_num_ele (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->num_ele = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_grid_cache_len (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->grid_cache_len = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_cu_cache_length (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_cache_length = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_Mass (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Mass = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_Charge (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Charge = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_SPEC (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->SPEC = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_NUM_SPEC (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->NUM_SPEC = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_DELTA_X (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_X = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_DELTA_Y (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_Y = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_Z = pm->d_data);
+}
+int  c_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_Deltat (c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Deltat = pm->d_data);
+}
 int  c_split_pass_x_vlo_small_grids_init (c_pscmc_env *  pe ,c_split_pass_x_vlo_small_grids_struct *  kerstr ){
 	return  0 ;}
 void  c_split_pass_x_vlo_small_grids_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(c_split_pass_x_vlo_small_grids_struct ));
 }
 int  c_split_pass_x_vlo_small_grids_get_xlen (){
+	return  1 ;}
+int  c_split_pass_x_vlo_small_grids_get_num_compute_units (c_split_pass_x_vlo_small_grids_struct *  kerstr ){
 	return  1 ;}
 int  c_split_pass_x_vlo_small_grids_exec (c_split_pass_x_vlo_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
@@ -1411,12 +1908,107 @@ int  c_split_pass_x_vlo_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_x_v
 int  c_split_pass_x_vlo_small_grids_scmc_set_parameter_Deltat (c_split_pass_x_vlo_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
 (	( kerstr )->Deltat = pm->d_data);
 }
+int  c_split_pass_x_sg2_small_grids_init (c_pscmc_env *  pe ,c_split_pass_x_sg2_small_grids_struct *  kerstr ){
+	return  0 ;}
+void  c_split_pass_x_sg2_small_grids_get_struct_len (size_t *  len ){
+((len)[0] = sizeof(c_split_pass_x_sg2_small_grids_struct ));
+}
+int  c_split_pass_x_sg2_small_grids_get_xlen (){
+	return  1 ;}
+int  c_split_pass_x_sg2_small_grids_get_num_compute_units (c_split_pass_x_sg2_small_grids_struct *  kerstr ){
+	return  1 ;}
+int  c_split_pass_x_sg2_small_grids_exec (c_split_pass_x_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
+{
+	int  yid ;
+	int  numt = 1 ;
+	int  tid = 0 ;
+	int  ysingle = 	(  	(  scmc_internal_g_ylen + 	(  numt - 1 ) ) / numt ) ;
+	int  ymin = 	(  tid * ysingle ) ;
+	int  ymax = 	(  	(  1 + tid ) * ysingle ) ;
+	for ((yid = ymin) ; 	(  	(  yid < ymax ) && 	(  yid < scmc_internal_g_ylen ) ) ; (yid = 	(  yid + 1 )))
+	{
+	c_split_pass_x_sg2_small_grids_scmc_kernel ( 	( kerstr )->inoutput , 	( kerstr )->xyzw , 	( kerstr )->cu_cache , 	( kerstr )->cu_xyzw , 	( kerstr )->fieldE , 	( kerstr )->fieldB , 	( kerstr )->LFoutJ , 	( kerstr )->FoutEN , (	( kerstr )->XLEN)[0] , (	( kerstr )->YLEN)[0] , (	( kerstr )->ZLEN)[0] , (	( kerstr )->ovlp)[0] , (	( kerstr )->numvec)[0] , (	( kerstr )->num_ele)[0] , (	( kerstr )->grid_cache_len)[0] , (	( kerstr )->cu_cache_length)[0] , (	( kerstr )->Mass)[0] , (	( kerstr )->Charge)[0] , (	( kerstr )->SPEC)[0] , (	( kerstr )->NUM_SPEC)[0] , (	( kerstr )->DELTA_X)[0] , (	( kerstr )->DELTA_Y)[0] , (	( kerstr )->DELTA_Z)[0] , (	( kerstr )->Deltat)[0] , yid , scmc_internal_g_ylen );
+}}	return  0 ;}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_inoutput (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->inoutput = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_xyzw (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->xyzw = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_cu_cache (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_cache = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_cu_xyzw (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_xyzw = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_fieldE (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->fieldE = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_fieldB (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->fieldB = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_LFoutJ (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->LFoutJ = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_FoutEN (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->FoutEN = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_XLEN (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->XLEN = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_YLEN (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->YLEN = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_ZLEN (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->ZLEN = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_ovlp (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->ovlp = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_numvec (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->numvec = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_num_ele (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->num_ele = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_grid_cache_len (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->grid_cache_len = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_cu_cache_length (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->cu_cache_length = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_Mass (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Mass = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_Charge (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Charge = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_SPEC (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->SPEC = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_NUM_SPEC (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->NUM_SPEC = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_DELTA_X (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_X = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_DELTA_Y (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_Y = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->DELTA_Z = pm->d_data);
+}
+int  c_split_pass_x_sg2_small_grids_scmc_set_parameter_Deltat (c_split_pass_x_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm ){
+(	( kerstr )->Deltat = pm->d_data);
+}
 int  c_split_pass_x_small_grids_init (c_pscmc_env *  pe ,c_split_pass_x_small_grids_struct *  kerstr ){
 	return  0 ;}
 void  c_split_pass_x_small_grids_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(c_split_pass_x_small_grids_struct ));
 }
 int  c_split_pass_x_small_grids_get_xlen (){
+	return  1 ;}
+int  c_split_pass_x_small_grids_get_num_compute_units (c_split_pass_x_small_grids_struct *  kerstr ){
 	return  1 ;}
 int  c_split_pass_x_small_grids_exec (c_split_pass_x_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
@@ -1509,6 +2101,8 @@ void  c_split_pass_x_vlo_get_struct_len (size_t *  len ){
 }
 int  c_split_pass_x_vlo_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_split_pass_x_vlo_get_num_compute_units (c_split_pass_x_vlo_struct *  kerstr ){
+	return  1 ;}
 int  c_split_pass_x_vlo_exec (c_split_pass_x_vlo_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -1600,6 +2194,8 @@ void  c_split_pass_x_get_struct_len (size_t *  len ){
 }
 int  c_split_pass_x_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_split_pass_x_get_num_compute_units (c_split_pass_x_struct *  kerstr ){
+	return  1 ;}
 int  c_split_pass_x_exec (c_split_pass_x_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;

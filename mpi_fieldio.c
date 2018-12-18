@@ -34,7 +34,7 @@ typedef enum {CD_C,CD_OpenMP,CD_OpenCL,CD_CUDA} SEQ_FIELD_TYPES;
 
 #define NUM_SYNC_KERNEL 4
 
-#define NUM_FDTD_KERNEL 18
+#define NUM_FDTD_KERNEL 22
 typedef struct { 	void *  pe ;
 	long  xlen ;
 	long  ylen ;
@@ -88,7 +88,7 @@ typedef struct { 	void *  pe ;
 	Field3D_Seq *  pFoutJ ;
 	Field3D_Seq *  pLFoutJ ;
 	Field3D_Seq *  pFoutEN ;
-	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [5];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
+	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [8];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel ;
 	void *  move_back_kernel_kernel ;
 	double  Mass ;
@@ -102,6 +102,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel ;
@@ -109,6 +112,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel ;
 	void *  calculate_rho_kernel ;
@@ -134,6 +140,10 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_FoutJ ;
 	Field3D_MPI  MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp ;
+	Field3D_MPI  MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldBtmp1 ;
+	Field3D_MPI  MPI_fieldPMLB ;
+	Field3D_MPI  MPI_fieldPMLE ;
 	Field3D_MPI *  pMPI_FoutJ ;
 	Field3D_MPI *  pMPI_FoutEN ;
 	Field3D_MPI  MPI_fieldE_ext ;
@@ -142,7 +152,13 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_fieldB_filter ;
 	Field3D_MPI *  pB0 ;
 	Field3D_MPI *  pB1 ;
+	int  use_pml_abc_dir ;
+	int  use_pml_level ;
 	int  use_small_grid ;
+	long  allxmax ;
+	long  allymax ;
+	long  allzmax ;
+	double  use_pml_sigma_max ;
 	double  dt ;
 } Particle_in_Cell_MPI;
 	#ifndef   LINEAR_OPERATOR_PICUS_001    
@@ -203,7 +219,7 @@ typedef struct { 	Field3D_MPI *  r1 ;
 #include "openmp_yeefdtd.h"
 #include "space_filling_curve.h"
 #include <cgapsio.h>
-int  init_parallel_file_particle_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_IO_DataFile *  gid_grid ,Gaps_IO_DataFile *  gid_cu ,long *  pgcache ,long *  pcucache ,char *  pName_grid ,char *  pName_cu ,int  ro ){
+int  init_parallel_file_particle_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_IO_DataFile *  gid_grid ,Gaps_IO_DataFile *  gid_cu ,long *  pgcache ,long *  pcucache ,char *  pName_grid ,char *  pName_cu ,long  numt ,int  ro ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -298,6 +314,9 @@ int  init_parallel_file_particle_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_I
 	void *  split_pass_x_small_grids_kernel = 	( particles )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( particles )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( particles )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( particles )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( particles )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( particles )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( particles )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( particles )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( particles )->split_pass_y_vlo_kernel ;
@@ -305,6 +324,9 @@ int  init_parallel_file_particle_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_I
 	void *  split_pass_x_vlo_small_grids_kernel = 	( particles )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( particles )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( particles )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( particles )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( particles )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( particles )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( particles )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( particles )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( particles )->calculate_rho_kernel ;
@@ -331,15 +353,15 @@ int  init_parallel_file_particle_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_I
 ((pdimarr_cu)[3] = z_num_thread_block);
 }	GAPS_IO_InitDataInfo ( gid_grid , GAPS_IO_FLOAT64 , 4 , pdimarr_grid );
 	GAPS_IO_InitDataInfo ( gid_cu , GAPS_IO_FLOAT64 , 4 , pdimarr_cu );
-	GAPS_IO_InitOFile_with_TimeStep ( gid_grid , pName_grid , ((ro)?(1):(-1)) );
-	GAPS_IO_InitOFile_with_TimeStep ( gid_cu , pName_cu , ((ro)?(1):(-1)) );
-	GAPS_IO_TruncateFile ( gid_grid , 1 , -1 );
-	GAPS_IO_TruncateFile ( gid_cu , 1 , -1 );
+	GAPS_IO_InitOFile_with_TimeStep ( gid_grid , pName_grid , ((ro)?(-1):(numt)) );
+	GAPS_IO_InitOFile_with_TimeStep ( gid_cu , pName_cu , ((ro)?(-1):(numt)) );
+	GAPS_IO_TruncateFile ( gid_grid , 	(  numt + 1 ) , -1 );
+	GAPS_IO_TruncateFile ( gid_cu , 	(  numt + 1 ) , -1 );
 	GAPS_IO_FileFlush ( gid_grid );
 	GAPS_IO_FileFlush ( gid_cu );
 	PS_MPI_Barrier ( comm );
 	return  0 ;}
-int  dump_particle_parallel_file_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_IO_DataFile *  gid_grid ,Gaps_IO_DataFile *  gid_cu ,long *  pgcache ,long *  pcucache ){
+int  dump_particle_parallel_file_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_IO_DataFile *  gid_grid ,Gaps_IO_DataFile *  gid_cu ,long *  pgcache ,long *  pcucache ,long  numt ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -442,6 +464,9 @@ int  dump_particle_parallel_file_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_I
 	void *  split_pass_x_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_y_vlo_kernel ;
@@ -449,6 +474,9 @@ int  dump_particle_parallel_file_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_I
 	void *  split_pass_x_vlo_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->calculate_rho_kernel ;
@@ -532,7 +560,7 @@ int  dump_particle_parallel_file_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_I
 	long  oz = 	(  ofz / zlen ) ;
 	long  offset_len = 	(  	(  (pdimarr_cu)[0] * 	(  ox + 	(  (pdimarr_cu)[1] * 	(  oy + 	(  (pdimarr_cu)[2] * oz ) ) ) ) ) + c_offset ) ;
 	double  num_load = (cu_xyzw_0)[0] ;
-	GAPS_IO_DataSeek ( gid_cu , 0 , offset_len );
+	GAPS_IO_DataSeek ( gid_cu , numt , offset_len );
 	GAPS_IO_FWrite ( gid_cu , 	& ( num_load ) , 1 );
 	GAPS_IO_FWrite ( gid_cu , cu_r_0 , 	(  6 * (cu_xyzw_0)[0] ) );
 }{
@@ -554,14 +582,14 @@ int  dump_particle_parallel_file_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_I
 	long  oz = 	(  ofz + xyzz ) ;
 	int64_t *  pdimarr_grid = 	( gid_grid )->pdimarray ;
 	long  offset_len = 	(  	(  (pdimarr_grid)[0] * 	(  ox + 	(  (pdimarr_grid)[1] * 	(  oy + 	(  (pdimarr_grid)[2] * oz ) ) ) ) ) + g_offset ) ;
-	GAPS_IO_DataSeek ( gid_grid , 0 , offset_len );
+	GAPS_IO_DataSeek ( gid_grid , numt , offset_len );
 	double  num_load = (grid_xyzw)[0] ;
 	GAPS_IO_FWrite ( gid_grid , 	& ( num_load ) , 1 );
 	GAPS_IO_FWrite ( gid_grid , grid_r , 	(  6 * (grid_xyzw)[0] ) );
 }}}}}}}}}}(g_offset = 	(  g_offset + 	(  	(  6 * (pgcache)[i] ) + 1 ) ));
 (c_offset = 	(  c_offset + 	(  	(  6 * (pcucache)[i] ) + 1 ) ));
 }}	return  0 ;}
-int  read_particle_parallel_file_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_IO_DataFile *  gid_grid ,Gaps_IO_DataFile *  gid_cu ,long *  pgcache ,long *  pcucache ){
+int  read_particle_parallel_file_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_IO_DataFile *  gid_grid ,Gaps_IO_DataFile *  gid_cu ,long *  pgcache ,long *  pcucache ,long  numt ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -664,6 +692,9 @@ int  read_particle_parallel_file_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_I
 	void *  split_pass_x_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_y_vlo_kernel ;
@@ -671,6 +702,9 @@ int  read_particle_parallel_file_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_I
 	void *  split_pass_x_vlo_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( 	(  particles + 	(  j + 	(  num_runtime * i ) ) ) )->calculate_rho_kernel ;
@@ -702,7 +736,7 @@ int  read_particle_parallel_file_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_I
 	long  oz = 	(  ofz / zlen ) ;
 	long  offset_len = 	(  	(  (pdimarr_cu)[0] * 	(  ox + 	(  (pdimarr_cu)[1] * 	(  oy + 	(  (pdimarr_cu)[2] * oz ) ) ) ) ) + c_offset ) ;
 	double  num_load = (cu_xyzw_0)[0] ;
-	GAPS_IO_DataSeek ( gid_cu , 0 , offset_len );
+	GAPS_IO_DataSeek ( gid_cu , numt , offset_len );
 	GAPS_IO_FRead ( gid_cu , 	& ( num_load ) , 1 );
 ((cu_xyzw_0)[0] = num_load);
 	assert ( 	(  num_load <= cu_cache_length ) );
@@ -726,7 +760,7 @@ int  read_particle_parallel_file_for_mpi_fields_V0 (Field3D_MPI *  pthis ,Gaps_I
 	long  oz = 	(  ofz + xyzz ) ;
 	int64_t *  pdimarr_grid = 	( gid_grid )->pdimarray ;
 	long  offset_len = 	(  	(  (pdimarr_grid)[0] * 	(  ox + 	(  (pdimarr_grid)[1] * 	(  oy + 	(  (pdimarr_grid)[2] * oz ) ) ) ) ) + g_offset ) ;
-	GAPS_IO_DataSeek ( gid_grid , 0 , offset_len );
+	GAPS_IO_DataSeek ( gid_grid , numt , offset_len );
 	double  num_load = (grid_xyzw)[0] ;
 	GAPS_IO_FRead ( gid_grid , 	& ( num_load ) , 1 );
 ((grid_xyzw)[0] = num_load);

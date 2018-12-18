@@ -35,7 +35,7 @@ typedef enum {CD_C,CD_OpenMP,CD_OpenCL,CD_CUDA} SEQ_FIELD_TYPES;
 
 #define NUM_SYNC_KERNEL 4
 
-#define NUM_FDTD_KERNEL 18
+#define NUM_FDTD_KERNEL 22
 typedef struct { 	void *  pe ;
 	long  xlen ;
 	long  ylen ;
@@ -89,7 +89,7 @@ typedef struct { 	void *  pe ;
 	Field3D_Seq *  pFoutJ ;
 	Field3D_Seq *  pLFoutJ ;
 	Field3D_Seq *  pFoutEN ;
-	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [5];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
+	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [8];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel ;
 	void *  move_back_kernel_kernel ;
 	double  Mass ;
@@ -103,6 +103,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel ;
@@ -110,6 +113,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel ;
 	void *  calculate_rho_kernel ;
@@ -135,6 +141,10 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_FoutJ ;
 	Field3D_MPI  MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp ;
+	Field3D_MPI  MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldBtmp1 ;
+	Field3D_MPI  MPI_fieldPMLB ;
+	Field3D_MPI  MPI_fieldPMLE ;
 	Field3D_MPI *  pMPI_FoutJ ;
 	Field3D_MPI *  pMPI_FoutEN ;
 	Field3D_MPI  MPI_fieldE_ext ;
@@ -143,7 +153,13 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_fieldB_filter ;
 	Field3D_MPI *  pB0 ;
 	Field3D_MPI *  pB1 ;
+	int  use_pml_abc_dir ;
+	int  use_pml_level ;
 	int  use_small_grid ;
+	long  allxmax ;
+	long  allymax ;
+	long  allzmax ;
+	double  use_pml_sigma_max ;
 	double  dt ;
 } Particle_in_Cell_MPI;
 	#ifndef   LINEAR_OPERATOR_PICUS_001    
@@ -2107,6 +2123,235 @@ void  init_external_field3d_FILTER_KROOK (Field3D_MPI *  pthis ){
 }}}}}}}}}}}}
 	 }
 }
+void  init_external_field3d_without_ss_KGM (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	char *  nm = "KGM_file" ;
+	FILE *  fp = 	fopen ( nm , "r" ) ;
+	if (  fp  ){  
+			fclose ( fp );
+	fprintf ( stderr , "found %s for input\n" , nm );
+	Gaps_IO_DataFile  gid ;
+	Gaps_IO_DataFile *  pgid = 	& ( gid ) ;
+	GAPS_IO_InitIFile ( pgid , nm );
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+	if (  1  ){  
+		{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < zlen ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < ylen ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  is = 	(  (global_x_offset)[j] + 0 ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
+	assert ( 	(  	( pgid )->dim == 4 ) );
+	assert ( 	(  	( pgid )->version == 0 ) );
+	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
+	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
+	long  imax = (	( pgid )->pdimarray)[1] ;
+	long  jmax = (	( pgid )->pdimarray)[2] ;
+	long  kmax = (	( pgid )->pdimarray)[3] ;
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * xlen ) );
+}}}}}}}}
+	}else{
+		{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 	(  zlen + 	(  2 * ovlp ) ) ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 	(  ylen + 	(  2 * ovlp ) ) ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  is = 	(  (global_x_offset)[j] + 0 ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
+	assert ( 	(  	( pgid )->dim == 4 ) );
+	assert ( 	(  	( pgid )->version == 0 ) );
+	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
+	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
+	long  imax = (	( pgid )->pdimarray)[1] ;
+	long  jmax = (	( pgid )->pdimarray)[2] ;
+	long  kmax = (	( pgid )->pdimarray)[3] ;
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	- ( ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  	(  xyzy - ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  	(  xyzz - ovlp ) + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * 	(  xlen + 	(  2 * ovlp ) ) ) );
+}}}}}}}}
+	 }
+}}
+	}else{
+		{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 	- ( ovlp )) ; 	(  xyzz < 	(  zlen + ovlp ) ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 	- ( ovlp )) ; 	(  xyzy < 	(  ylen + ovlp ) ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 	- ( ovlp )) ; 	(  xyzx < 	(  xlen + ovlp ) ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  is = 	(  (global_x_offset)[j] + xyzx ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
+{
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
+	{
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )]);
+}}}}}}}}}}}}
+	 }
+}
 void  init_dm_phi_global (Field3D_MPI *  pthis ,double  phi_r1 ,double  phi_r2 ,double  phi_r3 ,double  phi_r4 ,double  phi_i1 ,double  phi_i2 ,double  phi_i3 ,double  phi_i4 ,double  sgm ,double  frq ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
@@ -2597,16 +2842,23 @@ void  init_kgm_global (Field3D_MPI *  pthis ,double  phi_r0 ,double  m0 ,double 
 }));
 
 	 }
-	double  E1 = 	(  ampEy * 	(  	exp ( 	(  	pow ( 	(  ks - 64 ) , 2 ) / 	(  sgm * 	(  sgm * -2 ) ) ) ) * 	sin ( 	(  ks * frq ) ) ) ) ;
-	double  E0 = 0 ;
 	double  rx = 	(  ks - xmid ) ;
 	double  ry = 	(  js - ymid ) ;
 	double  rz = 	(  is - zmid ) ;
+	if (  	(  use_sper == 1 )  ){  
+		(p0 = 	(  phi_r0 * 	exp ( 	- ( 	(  	(  	(  rx * rx ) + 	(  	(  ry * ry ) + 	(  rz * rz ) ) ) / 	(  2 * 	(  kgm_sgm_dens * kgm_sgm_dens ) ) ) ) ) ));
+
+	}else{
+		0;
+
+	 }
+	double  E1 = 	(  ampEy * 	(  	exp ( 	(  	pow ( 	(  ks - 64 ) , 2 ) / 	(  sgm * 	(  sgm * -2 ) ) ) ) * 	sin ( 	(  ks * frq ) ) ) ) ;
+	double  E0 = 0 ;
 {
 	long  ls ;
 	for ((ls = 0) ; 	(  ls < num_ele ) ; (ls = 	(  ls + 1 )))
 	{
-(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  use_sper == 0 ))?(((	(  ls == 0 ))?(	(  E0 * dt )):(((	(  ls == 1 ))?(	(  E1 * dt )):(((	(  ls == 3 ))?(p0):(((	(  ls == 4 ))?(	(  p0 * 	(  m0 * dt ) )):(((	(  ls == 5 ))?(0):(((	(  ls == 8 ))?(p0):(((	(  ls == 9 ))?(0):(0))))))))))))))):(((	(  use_sper == 1 ))?(((	(  ls == 3 ))?(	(  phi_r0 * 	exp ( 	- ( 	(  	(  	(  rx * rx ) + 	(  	(  ry * ry ) + 	(  rz * rz ) ) ) / 	(  2 * 	(  kgm_sgm_dens * kgm_sgm_dens ) ) ) ) ) )):(((	(  ls == 8 ))?(	(  phi_r0 * 	exp ( 	- ( 	(  	(  	(  rx * rx ) + 	(  	(  ry * ry ) + 	(  rz * rz ) ) ) / 	(  2 * 	(  kgm_sgm_dens * kgm_sgm_dens ) ) ) ) ) )):(0))))):(0)))));
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  use_sper == 0 ))?(((	(  ls == 0 ))?(	(  E0 * dt )):(((	(  ls == 1 ))?(	(  E1 * dt )):(((	(  ls == 3 ))?(p0):(((	(  ls == 4 ))?(	(  p0 * 	(  m0 * dt ) )):(((	(  ls == 5 ))?(0):(((	(  ls == 8 ))?(p0):(((	(  ls == 9 ))?(0):(0))))))))))))))):(((	(  use_sper == 1 ))?(((	(  ls == 3 ))?(p0):(((	(  ls == 4 ))?(	(  p0 * 	(  m0 * dt ) )):(((	(  ls == 4 ))?(0):(((	(  ls == 8 ))?(p0):(0))))))))):(0)))));
 }}}}}}}}}}}}}
 int  set_ecrh_fields (Field3D_MPI *  pthis ,double  tomega ,double  ampx ,double  ampy ,double  ampz ,double  ky ,double  kz ,double  ikt ,long  x0 ,double  y0 ,double  y1 ,double  z0 ,double  z1 ){
 	Field3D_Seq *  data = 	( pthis )->data ;

@@ -28,3 +28,5 @@ int  PS_MPI_Sendrecv (void *  sendbuf ,int  sendcount ,MPI_Datatype  sendtype ,i
 ;
 int  PS_MPI_Wait (MPI_Request *  request ,MPI_Status *  status )
 ;
+
+#include "local_header.h"

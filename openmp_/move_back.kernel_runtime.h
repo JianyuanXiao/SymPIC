@@ -4,6 +4,8 @@ int  openmp_move_back_kernel_init (openmp_pscmc_env *  pe ,openmp_move_back_kern
 ;
 void  openmp_move_back_kernel_get_struct_len (size_t *  len )
 ;
+int  openmp_move_back_kernel_get_num_compute_units (openmp_move_back_kernel_struct *  kerstr )
+;
 int  openmp_move_back_kernel_get_xlen ()
 ;
 int  openmp_move_back_kernel_exec (openmp_move_back_kernel_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )

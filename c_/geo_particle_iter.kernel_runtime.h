@@ -6,6 +6,8 @@ void  c_geo_rel_1st_bwd_get_struct_len (size_t *  len )
 ;
 int  c_geo_rel_1st_bwd_get_xlen ()
 ;
+int  c_geo_rel_1st_bwd_get_num_compute_units (c_geo_rel_1st_bwd_struct *  kerstr )
+;
 int  c_geo_rel_1st_bwd_exec (c_geo_rel_1st_bwd_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;
 int  c_geo_rel_1st_bwd_scmc_set_parameter_inoutput (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
@@ -67,6 +69,8 @@ int  c_geo_rel_1st_fwd_init (c_pscmc_env *  pe ,c_geo_rel_1st_fwd_struct *  kers
 void  c_geo_rel_1st_fwd_get_struct_len (size_t *  len )
 ;
 int  c_geo_rel_1st_fwd_get_xlen ()
+;
+int  c_geo_rel_1st_fwd_get_num_compute_units (c_geo_rel_1st_fwd_struct *  kerstr )
 ;
 int  c_geo_rel_1st_fwd_exec (c_geo_rel_1st_fwd_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
 ;

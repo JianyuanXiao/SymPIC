@@ -9,6 +9,8 @@ int  openmp_relng_1st_init (openmp_pscmc_env *  pe ,openmp_relng_1st_struct *  k
 void  openmp_relng_1st_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_relng_1st_struct ));
 }
+int  openmp_relng_1st_get_num_compute_units (openmp_relng_1st_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_relng_1st_get_xlen (){
 	return  1 ;}
 int  openmp_relng_1st_exec (openmp_relng_1st_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){

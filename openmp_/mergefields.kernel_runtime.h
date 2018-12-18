@@ -4,6 +4,8 @@ int  openmp_merge_ovlp_m2o_init (openmp_pscmc_env *  pe ,openmp_merge_ovlp_m2o_s
 ;
 void  openmp_merge_ovlp_m2o_get_struct_len (size_t *  len )
 ;
+int  openmp_merge_ovlp_m2o_get_num_compute_units (openmp_merge_ovlp_m2o_struct *  kerstr )
+;
 int  openmp_merge_ovlp_m2o_get_xlen ()
 ;
 int  openmp_merge_ovlp_m2o_exec (openmp_merge_ovlp_m2o_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
@@ -29,6 +31,8 @@ int  openmp_merge_ovlp_m2o_scmc_set_parameter_ovlp (openmp_merge_ovlp_m2o_struct
 int  openmp_merge_ovlp_o2m_init (openmp_pscmc_env *  pe ,openmp_merge_ovlp_o2m_struct *  kerstr )
 ;
 void  openmp_merge_ovlp_o2m_get_struct_len (size_t *  len )
+;
+int  openmp_merge_ovlp_o2m_get_num_compute_units (openmp_merge_ovlp_o2m_struct *  kerstr )
 ;
 int  openmp_merge_ovlp_o2m_get_xlen ()
 ;
@@ -56,6 +60,8 @@ int  openmp_sync_ovlp_m2o_init (openmp_pscmc_env *  pe ,openmp_sync_ovlp_m2o_str
 ;
 void  openmp_sync_ovlp_m2o_get_struct_len (size_t *  len )
 ;
+int  openmp_sync_ovlp_m2o_get_num_compute_units (openmp_sync_ovlp_m2o_struct *  kerstr )
+;
 int  openmp_sync_ovlp_m2o_get_xlen ()
 ;
 int  openmp_sync_ovlp_m2o_exec (openmp_sync_ovlp_m2o_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
@@ -82,6 +88,8 @@ int  openmp_sync_ovlp_o2m_init (openmp_pscmc_env *  pe ,openmp_sync_ovlp_o2m_str
 ;
 void  openmp_sync_ovlp_o2m_get_struct_len (size_t *  len )
 ;
+int  openmp_sync_ovlp_o2m_get_num_compute_units (openmp_sync_ovlp_o2m_struct *  kerstr )
+;
 int  openmp_sync_ovlp_o2m_get_xlen ()
 ;
 int  openmp_sync_ovlp_o2m_exec (openmp_sync_ovlp_o2m_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
@@ -107,6 +115,8 @@ int  openmp_sync_ovlp_o2m_scmc_set_parameter_ovlp (openmp_sync_ovlp_o2m_struct *
 int  openmp_yee_local_init (openmp_pscmc_env *  pe ,openmp_yee_local_struct *  kerstr )
 ;
 void  openmp_yee_local_get_struct_len (size_t *  len )
+;
+int  openmp_yee_local_get_num_compute_units (openmp_yee_local_struct *  kerstr )
 ;
 int  openmp_yee_local_get_xlen ()
 ;

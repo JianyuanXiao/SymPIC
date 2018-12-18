@@ -4,6 +4,8 @@ int  openmp_geo_rel_1st_bwd_init (openmp_pscmc_env *  pe ,openmp_geo_rel_1st_bwd
 ;
 void  openmp_geo_rel_1st_bwd_get_struct_len (size_t *  len )
 ;
+int  openmp_geo_rel_1st_bwd_get_num_compute_units (openmp_geo_rel_1st_bwd_struct *  kerstr )
+;
 int  openmp_geo_rel_1st_bwd_get_xlen ()
 ;
 int  openmp_geo_rel_1st_bwd_exec (openmp_geo_rel_1st_bwd_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
@@ -65,6 +67,8 @@ int  openmp_geo_rel_1st_bwd_scmc_set_parameter_Solve_Err (openmp_geo_rel_1st_bwd
 int  openmp_geo_rel_1st_fwd_init (openmp_pscmc_env *  pe ,openmp_geo_rel_1st_fwd_struct *  kerstr )
 ;
 void  openmp_geo_rel_1st_fwd_get_struct_len (size_t *  len )
+;
+int  openmp_geo_rel_1st_fwd_get_num_compute_units (openmp_geo_rel_1st_fwd_struct *  kerstr )
 ;
 int  openmp_geo_rel_1st_fwd_get_xlen ()
 ;

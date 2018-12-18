@@ -6,6 +6,8 @@
 #include <stdio.h>
 #define IDX_OPT_MAX 1
 void  openmp_blas_yiszero_synced_scmc_kernel (double *  y ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -46,6 +48,8 @@ void  openmp_blas_yiszero_synced_scmc_kernel (double *  y ,long  y_cpu_core ,lon
 ((	(  y + 	(  blk_offset_t1 + j ) ))[Gll_P9918] = (zeros)[Gll_P9918]);
 }}}}}}
 void  openmp_blas_yiszero_scmc_kernel (double *  y ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -93,6 +97,8 @@ void  openmp_blas_yiszero_scmc_kernel (double *  y ,long  y_cpu_core ,long  numv
 ((y)[	(  blk_offset + realidx )] = 0);
 }}}}}}}}}}}
 void  openmp_blas_yisconst_scmc_kernel (double *  y ,double  a ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -140,6 +146,8 @@ void  openmp_blas_yisconst_scmc_kernel (double *  y ,double  a ,long  y_cpu_core
 ((y)[	(  blk_offset + realidx )] = a);
 }}}}}}}}}}}
 void  openmp_blas_get_ITG_Potential_scmc_kernel (double *  y ,double *  x ,double *  u ,double  minus_over_q_e ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -193,6 +201,8 @@ void  openmp_blas_get_ITG_Potential_scmc_kernel (double *  y ,double *  x ,doubl
 	 }
 }}}}}}}}}}}
 void  openmp_blas_invy_scmc_kernel (double *  y ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -246,6 +256,8 @@ void  openmp_blas_invy_scmc_kernel (double *  y ,long  y_cpu_core ,long  numvec 
 	 }
 }}}}}}}}}}}
 void  openmp_blas_yisax_scmc_kernel (double *  y ,double *  x ,double  a ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -293,6 +305,8 @@ void  openmp_blas_yisax_scmc_kernel (double *  y ,double *  x ,double  a ,long  
 ((y)[	(  blk_offset + realidx )] = 	(  a * (x)[	(  blk_offset + realidx )] ));
 }}}}}}}}}}}
 void  openmp_blas_axpy_scmc_kernel (double *  y ,double *  x ,double  a ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -340,6 +354,8 @@ void  openmp_blas_axpy_scmc_kernel (double *  y ,double *  x ,double  a ,long  y
 ((y)[	(  blk_offset + realidx )] = 	(  (y)[	(  blk_offset + realidx )] + 	(  a * (x)[	(  blk_offset + realidx )] ) ));
 }}}}}}}}}}}
 void  openmp_blas_axpby_scmc_kernel (double *  y ,double *  x ,double  a ,double  b ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -387,6 +403,8 @@ void  openmp_blas_axpby_scmc_kernel (double *  y ,double *  x ,double  a ,double
 ((y)[	(  blk_offset + realidx )] = 	(  	(  a * (x)[	(  blk_offset + realidx )] ) + 	(  b * (y)[	(  blk_offset + realidx )] ) ));
 }}}}}}}}}}}
 void  openmp_blas_mulxy_scmc_kernel (double *  y ,double *  x ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -434,6 +452,8 @@ void  openmp_blas_mulxy_scmc_kernel (double *  y ,double *  x ,long  y_cpu_core 
 ((y)[	(  blk_offset + realidx )] = 	(  (x)[	(  blk_offset + realidx )] * (y)[	(  blk_offset + realidx )] ));
 }}}}}}}}}}}
 void  openmp_blas_findmax_scmc_kernel (double *  y ,double *  rdcd ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -494,6 +514,8 @@ void  openmp_blas_findmax_scmc_kernel (double *  y ,double *  rdcd ,long  y_cpu_
 	 }
 }
 void  openmp_blas_dot_scmc_kernel (double *  y ,double *  x ,double *  rdcd ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;
@@ -554,6 +576,8 @@ void  openmp_blas_dot_scmc_kernel (double *  y ,double *  x ,double *  rdcd ,lon
 	 }
 }
 void  openmp_blas_sum_scmc_kernel (double *  y ,double *  rdcd ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;

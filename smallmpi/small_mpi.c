@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <mpi.h>
 
 #define PS_MPI_INT MPI_INT

@@ -4,6 +4,8 @@ int  openmp_RECT_YEE_CURL_L_init (openmp_pscmc_env *  pe ,openmp_RECT_YEE_CURL_L
 ;
 void  openmp_RECT_YEE_CURL_L_get_struct_len (size_t *  len )
 ;
+int  openmp_RECT_YEE_CURL_L_get_num_compute_units (openmp_RECT_YEE_CURL_L_struct *  kerstr )
+;
 int  openmp_RECT_YEE_CURL_L_get_xlen ()
 ;
 int  openmp_RECT_YEE_CURL_L_exec (openmp_RECT_YEE_CURL_L_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )

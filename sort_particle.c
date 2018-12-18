@@ -33,7 +33,7 @@ typedef enum {CD_C,CD_OpenMP,CD_OpenCL,CD_CUDA} SEQ_FIELD_TYPES;
 
 #define NUM_SYNC_KERNEL 4
 
-#define NUM_FDTD_KERNEL 18
+#define NUM_FDTD_KERNEL 22
 typedef struct { 	void *  pe ;
 	long  xlen ;
 	long  ylen ;
@@ -87,7 +87,7 @@ typedef struct { 	void *  pe ;
 	Field3D_Seq *  pFoutJ ;
 	Field3D_Seq *  pLFoutJ ;
 	Field3D_Seq *  pFoutEN ;
-	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [5];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
+	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [8];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel ;
 	void *  move_back_kernel_kernel ;
 	double  Mass ;
@@ -101,6 +101,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel ;
@@ -108,6 +111,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel ;
 	void *  calculate_rho_kernel ;
@@ -133,6 +139,10 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_FoutJ ;
 	Field3D_MPI  MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp ;
+	Field3D_MPI  MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldBtmp1 ;
+	Field3D_MPI  MPI_fieldPMLB ;
+	Field3D_MPI  MPI_fieldPMLE ;
 	Field3D_MPI *  pMPI_FoutJ ;
 	Field3D_MPI *  pMPI_FoutEN ;
 	Field3D_MPI  MPI_fieldE_ext ;
@@ -141,7 +151,13 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_fieldB_filter ;
 	Field3D_MPI *  pB0 ;
 	Field3D_MPI *  pB1 ;
+	int  use_pml_abc_dir ;
+	int  use_pml_level ;
 	int  use_small_grid ;
+	long  allxmax ;
+	long  allymax ;
+	long  allzmax ;
+	double  use_pml_sigma_max ;
 	double  dt ;
 } Particle_in_Cell_MPI;
 	#ifndef   LINEAR_OPERATOR_PICUS_001    
@@ -229,6 +245,9 @@ int  c_call_particle_sort_single_x (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -236,6 +255,9 @@ int  c_call_particle_sort_single_x (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -416,6 +438,9 @@ int  c_call_particle_sort_single_y (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -423,6 +448,9 @@ int  c_call_particle_sort_single_y (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -603,6 +631,9 @@ int  c_call_particle_sort_single_z (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -610,6 +641,9 @@ int  c_call_particle_sort_single_z (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -790,6 +824,9 @@ int  c_call_particle_sort_single_x_vlo (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -797,6 +834,9 @@ int  c_call_particle_sort_single_x_vlo (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -977,6 +1017,9 @@ int  c_call_particle_sort_single_y_vlo (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -984,6 +1027,9 @@ int  c_call_particle_sort_single_y_vlo (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -1164,6 +1210,9 @@ int  c_call_particle_sort_single_z_vlo (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -1171,6 +1220,9 @@ int  c_call_particle_sort_single_z_vlo (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -1351,6 +1403,9 @@ int  openmp_call_particle_sort_single_x (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -1358,6 +1413,9 @@ int  openmp_call_particle_sort_single_x (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -1538,6 +1596,9 @@ int  openmp_call_particle_sort_single_y (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -1545,6 +1606,9 @@ int  openmp_call_particle_sort_single_y (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -1725,6 +1789,9 @@ int  openmp_call_particle_sort_single_z (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -1732,6 +1799,9 @@ int  openmp_call_particle_sort_single_z (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -1912,6 +1982,9 @@ int  openmp_call_particle_sort_single_x_vlo (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -1919,6 +1992,9 @@ int  openmp_call_particle_sort_single_x_vlo (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -2099,6 +2175,9 @@ int  openmp_call_particle_sort_single_y_vlo (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -2106,6 +2185,9 @@ int  openmp_call_particle_sort_single_y_vlo (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -2286,6 +2368,9 @@ int  openmp_call_particle_sort_single_z_vlo (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -2293,6 +2378,9 @@ int  openmp_call_particle_sort_single_z_vlo (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -2473,6 +2561,9 @@ int  c_call_move_back_kernel_single (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -2480,6 +2571,9 @@ int  c_call_move_back_kernel_single (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -2606,6 +2700,9 @@ int  openmp_call_move_back_kernel_single (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -2613,6 +2710,9 @@ int  openmp_call_move_back_kernel_single (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -2739,6 +2839,9 @@ int  call_particle_sort_single (One_Particle_Collection *  pthis ,int  dir ,int 
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -2746,6 +2849,9 @@ int  call_particle_sort_single (One_Particle_Collection *  pthis ,int  dir ,int 
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -2953,6 +3059,9 @@ int  dump_particles_mpi (One_Particle_Collection *  pthis ,FILE *  of ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -2960,6 +3069,9 @@ int  dump_particles_mpi (One_Particle_Collection *  pthis ,FILE *  of ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -3156,6 +3268,9 @@ int  print_particles_mpi (One_Particle_Collection *  pthis ,int  dir ){
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
@@ -3163,6 +3278,9 @@ int  print_particles_mpi (One_Particle_Collection *  pthis ,int  dir ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -3419,6 +3537,9 @@ int  swap_particle_sort_host_l (Field3D_MPI *  pthis ,int  dir ){
 	void *  split_pass_x_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_kernel ;
@@ -3426,6 +3547,9 @@ int  swap_particle_sort_host_l (Field3D_MPI *  pthis ,int  dir ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( 	(  particle_spec_1 + i ) )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( 	(  particle_spec_1 + i ) )->calculate_rho_kernel ;
@@ -3510,7 +3634,7 @@ int  swap_particle_sort_host_l (Field3D_MPI *  pthis ,int  dir ){
 ((xyzarr)[dir] = 0);
 	long  left_pid = (cur_adj_procs)[	(  0 + 	(  1 * 	(  (xyzarr)[0] + 	(  3 * 	(  (xyzarr)[1] + 	(  3 * (xyzarr)[2] ) ) ) ) ) )] ;
 	long  left_proc_id = 	(  left_pid / 	( pthis )->num_runtime ) ;
-	long  cur_proc_id = 	(  adj_processes + 	(  	(  j * NUM_SYNC_LAYER ) + 	(  NUM_SYNC_LAYER / 2 ) ) ) ;
+	long  cur_proc_id = (	(  adj_processes + 	(  j * NUM_SYNC_LAYER ) ))[	(  NUM_SYNC_LAYER / 2 )] ;
 	int  local_xyz_all_tmp = 	(  0 + 	(  1 * 	(  (xyzarr)[0] + 	(  3 * 	(  (xyzarr)[1] + 	(  3 * (xyzarr)[2] ) ) ) ) ) ) ;
 	long  left_id = (cur_adj_ids)[local_xyz_all_tmp] ;
 	long  left_local_tid = (cur_local_tid)[local_xyz_all_tmp] ;
@@ -3560,6 +3684,9 @@ int  swap_particle_sort_host_l (Field3D_MPI *  pthis ,int  dir ){
 	void *  split_pass_x_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_kernel ;
@@ -3567,6 +3694,9 @@ int  swap_particle_sort_host_l (Field3D_MPI *  pthis ,int  dir ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( 	(  particle_spec_1 + i ) )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( 	(  particle_spec_1 + i ) )->calculate_rho_kernel ;
@@ -3650,7 +3780,7 @@ int  swap_particle_sort_host_l (Field3D_MPI *  pthis ,int  dir ){
 ((xyzarr)[dir] = 2);
 	long  left_pid = (cur_adj_procs)[	(  0 + 	(  1 * 	(  (xyzarr)[0] + 	(  3 * 	(  (xyzarr)[1] + 	(  3 * (xyzarr)[2] ) ) ) ) ) )] ;
 	long  left_proc_id = 	(  left_pid / 	( pthis )->num_runtime ) ;
-	long  cur_proc_id = 	(  adj_processes + 	(  	(  j * NUM_SYNC_LAYER ) + 	(  NUM_SYNC_LAYER / 2 ) ) ) ;
+	long  cur_proc_id = (	(  adj_processes + 	(  j * NUM_SYNC_LAYER ) ))[	(  NUM_SYNC_LAYER / 2 )] ;
 	int  local_xyz_all_tmp = 	(  0 + 	(  1 * 	(  (xyzarr)[0] + 	(  3 * 	(  (xyzarr)[1] + 	(  3 * (xyzarr)[2] ) ) ) ) ) ) ;
 	long  left_id = (cur_adj_ids)[local_xyz_all_tmp] ;
 	long  left_local_tid = (cur_local_tid)[local_xyz_all_tmp] ;
@@ -3736,6 +3866,9 @@ int  swap_particle_sort_host_l (Field3D_MPI *  pthis ,int  dir ){
 	void *  split_pass_x_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_kernel ;
@@ -3743,6 +3876,9 @@ int  swap_particle_sort_host_l (Field3D_MPI *  pthis ,int  dir ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( 	(  particle_spec_1 + i ) )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( 	(  particle_spec_1 + i ) )->calculate_rho_kernel ;
@@ -3826,7 +3962,7 @@ int  swap_particle_sort_host_l (Field3D_MPI *  pthis ,int  dir ){
 ((xyzarr)[dir] = 0);
 	long  left_pid = (cur_adj_procs)[	(  0 + 	(  1 * 	(  (xyzarr)[0] + 	(  3 * 	(  (xyzarr)[1] + 	(  3 * (xyzarr)[2] ) ) ) ) ) )] ;
 	long  left_proc_id = 	(  left_pid / 	( pthis )->num_runtime ) ;
-	long  cur_proc_id = 	(  adj_processes + 	(  	(  j * NUM_SYNC_LAYER ) + 	(  NUM_SYNC_LAYER / 2 ) ) ) ;
+	long  cur_proc_id = (	(  adj_processes + 	(  j * NUM_SYNC_LAYER ) ))[	(  NUM_SYNC_LAYER / 2 )] ;
 	int  local_xyz_all_tmp = 	(  0 + 	(  1 * 	(  (xyzarr)[0] + 	(  3 * 	(  (xyzarr)[1] + 	(  3 * (xyzarr)[2] ) ) ) ) ) ) ;
 	long  left_id = (cur_adj_ids)[local_xyz_all_tmp] ;
 	long  left_local_tid = (cur_local_tid)[local_xyz_all_tmp] ;
@@ -3909,6 +4045,9 @@ int  swap_particle_sort_host_r (Field3D_MPI *  pthis ,int  dir ){
 	void *  split_pass_x_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_kernel ;
@@ -3916,6 +4055,9 @@ int  swap_particle_sort_host_r (Field3D_MPI *  pthis ,int  dir ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( 	(  particle_spec_1 + i ) )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( 	(  particle_spec_1 + i ) )->calculate_rho_kernel ;
@@ -4000,7 +4142,7 @@ int  swap_particle_sort_host_r (Field3D_MPI *  pthis ,int  dir ){
 ((xyzarr)[dir] = 2);
 	long  left_pid = (cur_adj_procs)[	(  0 + 	(  1 * 	(  (xyzarr)[0] + 	(  3 * 	(  (xyzarr)[1] + 	(  3 * (xyzarr)[2] ) ) ) ) ) )] ;
 	long  left_proc_id = 	(  left_pid / 	( pthis )->num_runtime ) ;
-	long  cur_proc_id = 	(  adj_processes + 	(  	(  j * NUM_SYNC_LAYER ) + 	(  NUM_SYNC_LAYER / 2 ) ) ) ;
+	long  cur_proc_id = (	(  adj_processes + 	(  j * NUM_SYNC_LAYER ) ))[	(  NUM_SYNC_LAYER / 2 )] ;
 	int  local_xyz_all_tmp = 	(  0 + 	(  1 * 	(  (xyzarr)[0] + 	(  3 * 	(  (xyzarr)[1] + 	(  3 * (xyzarr)[2] ) ) ) ) ) ) ;
 	long  left_id = (cur_adj_ids)[local_xyz_all_tmp] ;
 	long  left_local_tid = (cur_local_tid)[local_xyz_all_tmp] ;
@@ -4050,6 +4192,9 @@ int  swap_particle_sort_host_r (Field3D_MPI *  pthis ,int  dir ){
 	void *  split_pass_x_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_kernel ;
@@ -4057,6 +4202,9 @@ int  swap_particle_sort_host_r (Field3D_MPI *  pthis ,int  dir ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( 	(  particle_spec_1 + i ) )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( 	(  particle_spec_1 + i ) )->calculate_rho_kernel ;
@@ -4140,7 +4288,7 @@ int  swap_particle_sort_host_r (Field3D_MPI *  pthis ,int  dir ){
 ((xyzarr)[dir] = 0);
 	long  left_pid = (cur_adj_procs)[	(  0 + 	(  1 * 	(  (xyzarr)[0] + 	(  3 * 	(  (xyzarr)[1] + 	(  3 * (xyzarr)[2] ) ) ) ) ) )] ;
 	long  left_proc_id = 	(  left_pid / 	( pthis )->num_runtime ) ;
-	long  cur_proc_id = 	(  adj_processes + 	(  	(  j * NUM_SYNC_LAYER ) + 	(  NUM_SYNC_LAYER / 2 ) ) ) ;
+	long  cur_proc_id = (	(  adj_processes + 	(  j * NUM_SYNC_LAYER ) ))[	(  NUM_SYNC_LAYER / 2 )] ;
 	int  local_xyz_all_tmp = 	(  0 + 	(  1 * 	(  (xyzarr)[0] + 	(  3 * 	(  (xyzarr)[1] + 	(  3 * (xyzarr)[2] ) ) ) ) ) ) ;
 	long  left_id = (cur_adj_ids)[local_xyz_all_tmp] ;
 	long  left_local_tid = (cur_local_tid)[local_xyz_all_tmp] ;
@@ -4226,6 +4374,9 @@ int  swap_particle_sort_host_r (Field3D_MPI *  pthis ,int  dir ){
 	void *  split_pass_x_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_kernel ;
@@ -4233,6 +4384,9 @@ int  swap_particle_sort_host_r (Field3D_MPI *  pthis ,int  dir ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( 	(  particle_spec_1 + i ) )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( 	(  particle_spec_1 + i ) )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( 	(  particle_spec_1 + i ) )->calculate_rho_kernel ;
@@ -4316,7 +4470,7 @@ int  swap_particle_sort_host_r (Field3D_MPI *  pthis ,int  dir ){
 ((xyzarr)[dir] = 2);
 	long  left_pid = (cur_adj_procs)[	(  0 + 	(  1 * 	(  (xyzarr)[0] + 	(  3 * 	(  (xyzarr)[1] + 	(  3 * (xyzarr)[2] ) ) ) ) ) )] ;
 	long  left_proc_id = 	(  left_pid / 	( pthis )->num_runtime ) ;
-	long  cur_proc_id = 	(  adj_processes + 	(  	(  j * NUM_SYNC_LAYER ) + 	(  NUM_SYNC_LAYER / 2 ) ) ) ;
+	long  cur_proc_id = (	(  adj_processes + 	(  j * NUM_SYNC_LAYER ) ))[	(  NUM_SYNC_LAYER / 2 )] ;
 	int  local_xyz_all_tmp = 	(  0 + 	(  1 * 	(  (xyzarr)[0] + 	(  3 * 	(  (xyzarr)[1] + 	(  3 * (xyzarr)[2] ) ) ) ) ) ) ;
 	long  left_id = (cur_adj_ids)[local_xyz_all_tmp] ;
 	long  left_local_tid = (cur_local_tid)[local_xyz_all_tmp] ;
@@ -4402,6 +4556,9 @@ int  call_particle_sort_mpi (Field3D_MPI *  pthis ,int  dir ,int  use_vlo ){
 	void *  split_pass_x_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( 	(  particles + i ) )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( 	(  particles + i ) )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( 	(  particles + i ) )->split_pass_y_vlo_kernel ;
@@ -4409,6 +4566,9 @@ int  call_particle_sort_mpi (Field3D_MPI *  pthis ,int  dir ,int  use_vlo ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( 	(  particles + i ) )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( 	(  particles + i ) )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( 	(  particles + i ) )->calculate_rho_kernel ;
@@ -4529,6 +4689,9 @@ int  call_particle_sort_mpi (Field3D_MPI *  pthis ,int  dir ,int  use_vlo ){
 	void *  split_pass_x_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel = 	( 	(  particles + i ) )->split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel = 	( 	(  particles + i ) )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( 	(  particles + i ) )->split_pass_y_vlo_kernel ;
@@ -4536,6 +4699,9 @@ int  call_particle_sort_mpi (Field3D_MPI *  pthis ,int  dir ,int  use_vlo ){
 	void *  split_pass_x_vlo_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( 	(  particles + i ) )->split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( 	(  particles + i ) )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( 	(  particles + i ) )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( 	(  particles + i ) )->calculate_rho_kernel ;

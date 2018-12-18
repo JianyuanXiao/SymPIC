@@ -4,6 +4,8 @@ int  openmp_dump_ene_num_init (openmp_pscmc_env *  pe ,openmp_dump_ene_num_struc
 ;
 void  openmp_dump_ene_num_get_struct_len (size_t *  len )
 ;
+int  openmp_dump_ene_num_get_num_compute_units (openmp_dump_ene_num_struct *  kerstr )
+;
 int  openmp_dump_ene_num_get_xlen ()
 ;
 int  openmp_dump_ene_num_exec (openmp_dump_ene_num_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
@@ -59,6 +61,8 @@ int  openmp_dump_ene_num_scmc_set_parameter_Deltat (openmp_dump_ene_num_struct *
 int  openmp_calculate_rho_init (openmp_pscmc_env *  pe ,openmp_calculate_rho_struct *  kerstr )
 ;
 void  openmp_calculate_rho_get_struct_len (size_t *  len )
+;
+int  openmp_calculate_rho_get_num_compute_units (openmp_calculate_rho_struct *  kerstr )
 ;
 int  openmp_calculate_rho_get_xlen ()
 ;
@@ -116,6 +120,8 @@ int  openmp_krook_collision_test_init (openmp_pscmc_env *  pe ,openmp_krook_coll
 ;
 void  openmp_krook_collision_test_get_struct_len (size_t *  len )
 ;
+int  openmp_krook_collision_test_get_num_compute_units (openmp_krook_collision_test_struct *  kerstr )
+;
 int  openmp_krook_collision_test_get_xlen ()
 ;
 int  openmp_krook_collision_test_exec (openmp_krook_collision_test_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
@@ -161,6 +167,8 @@ int  openmp_krook_collision_test_scmc_set_parameter_mu_freq (openmp_krook_collis
 int  openmp_krook_collision_remove_small_speed_init (openmp_pscmc_env *  pe ,openmp_krook_collision_remove_small_speed_struct *  kerstr )
 ;
 void  openmp_krook_collision_remove_small_speed_get_struct_len (size_t *  len )
+;
+int  openmp_krook_collision_remove_small_speed_get_num_compute_units (openmp_krook_collision_remove_small_speed_struct *  kerstr )
 ;
 int  openmp_krook_collision_remove_small_speed_get_xlen ()
 ;
@@ -208,6 +216,8 @@ int  openmp_boris_yee_init (openmp_pscmc_env *  pe ,openmp_boris_yee_struct *  k
 ;
 void  openmp_boris_yee_get_struct_len (size_t *  len )
 ;
+int  openmp_boris_yee_get_num_compute_units (openmp_boris_yee_struct *  kerstr )
+;
 int  openmp_boris_yee_get_xlen ()
 ;
 int  openmp_boris_yee_exec (openmp_boris_yee_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
@@ -251,6 +261,8 @@ int  openmp_boris_yee_scmc_set_parameter_Deltat (openmp_boris_yee_struct *  kers
 int  openmp_split_pass_E_particle_vlo_init (openmp_pscmc_env *  pe ,openmp_split_pass_E_particle_vlo_struct *  kerstr )
 ;
 void  openmp_split_pass_E_particle_vlo_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_E_particle_vlo_get_num_compute_units (openmp_split_pass_E_particle_vlo_struct *  kerstr )
 ;
 int  openmp_split_pass_E_particle_vlo_get_xlen ()
 ;
@@ -308,6 +320,8 @@ int  openmp_split_pass_E_particle_init (openmp_pscmc_env *  pe ,openmp_split_pas
 ;
 void  openmp_split_pass_E_particle_get_struct_len (size_t *  len )
 ;
+int  openmp_split_pass_E_particle_get_num_compute_units (openmp_split_pass_E_particle_struct *  kerstr )
+;
 int  openmp_split_pass_E_particle_get_xlen ()
 ;
 int  openmp_split_pass_E_particle_exec (openmp_split_pass_E_particle_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
@@ -360,9 +374,69 @@ int  openmp_split_pass_E_particle_scmc_set_parameter_DELTA_Z (openmp_split_pass_
 ;
 int  openmp_split_pass_E_particle_scmc_set_parameter_Deltat (openmp_split_pass_E_particle_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_split_pass_z_vlo_sg2_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr )
+;
+void  openmp_split_pass_z_vlo_sg2_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_get_num_compute_units (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_get_xlen ()
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_exec (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_inoutput (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_xyzw (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_cu_cache (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_cu_xyzw (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_fieldE (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_fieldB (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_LFoutJ (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_FoutEN (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_XLEN (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_YLEN (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_ZLEN (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_ovlp (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_numvec (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_num_ele (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_grid_cache_len (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_cu_cache_length (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_Mass (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_Charge (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_SPEC (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_NUM_SPEC (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_DELTA_X (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_DELTA_Y (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_DELTA_Z (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_split_pass_z_vlo_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_z_vlo_small_grids_struct *  kerstr )
 ;
 void  openmp_split_pass_z_vlo_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_z_vlo_small_grids_get_num_compute_units (openmp_split_pass_z_vlo_small_grids_struct *  kerstr )
 ;
 int  openmp_split_pass_z_vlo_small_grids_get_xlen ()
 ;
@@ -416,9 +490,69 @@ int  openmp_split_pass_z_vlo_small_grids_scmc_set_parameter_DELTA_Z (openmp_spli
 ;
 int  openmp_split_pass_z_vlo_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_z_vlo_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_split_pass_z_sg2_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_z_sg2_small_grids_struct *  kerstr )
+;
+void  openmp_split_pass_z_sg2_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_z_sg2_small_grids_get_num_compute_units (openmp_split_pass_z_sg2_small_grids_struct *  kerstr )
+;
+int  openmp_split_pass_z_sg2_small_grids_get_xlen ()
+;
+int  openmp_split_pass_z_sg2_small_grids_exec (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_inoutput (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_xyzw (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_cu_cache (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_cu_xyzw (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_fieldE (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_fieldB (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_LFoutJ (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_FoutEN (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_XLEN (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_YLEN (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_ZLEN (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_ovlp (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_numvec (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_num_ele (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_grid_cache_len (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_cu_cache_length (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_Mass (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_Charge (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_SPEC (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_NUM_SPEC (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_DELTA_X (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_DELTA_Y (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_DELTA_Z (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_sg2_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_z_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_split_pass_z_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_z_small_grids_struct *  kerstr )
 ;
 void  openmp_split_pass_z_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_z_small_grids_get_num_compute_units (openmp_split_pass_z_small_grids_struct *  kerstr )
 ;
 int  openmp_split_pass_z_small_grids_get_xlen ()
 ;
@@ -476,6 +610,8 @@ int  openmp_split_pass_z_vlo_init (openmp_pscmc_env *  pe ,openmp_split_pass_z_v
 ;
 void  openmp_split_pass_z_vlo_get_struct_len (size_t *  len )
 ;
+int  openmp_split_pass_z_vlo_get_num_compute_units (openmp_split_pass_z_vlo_struct *  kerstr )
+;
 int  openmp_split_pass_z_vlo_get_xlen ()
 ;
 int  openmp_split_pass_z_vlo_exec (openmp_split_pass_z_vlo_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
@@ -532,6 +668,8 @@ int  openmp_split_pass_z_init (openmp_pscmc_env *  pe ,openmp_split_pass_z_struc
 ;
 void  openmp_split_pass_z_get_struct_len (size_t *  len )
 ;
+int  openmp_split_pass_z_get_num_compute_units (openmp_split_pass_z_struct *  kerstr )
+;
 int  openmp_split_pass_z_get_xlen ()
 ;
 int  openmp_split_pass_z_exec (openmp_split_pass_z_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
@@ -584,9 +722,69 @@ int  openmp_split_pass_z_scmc_set_parameter_DELTA_Z (openmp_split_pass_z_struct 
 ;
 int  openmp_split_pass_z_scmc_set_parameter_Deltat (openmp_split_pass_z_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_split_pass_y_vlo_sg2_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr )
+;
+void  openmp_split_pass_y_vlo_sg2_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_get_num_compute_units (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_get_xlen ()
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_exec (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_inoutput (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_xyzw (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_cu_cache (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_cu_xyzw (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_fieldE (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_fieldB (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_LFoutJ (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_FoutEN (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_XLEN (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_YLEN (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_ZLEN (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_ovlp (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_numvec (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_num_ele (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_grid_cache_len (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_cu_cache_length (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_Mass (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_Charge (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_SPEC (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_NUM_SPEC (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_DELTA_X (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_DELTA_Y (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_DELTA_Z (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_split_pass_y_vlo_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_y_vlo_small_grids_struct *  kerstr )
 ;
 void  openmp_split_pass_y_vlo_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_y_vlo_small_grids_get_num_compute_units (openmp_split_pass_y_vlo_small_grids_struct *  kerstr )
 ;
 int  openmp_split_pass_y_vlo_small_grids_get_xlen ()
 ;
@@ -640,9 +838,69 @@ int  openmp_split_pass_y_vlo_small_grids_scmc_set_parameter_DELTA_Z (openmp_spli
 ;
 int  openmp_split_pass_y_vlo_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_y_vlo_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_split_pass_y_sg2_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_y_sg2_small_grids_struct *  kerstr )
+;
+void  openmp_split_pass_y_sg2_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_y_sg2_small_grids_get_num_compute_units (openmp_split_pass_y_sg2_small_grids_struct *  kerstr )
+;
+int  openmp_split_pass_y_sg2_small_grids_get_xlen ()
+;
+int  openmp_split_pass_y_sg2_small_grids_exec (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_inoutput (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_xyzw (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_cu_cache (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_cu_xyzw (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_fieldE (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_fieldB (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_LFoutJ (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_FoutEN (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_XLEN (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_YLEN (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_ZLEN (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_ovlp (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_numvec (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_num_ele (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_grid_cache_len (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_cu_cache_length (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_Mass (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_Charge (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_SPEC (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_NUM_SPEC (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_DELTA_X (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_DELTA_Y (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_DELTA_Z (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_sg2_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_y_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_split_pass_y_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_y_small_grids_struct *  kerstr )
 ;
 void  openmp_split_pass_y_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_y_small_grids_get_num_compute_units (openmp_split_pass_y_small_grids_struct *  kerstr )
 ;
 int  openmp_split_pass_y_small_grids_get_xlen ()
 ;
@@ -700,6 +958,8 @@ int  openmp_split_pass_y_vlo_init (openmp_pscmc_env *  pe ,openmp_split_pass_y_v
 ;
 void  openmp_split_pass_y_vlo_get_struct_len (size_t *  len )
 ;
+int  openmp_split_pass_y_vlo_get_num_compute_units (openmp_split_pass_y_vlo_struct *  kerstr )
+;
 int  openmp_split_pass_y_vlo_get_xlen ()
 ;
 int  openmp_split_pass_y_vlo_exec (openmp_split_pass_y_vlo_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
@@ -756,6 +1016,8 @@ int  openmp_split_pass_y_init (openmp_pscmc_env *  pe ,openmp_split_pass_y_struc
 ;
 void  openmp_split_pass_y_get_struct_len (size_t *  len )
 ;
+int  openmp_split_pass_y_get_num_compute_units (openmp_split_pass_y_struct *  kerstr )
+;
 int  openmp_split_pass_y_get_xlen ()
 ;
 int  openmp_split_pass_y_exec (openmp_split_pass_y_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
@@ -808,9 +1070,69 @@ int  openmp_split_pass_y_scmc_set_parameter_DELTA_Z (openmp_split_pass_y_struct 
 ;
 int  openmp_split_pass_y_scmc_set_parameter_Deltat (openmp_split_pass_y_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_split_pass_x_vlo_sg2_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr )
+;
+void  openmp_split_pass_x_vlo_sg2_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_get_num_compute_units (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_get_xlen ()
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_exec (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_inoutput (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_xyzw (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_cu_cache (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_cu_xyzw (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_fieldE (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_fieldB (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_LFoutJ (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_FoutEN (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_XLEN (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_YLEN (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_ZLEN (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_ovlp (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_numvec (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_num_ele (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_grid_cache_len (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_cu_cache_length (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_Mass (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_Charge (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_SPEC (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_NUM_SPEC (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_DELTA_X (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_DELTA_Y (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_DELTA_Z (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_split_pass_x_vlo_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_x_vlo_small_grids_struct *  kerstr )
 ;
 void  openmp_split_pass_x_vlo_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_x_vlo_small_grids_get_num_compute_units (openmp_split_pass_x_vlo_small_grids_struct *  kerstr )
 ;
 int  openmp_split_pass_x_vlo_small_grids_get_xlen ()
 ;
@@ -864,9 +1186,69 @@ int  openmp_split_pass_x_vlo_small_grids_scmc_set_parameter_DELTA_Z (openmp_spli
 ;
 int  openmp_split_pass_x_vlo_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_x_vlo_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_split_pass_x_sg2_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_x_sg2_small_grids_struct *  kerstr )
+;
+void  openmp_split_pass_x_sg2_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_x_sg2_small_grids_get_num_compute_units (openmp_split_pass_x_sg2_small_grids_struct *  kerstr )
+;
+int  openmp_split_pass_x_sg2_small_grids_get_xlen ()
+;
+int  openmp_split_pass_x_sg2_small_grids_exec (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_inoutput (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_xyzw (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_cu_cache (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_cu_xyzw (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_fieldE (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_fieldB (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_LFoutJ (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_FoutEN (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_XLEN (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_YLEN (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_ZLEN (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_ovlp (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_numvec (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_num_ele (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_grid_cache_len (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_cu_cache_length (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_Mass (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_Charge (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_SPEC (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_NUM_SPEC (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_DELTA_X (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_DELTA_Y (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_DELTA_Z (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_sg2_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_x_sg2_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_split_pass_x_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_x_small_grids_struct *  kerstr )
 ;
 void  openmp_split_pass_x_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_x_small_grids_get_num_compute_units (openmp_split_pass_x_small_grids_struct *  kerstr )
 ;
 int  openmp_split_pass_x_small_grids_get_xlen ()
 ;
@@ -924,6 +1306,8 @@ int  openmp_split_pass_x_vlo_init (openmp_pscmc_env *  pe ,openmp_split_pass_x_v
 ;
 void  openmp_split_pass_x_vlo_get_struct_len (size_t *  len )
 ;
+int  openmp_split_pass_x_vlo_get_num_compute_units (openmp_split_pass_x_vlo_struct *  kerstr )
+;
 int  openmp_split_pass_x_vlo_get_xlen ()
 ;
 int  openmp_split_pass_x_vlo_exec (openmp_split_pass_x_vlo_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
@@ -979,6 +1363,8 @@ int  openmp_split_pass_x_vlo_scmc_set_parameter_Deltat (openmp_split_pass_x_vlo_
 int  openmp_split_pass_x_init (openmp_pscmc_env *  pe ,openmp_split_pass_x_struct *  kerstr )
 ;
 void  openmp_split_pass_x_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_x_get_num_compute_units (openmp_split_pass_x_struct *  kerstr )
 ;
 int  openmp_split_pass_x_get_xlen ()
 ;

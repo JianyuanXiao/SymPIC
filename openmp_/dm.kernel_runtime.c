@@ -9,6 +9,8 @@ int  openmp_dm_1st_eqn_right_init (openmp_pscmc_env *  pe ,openmp_dm_1st_eqn_rig
 void  openmp_dm_1st_eqn_right_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_dm_1st_eqn_right_struct ));
 }
+int  openmp_dm_1st_eqn_right_get_num_compute_units (openmp_dm_1st_eqn_right_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_dm_1st_eqn_right_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_dm_1st_eqn_right_exec (openmp_dm_1st_eqn_right_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -96,6 +98,8 @@ int  openmp_dm_1st_eqn_core_init (openmp_pscmc_env *  pe ,openmp_dm_1st_eqn_core
 void  openmp_dm_1st_eqn_core_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_dm_1st_eqn_core_struct ));
 }
+int  openmp_dm_1st_eqn_core_get_num_compute_units (openmp_dm_1st_eqn_core_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_dm_1st_eqn_core_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_dm_1st_eqn_core_exec (openmp_dm_1st_eqn_core_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -183,6 +187,8 @@ int  openmp_dm_1st_eqn_fdtd_init (openmp_pscmc_env *  pe ,openmp_dm_1st_eqn_fdtd
 void  openmp_dm_1st_eqn_fdtd_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_dm_1st_eqn_fdtd_struct ));
 }
+int  openmp_dm_1st_eqn_fdtd_get_num_compute_units (openmp_dm_1st_eqn_fdtd_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_dm_1st_eqn_fdtd_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_dm_1st_eqn_fdtd_exec (openmp_dm_1st_eqn_fdtd_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){

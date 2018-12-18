@@ -1,0 +1,9 @@
+List of Changes in SymPIC 0.1.0
+
+* New lost-cone distribution function for particles is available (can be used by seting USE_LOST_CONE_DIST, LOST_CONE_MU0, and LOST_CONE_DELTA variables). 
+
+* New Perfectly Matched Layer (PML) absorbing boundary support (can be used by seting USE_PML_ABC_DIR, PML_LEVEL, and PML_SIGMA_MAX variables).
+
+* Fix the gcc loop optimization bug, now the SymPIC can be compiled with gcc -O3.
+
+* Now it can output particle locations and velocities (Experimental).

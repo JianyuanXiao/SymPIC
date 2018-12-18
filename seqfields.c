@@ -187,7 +187,6 @@ typedef struct { 	Field3D_MPI *  r1 ;
 	#else
 		
 	 #endif
-#include "cfgcst.h"
 #include "c_/c_pscmc_inc.h"
 #include "openmp_/openmp_pscmc_inc.h"
 #include "c_/yeefdtd.kernel_inc.h"
@@ -218,103 +217,9 @@ typedef struct { 	Field3D_MPI *  r1 ;
 #include "openmp_/geo_particle_iter.kernel_inc.h"
 #include "openmp_/rel_particle_iter.kernel_inc.h"
 #include "openmp_yeefdtd.h"
-#include "space_filling_curve.h"
-int  init_complexity_tid (unsigned long  num_proc ,unsigned long  num_thread ,size_t *  ori_vec ,long *  num_thread_array ,long *  local_tid_array ){
-	long *  cplx_array = 	malloc ( 	(  sizeof(long ) * num_thread ) ) ;
-	double  total_complexity = 0.00000000000000000e+00 ;
-{
-	long  i ;
-	for ((i = 0) ; 	(  i < num_thread ) ; (i = 	(  i + 1 )))
-	{
-((cplx_array)[i] = 	floor ( 	call_CAL_FUN_ONE_PARA ( "get_thread_complexity" , (ori_vec)[i] ) ));
-	assert ( 	(  (cplx_array)[i] >= 0 ) );
-(total_complexity = 	(  total_complexity + (cplx_array)[i] ));
-}}	assert ( total_complexity );
-	long  global_cplx = 0 ;
-	long  current_pid = 0 ;
-	long  l_tid = 0 ;
-((num_thread_array)[0] = 0);
-{
-	long  i ;
-	for ((i = 0) ; 	(  i < num_thread ) ; (i = 	(  i + 1 )))
-	{
-	if (  	(  	(  global_cplx * num_proc ) >= 	(  current_pid * total_complexity ) )  ){  
-			if (  	(  current_pid < num_proc )  ){  
-		((num_thread_array)[current_pid] = i);
-
-	}else{
-		0;
-
-	 }
-	if (  	(  current_pid < num_proc )  ){  
-		(current_pid = 	(  current_pid + 1 ));
-(l_tid = -1);
-
-	}else{
-		0;
-
-	 }
-
-	}else{
-		0;
-
-	 }
-(global_cplx = 	(  global_cplx + (cplx_array)[i] ));
-(l_tid = 	(  l_tid + 1 ));
-((local_tid_array)[i] = l_tid);
-}}	assert ( 	(  current_pid == num_proc ) );
-	free ( cplx_array );
-	return  0 ;}
-int  init_uniform_tid (unsigned long  num_proc ,unsigned long  num_thread ,long *  num_thread_array ,long *  local_tid_array ){
-	long  i = 0 ;
-	long  global_tid = 0 ;
-	long  oneprocnum = 	(  num_thread / num_proc ) ;
-	long  plusone = 	(  num_thread % num_proc ) ;
-	for (i=0 ; i<num_proc ; i++)
-	{
-((num_thread_array)[i] = global_tid);
-	long  old_pid = global_tid ;
-(global_tid = 	(  global_tid + oneprocnum ));
-	if (  	(  i < plusone )  ){  
-		(global_tid = 	(  global_tid + 1 ));
-
-	}else{
-		0;
-
-	 }
-	if (  	(  global_tid > num_thread )  ){  
-		(global_tid = num_thread);
-
-	}else{
-		0;
-
-	 }
-{
-	long  j ;
-	for ((j = old_pid) ; 	(  j < global_tid ) ; (j = 	(  j + 1 )))
-	{
-((local_tid_array)[j] = 	(  j - old_pid ));
-}}}	return  0 ;}
-long  get_cur_tid (long  pid ,long  num_thread ,long  num_proc ,long *  num_thread_array ){
-	return  (num_thread_array)[pid] ;}
-long  get_cur_num_tid (long  pid ,long  num_thread ,long  num_proc ,long *  num_thread_array ){
-	long  ret = 0 ;
-	assert ( 	(  pid < num_proc ) );
-(ret = ((	(  pid < 	(  num_proc - 1 ) ))?(	(  (num_thread_array)[	(  pid + 1 )] - (num_thread_array)[pid] )):(	(  num_thread - (num_thread_array)[pid] ))));
-	return  ret ;}
-long  find_the_proc_id (long  tid ,unsigned long  num_proc ,long *  num_thread_array ){
-	if (  	(  num_proc <= 1 )  ){  
-			return  0 ;
-	}else{
-			if (  	(  tid < (num_thread_array)[	(  num_proc / 2 )] )  ){  
-			return  	find_the_proc_id ( tid , 	(  num_proc / 2 ) , num_thread_array ) ;
-	}else{
-			return  	(  	(  num_proc / 2 ) + 	find_the_proc_id ( tid , 	(  num_proc - 	(  num_proc / 2 ) ) , 	(  num_thread_array + 	(  num_proc / 2 ) ) ) ) ;
-	 }
-
-	 }
-}
-int  init_adjoint_relations (Field3D_Seq *  pthis ,long  n ,long  ndim ,long  adj_type ,long  num_proc ,long *  ovvec ,long *  ori_vec ,long *  num_thread_array ,long *  local_tid_array ){
+#include "seqfields.h"
+#include <stdio.h>
+int  build_Field_compute_unit_from_seq_field (Field3D_Seq *  pthis ,Field3D_Seq *  input_E ){
 	void *  pe = 	( pthis )->pe ;
 	long  xlen = 	( pthis )->xlen ;
 	long  ylen = 	( pthis )->ylen ;
@@ -371,135 +276,29 @@ int  init_adjoint_relations (Field3D_Seq *  pthis ,long  n ,long  ndim ,long  ad
 	void *  blas_findmax_kernel = 	( pthis )->blas_findmax_kernel ;
 	void *  blas_dot_kernel = 	( pthis )->blas_dot_kernel ;
 	void *  blas_sum_kernel = 	( pthis )->blas_sum_kernel ;
-	long  onen = 	(  1 << n ) ;
-	long  alllen = 1 ;
-	assert ( ndim<4 );
+	int  num_cu = ((	(  0 == 	( input_E )->CD_type ))?(	c_blas_sum_get_num_compute_units ( NULL )):(((	(  1 == 	( input_E )->CD_type ))?(	openmp_blas_sum_get_num_compute_units ( NULL )):(0)))) ;
+	int  new_num_ele = 	(  num_cu * 	( input_E )->num_ele ) ;
+	fprintf ( stderr , "newnumele=%d numcu=%d\n" , new_num_ele , num_cu );
+((pthis)[0] = (input_E)[0]);
+(	( pthis )->num_ele = new_num_ele);
+	alloc_Field3D_Seq ( pthis , 0 );
+	return  0 ;}
+int  build_Field_compute_unit_from_mpi_field (Field3D_MPI *  pthis ,Field3D_MPI *  input_E ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+((pthis)[0] = (input_E)[0]);
+(	( pthis )->data = 	malloc ( 	(  sizeof(Field3D_Seq ) * 	( input_E )->num_runtime ) ));
 {
-	long  g ;
-	for ((g = 0) ; 	(  g < ndim ) ; (g = 	(  g + 1 )))
+	long  i ;
+	for ((i = 0) ; 	(  i < 	( input_E )->num_runtime ) ; (i = 	(  i + 1 )))
 	{
-(alllen = 	(  alllen * onen ));
-}}	long  i = 0 ;
-	for (i=0 ; 	(  i < numvec ) ; (i = 	(  i + 1 )))
-	{
-	long  cur_thread = (ori_vec)[	(  (num_thread_array)[global_pid] + i )] ;
-	long  bxyzx = 	(  cur_thread % x_num_thread_block ) ;
-	long  bxyzy = 	(  	(  cur_thread / x_num_thread_block ) % y_num_thread_block ) ;
-	long  bxyzz = 	(  cur_thread / 	(  x_num_thread_block * y_num_thread_block ) ) ;
-((global_x_offset)[i] = 	(  xlen * bxyzx ));
-((global_y_offset)[i] = 	(  ylen * bxyzy ));
-((global_z_offset)[i] = 	(  zlen * bxyzz ));
-{
-	int *  tmpv = ((	(  0 == CD_type ))?(	c_pscmc_get_h_data ( cur_rankx_pscmc , NULL )):(((	(  1 == CD_type ))?(	openmp_pscmc_get_h_data ( cur_rankx_pscmc , NULL )):(0)))) ;
-((tmpv)[i] = 	(  	(  2 * 	(  bxyzx == 	(  x_num_thread_block - 1 ) ) ) + 	(  bxyzx == 0 ) ));
-(tmpv = ((	(  0 == CD_type ))?(	c_pscmc_get_h_data ( xoffset , NULL )):(((	(  1 == CD_type ))?(	openmp_pscmc_get_h_data ( xoffset , NULL )):(0)))));
-((tmpv)[i] = (global_x_offset)[i]);
-}{
-	int *  tmpv = ((	(  0 == CD_type ))?(	c_pscmc_get_h_data ( cur_ranky_pscmc , NULL )):(((	(  1 == CD_type ))?(	openmp_pscmc_get_h_data ( cur_ranky_pscmc , NULL )):(0)))) ;
-((tmpv)[i] = 	(  	(  2 * 	(  bxyzy == 	(  y_num_thread_block - 1 ) ) ) + 	(  bxyzy == 0 ) ));
-(tmpv = ((	(  0 == CD_type ))?(	c_pscmc_get_h_data ( yoffset , NULL )):(((	(  1 == CD_type ))?(	openmp_pscmc_get_h_data ( yoffset , NULL )):(0)))));
-((tmpv)[i] = (global_y_offset)[i]);
-}{
-	int *  tmpv = ((	(  0 == CD_type ))?(	c_pscmc_get_h_data ( cur_rankz_pscmc , NULL )):(((	(  1 == CD_type ))?(	openmp_pscmc_get_h_data ( cur_rankz_pscmc , NULL )):(0)))) ;
-((tmpv)[i] = 	(  	(  2 * 	(  bxyzz == 	(  z_num_thread_block - 1 ) ) ) + 	(  bxyzz == 0 ) ));
-(tmpv = ((	(  0 == CD_type ))?(	c_pscmc_get_h_data ( zoffset , NULL )):(((	(  1 == CD_type ))?(	openmp_pscmc_get_h_data ( zoffset , NULL )):(0)))));
-((tmpv)[i] = (global_z_offset)[i]);
-}	if (  	(  0 == CD_type )  ){  
-			c_pscmc_mem_sync_h2d ( cur_rankx_pscmc );
-
-	}else{
-			if (  	(  1 == CD_type )  ){  
-			openmp_pscmc_mem_sync_h2d ( cur_rankx_pscmc );
-
-	}else{
-		0;
-
-	 }
-
-	 }
-	if (  	(  0 == CD_type )  ){  
-			c_pscmc_mem_sync_h2d ( cur_ranky_pscmc );
-
-	}else{
-			if (  	(  1 == CD_type )  ){  
-			openmp_pscmc_mem_sync_h2d ( cur_ranky_pscmc );
-
-	}else{
-		0;
-
-	 }
-
-	 }
-	if (  	(  0 == CD_type )  ){  
-			c_pscmc_mem_sync_h2d ( cur_rankz_pscmc );
-
-	}else{
-			if (  	(  1 == CD_type )  ){  
-			openmp_pscmc_mem_sync_h2d ( cur_rankz_pscmc );
-
-	}else{
-		0;
-
-	 }
-
-	 }
-	if (  	(  0 == CD_type )  ){  
-			c_pscmc_mem_sync_h2d ( xoffset );
-
-	}else{
-			if (  	(  1 == CD_type )  ){  
-			openmp_pscmc_mem_sync_h2d ( xoffset );
-
-	}else{
-		0;
-
-	 }
-
-	 }
-	if (  	(  0 == CD_type )  ){  
-			c_pscmc_mem_sync_h2d ( yoffset );
-
-	}else{
-			if (  	(  1 == CD_type )  ){  
-			openmp_pscmc_mem_sync_h2d ( yoffset );
-
-	}else{
-		0;
-
-	 }
-
-	 }
-	if (  	(  0 == CD_type )  ){  
-			c_pscmc_mem_sync_h2d ( zoffset );
-
-	}else{
-			if (  	(  1 == CD_type )  ){  
-			openmp_pscmc_mem_sync_h2d ( zoffset );
-
-	}else{
-		0;
-
-	 }
-
-	 }
-((global_id)[i] = cur_thread);
-{
-	long  xyzz ;
-	for ((xyzz = 0) ; 	(  xyzz < 3 ) ; (xyzz = 	(  xyzz + 1 )))
-	{
-{
-	long  xyzy ;
-	for ((xyzy = 0) ; 	(  xyzy < 3 ) ; (xyzy = 	(  xyzy + 1 )))
-	{
-{
-	long  xyzx ;
-	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
-	{
-	int  xyzlocalall = 	(  0 + 	(  1 * 	(  xyzx + 	(  3 * 	(  xyzy + 	(  3 * xyzz ) ) ) ) ) ) ;
-	long  adj_id_pre = 	(  0 + 	(  1 * 	(  	(  	(  	(  bxyzx + 	(  xyzx - 1 ) ) + x_num_thread_block ) % x_num_thread_block ) + 	(  x_num_thread_block * 	(  	(  	(  	(  bxyzy + 	(  xyzy - 1 ) ) + y_num_thread_block ) % y_num_thread_block ) + 	(  y_num_thread_block * 	(  	(  	(  bxyzz + 	(  xyzz - 1 ) ) + z_num_thread_block ) % z_num_thread_block ) ) ) ) ) ) ) ;
-	long  cur_adj_id = (ovvec)[adj_id_pre] ;
-((adj_ids)[	(  	(  i * NUM_SYNC_LAYER ) + xyzlocalall )] = cur_adj_id);
-	long  cur_adj_pid = 	find_the_proc_id ( cur_adj_id , num_proc , num_thread_array ) ;
-((adj_processes)[	(  	(  i * NUM_SYNC_LAYER ) + xyzlocalall )] = cur_adj_pid);
-((adj_local_tid)[	(  	(  i * NUM_SYNC_LAYER ) + xyzlocalall )] = (local_tid_array)[cur_adj_id]);
-}}}}}}}	return  0 ;}
+	build_Field_compute_unit_from_seq_field ( 	(  pthis->data + i ) , 	(  input_E->data + i ) );
+}}}

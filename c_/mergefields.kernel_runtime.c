@@ -10,6 +10,8 @@ void  c_merge_ovlp_m2o_get_struct_len (size_t *  len ){
 }
 int  c_merge_ovlp_m2o_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_merge_ovlp_m2o_get_num_compute_units (c_merge_ovlp_m2o_struct *  kerstr ){
+	return  1 ;}
 int  c_merge_ovlp_m2o_exec (c_merge_ovlp_m2o_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -56,6 +58,8 @@ void  c_merge_ovlp_o2m_get_struct_len (size_t *  len ){
 }
 int  c_merge_ovlp_o2m_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_merge_ovlp_o2m_get_num_compute_units (c_merge_ovlp_o2m_struct *  kerstr ){
+	return  1 ;}
 int  c_merge_ovlp_o2m_exec (c_merge_ovlp_o2m_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -102,6 +106,8 @@ void  c_sync_ovlp_m2o_get_struct_len (size_t *  len ){
 }
 int  c_sync_ovlp_m2o_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_sync_ovlp_m2o_get_num_compute_units (c_sync_ovlp_m2o_struct *  kerstr ){
+	return  1 ;}
 int  c_sync_ovlp_m2o_exec (c_sync_ovlp_m2o_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -148,6 +154,8 @@ void  c_sync_ovlp_o2m_get_struct_len (size_t *  len ){
 }
 int  c_sync_ovlp_o2m_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_sync_ovlp_o2m_get_num_compute_units (c_sync_ovlp_o2m_struct *  kerstr ){
+	return  1 ;}
 int  c_sync_ovlp_o2m_exec (c_sync_ovlp_o2m_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -194,6 +202,8 @@ void  c_yee_local_get_struct_len (size_t *  len ){
 }
 int  c_yee_local_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_local_get_num_compute_units (c_yee_local_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_local_exec (c_yee_local_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;

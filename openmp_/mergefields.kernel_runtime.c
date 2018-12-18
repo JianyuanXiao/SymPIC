@@ -9,6 +9,8 @@ int  openmp_merge_ovlp_m2o_init (openmp_pscmc_env *  pe ,openmp_merge_ovlp_m2o_s
 void  openmp_merge_ovlp_m2o_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_merge_ovlp_m2o_struct ));
 }
+int  openmp_merge_ovlp_m2o_get_num_compute_units (openmp_merge_ovlp_m2o_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_merge_ovlp_m2o_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_merge_ovlp_m2o_exec (openmp_merge_ovlp_m2o_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -60,6 +62,8 @@ int  openmp_merge_ovlp_o2m_init (openmp_pscmc_env *  pe ,openmp_merge_ovlp_o2m_s
 void  openmp_merge_ovlp_o2m_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_merge_ovlp_o2m_struct ));
 }
+int  openmp_merge_ovlp_o2m_get_num_compute_units (openmp_merge_ovlp_o2m_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_merge_ovlp_o2m_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_merge_ovlp_o2m_exec (openmp_merge_ovlp_o2m_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -111,6 +115,8 @@ int  openmp_sync_ovlp_m2o_init (openmp_pscmc_env *  pe ,openmp_sync_ovlp_m2o_str
 void  openmp_sync_ovlp_m2o_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_sync_ovlp_m2o_struct ));
 }
+int  openmp_sync_ovlp_m2o_get_num_compute_units (openmp_sync_ovlp_m2o_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_sync_ovlp_m2o_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_sync_ovlp_m2o_exec (openmp_sync_ovlp_m2o_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -162,6 +168,8 @@ int  openmp_sync_ovlp_o2m_init (openmp_pscmc_env *  pe ,openmp_sync_ovlp_o2m_str
 void  openmp_sync_ovlp_o2m_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_sync_ovlp_o2m_struct ));
 }
+int  openmp_sync_ovlp_o2m_get_num_compute_units (openmp_sync_ovlp_o2m_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_sync_ovlp_o2m_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_sync_ovlp_o2m_exec (openmp_sync_ovlp_o2m_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -213,6 +221,8 @@ int  openmp_yee_local_init (openmp_pscmc_env *  pe ,openmp_yee_local_struct *  k
 void  openmp_yee_local_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_yee_local_struct ));
 }
+int  openmp_yee_local_get_num_compute_units (openmp_yee_local_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_yee_local_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_yee_local_exec (openmp_yee_local_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){

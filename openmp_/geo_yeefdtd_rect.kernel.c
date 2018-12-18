@@ -6,6 +6,8 @@
 #include <stdio.h>
 #define IDX_OPT_MAX 1
 void  openmp_RECT_YEE_CURL_L_scmc_kernel (double *  inoutE1 ,double *  inB0 ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
+	const long  pscmc_compute_unit_id = 	omp_get_thread_num (  ) ;
+	const long  pscmc_num_compute_units = 	omp_get_num_threads (  ) ;
 	const long  idx = 0 ;
 	const long  idy = scmc_internal_g_idy ;
 	const long  xlen = 1 ;

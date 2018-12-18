@@ -9,6 +9,8 @@ int  openmp_blas_sum_init (openmp_pscmc_env *  pe ,openmp_blas_sum_struct *  ker
 void  openmp_blas_sum_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_blas_sum_struct ));
 }
+int  openmp_blas_sum_get_num_compute_units (openmp_blas_sum_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_blas_sum_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_blas_sum_exec (openmp_blas_sum_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -69,6 +71,8 @@ int  openmp_blas_dot_init (openmp_pscmc_env *  pe ,openmp_blas_dot_struct *  ker
 void  openmp_blas_dot_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_blas_dot_struct ));
 }
+int  openmp_blas_dot_get_num_compute_units (openmp_blas_dot_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_blas_dot_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_blas_dot_exec (openmp_blas_dot_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -132,6 +136,8 @@ int  openmp_blas_findmax_init (openmp_pscmc_env *  pe ,openmp_blas_findmax_struc
 void  openmp_blas_findmax_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_blas_findmax_struct ));
 }
+int  openmp_blas_findmax_get_num_compute_units (openmp_blas_findmax_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_blas_findmax_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_blas_findmax_exec (openmp_blas_findmax_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -192,6 +198,8 @@ int  openmp_blas_mulxy_init (openmp_pscmc_env *  pe ,openmp_blas_mulxy_struct * 
 void  openmp_blas_mulxy_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_blas_mulxy_struct ));
 }
+int  openmp_blas_mulxy_get_num_compute_units (openmp_blas_mulxy_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_blas_mulxy_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_blas_mulxy_exec (openmp_blas_mulxy_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -252,6 +260,8 @@ int  openmp_blas_axpby_init (openmp_pscmc_env *  pe ,openmp_blas_axpby_struct * 
 void  openmp_blas_axpby_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_blas_axpby_struct ));
 }
+int  openmp_blas_axpby_get_num_compute_units (openmp_blas_axpby_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_blas_axpby_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_blas_axpby_exec (openmp_blas_axpby_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -318,6 +328,8 @@ int  openmp_blas_axpy_init (openmp_pscmc_env *  pe ,openmp_blas_axpy_struct *  k
 void  openmp_blas_axpy_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_blas_axpy_struct ));
 }
+int  openmp_blas_axpy_get_num_compute_units (openmp_blas_axpy_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_blas_axpy_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_blas_axpy_exec (openmp_blas_axpy_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -381,6 +393,8 @@ int  openmp_blas_yisax_init (openmp_pscmc_env *  pe ,openmp_blas_yisax_struct * 
 void  openmp_blas_yisax_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_blas_yisax_struct ));
 }
+int  openmp_blas_yisax_get_num_compute_units (openmp_blas_yisax_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_blas_yisax_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_blas_yisax_exec (openmp_blas_yisax_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -444,6 +458,8 @@ int  openmp_blas_invy_init (openmp_pscmc_env *  pe ,openmp_blas_invy_struct *  k
 void  openmp_blas_invy_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_blas_invy_struct ));
 }
+int  openmp_blas_invy_get_num_compute_units (openmp_blas_invy_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_blas_invy_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_blas_invy_exec (openmp_blas_invy_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -501,6 +517,8 @@ int  openmp_blas_get_ITG_Potential_init (openmp_pscmc_env *  pe ,openmp_blas_get
 void  openmp_blas_get_ITG_Potential_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_blas_get_ITG_Potential_struct ));
 }
+int  openmp_blas_get_ITG_Potential_get_num_compute_units (openmp_blas_get_ITG_Potential_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_blas_get_ITG_Potential_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_blas_get_ITG_Potential_exec (openmp_blas_get_ITG_Potential_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -567,6 +585,8 @@ int  openmp_blas_yisconst_init (openmp_pscmc_env *  pe ,openmp_blas_yisconst_str
 void  openmp_blas_yisconst_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_blas_yisconst_struct ));
 }
+int  openmp_blas_yisconst_get_num_compute_units (openmp_blas_yisconst_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_blas_yisconst_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_blas_yisconst_exec (openmp_blas_yisconst_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -627,6 +647,8 @@ int  openmp_blas_yiszero_init (openmp_pscmc_env *  pe ,openmp_blas_yiszero_struc
 void  openmp_blas_yiszero_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_blas_yiszero_struct ));
 }
+int  openmp_blas_yiszero_get_num_compute_units (openmp_blas_yiszero_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_blas_yiszero_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_blas_yiszero_exec (openmp_blas_yiszero_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
@@ -684,6 +706,8 @@ int  openmp_blas_yiszero_synced_init (openmp_pscmc_env *  pe ,openmp_blas_yiszer
 void  openmp_blas_yiszero_synced_get_struct_len (size_t *  len ){
 ((len)[0] = sizeof(openmp_blas_yiszero_synced_struct ));
 }
+int  openmp_blas_yiszero_synced_get_num_compute_units (openmp_blas_yiszero_synced_struct *  kerstr ){
+	return  	omp_get_max_threads (  ) ;}
 int  openmp_blas_yiszero_synced_get_xlen (){
 	return  IDX_OPT_MAX ;}
 int  openmp_blas_yiszero_synced_exec (openmp_blas_yiszero_synced_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){

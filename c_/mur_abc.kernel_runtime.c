@@ -10,6 +10,8 @@ void  c_yee_damp_xyz_get_struct_len (size_t *  len ){
 }
 int  c_yee_damp_xyz_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_damp_xyz_get_num_compute_units (c_yee_damp_xyz_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_damp_xyz_exec (c_yee_damp_xyz_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -80,6 +82,8 @@ void  c_yee_pec_xyz_get_struct_len (size_t *  len ){
 }
 int  c_yee_pec_xyz_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_pec_xyz_get_num_compute_units (c_yee_pec_xyz_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_pec_xyz_exec (c_yee_pec_xyz_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -150,6 +154,8 @@ void  c_yee_abc_xyz_get_struct_len (size_t *  len ){
 }
 int  c_yee_abc_xyz_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_abc_xyz_get_num_compute_units (c_yee_abc_xyz_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_abc_xyz_exec (c_yee_abc_xyz_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -220,6 +226,8 @@ void  c_yee_damp_yz_get_struct_len (size_t *  len ){
 }
 int  c_yee_damp_yz_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_damp_yz_get_num_compute_units (c_yee_damp_yz_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_damp_yz_exec (c_yee_damp_yz_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -290,6 +298,8 @@ void  c_yee_pec_yz_get_struct_len (size_t *  len ){
 }
 int  c_yee_pec_yz_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_pec_yz_get_num_compute_units (c_yee_pec_yz_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_pec_yz_exec (c_yee_pec_yz_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -360,6 +370,8 @@ void  c_yee_abc_yz_get_struct_len (size_t *  len ){
 }
 int  c_yee_abc_yz_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_abc_yz_get_num_compute_units (c_yee_abc_yz_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_abc_yz_exec (c_yee_abc_yz_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -430,6 +442,8 @@ void  c_yee_damp_xz_get_struct_len (size_t *  len ){
 }
 int  c_yee_damp_xz_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_damp_xz_get_num_compute_units (c_yee_damp_xz_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_damp_xz_exec (c_yee_damp_xz_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -500,6 +514,8 @@ void  c_yee_pec_xz_get_struct_len (size_t *  len ){
 }
 int  c_yee_pec_xz_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_pec_xz_get_num_compute_units (c_yee_pec_xz_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_pec_xz_exec (c_yee_pec_xz_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -570,6 +586,8 @@ void  c_yee_abc_xz_get_struct_len (size_t *  len ){
 }
 int  c_yee_abc_xz_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_abc_xz_get_num_compute_units (c_yee_abc_xz_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_abc_xz_exec (c_yee_abc_xz_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -640,6 +658,8 @@ void  c_yee_damp_xy_get_struct_len (size_t *  len ){
 }
 int  c_yee_damp_xy_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_damp_xy_get_num_compute_units (c_yee_damp_xy_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_damp_xy_exec (c_yee_damp_xy_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -710,6 +730,8 @@ void  c_yee_pec_xy_get_struct_len (size_t *  len ){
 }
 int  c_yee_pec_xy_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_pec_xy_get_num_compute_units (c_yee_pec_xy_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_pec_xy_exec (c_yee_pec_xy_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -780,6 +802,8 @@ void  c_yee_abc_xy_get_struct_len (size_t *  len ){
 }
 int  c_yee_abc_xy_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_abc_xy_get_num_compute_units (c_yee_abc_xy_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_abc_xy_exec (c_yee_abc_xy_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -850,6 +874,8 @@ void  c_yee_damp_z_get_struct_len (size_t *  len ){
 }
 int  c_yee_damp_z_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_damp_z_get_num_compute_units (c_yee_damp_z_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_damp_z_exec (c_yee_damp_z_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -920,6 +946,8 @@ void  c_yee_pec_z_get_struct_len (size_t *  len ){
 }
 int  c_yee_pec_z_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_pec_z_get_num_compute_units (c_yee_pec_z_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_pec_z_exec (c_yee_pec_z_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -990,6 +1018,8 @@ void  c_yee_abc_z_get_struct_len (size_t *  len ){
 }
 int  c_yee_abc_z_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_abc_z_get_num_compute_units (c_yee_abc_z_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_abc_z_exec (c_yee_abc_z_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -1060,6 +1090,8 @@ void  c_yee_damp_y_get_struct_len (size_t *  len ){
 }
 int  c_yee_damp_y_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_damp_y_get_num_compute_units (c_yee_damp_y_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_damp_y_exec (c_yee_damp_y_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -1130,6 +1162,8 @@ void  c_yee_pec_y_get_struct_len (size_t *  len ){
 }
 int  c_yee_pec_y_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_pec_y_get_num_compute_units (c_yee_pec_y_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_pec_y_exec (c_yee_pec_y_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -1200,6 +1234,8 @@ void  c_yee_abc_y_get_struct_len (size_t *  len ){
 }
 int  c_yee_abc_y_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_abc_y_get_num_compute_units (c_yee_abc_y_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_abc_y_exec (c_yee_abc_y_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -1270,6 +1306,8 @@ void  c_yee_damp_x_get_struct_len (size_t *  len ){
 }
 int  c_yee_damp_x_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_damp_x_get_num_compute_units (c_yee_damp_x_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_damp_x_exec (c_yee_damp_x_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -1340,6 +1378,8 @@ void  c_yee_pec_x_get_struct_len (size_t *  len ){
 }
 int  c_yee_pec_x_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_pec_x_get_num_compute_units (c_yee_pec_x_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_pec_x_exec (c_yee_pec_x_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -1410,6 +1450,8 @@ void  c_yee_abc_x_get_struct_len (size_t *  len ){
 }
 int  c_yee_abc_x_get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_abc_x_get_num_compute_units (c_yee_abc_x_struct *  kerstr ){
+	return  1 ;}
 int  c_yee_abc_x_exec (c_yee_abc_x_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -1480,6 +1522,8 @@ void  c_yee_damp__get_struct_len (size_t *  len ){
 }
 int  c_yee_damp__get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_damp__get_num_compute_units (c_yee_damp__struct *  kerstr ){
+	return  1 ;}
 int  c_yee_damp__exec (c_yee_damp__struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -1550,6 +1594,8 @@ void  c_yee_pec__get_struct_len (size_t *  len ){
 }
 int  c_yee_pec__get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_pec__get_num_compute_units (c_yee_pec__struct *  kerstr ){
+	return  1 ;}
 int  c_yee_pec__exec (c_yee_pec__struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;
@@ -1620,6 +1666,8 @@ void  c_yee_abc__get_struct_len (size_t *  len ){
 }
 int  c_yee_abc__get_xlen (){
 	return  IDX_OPT_MAX ;}
+int  c_yee_abc__get_num_compute_units (c_yee_abc__struct *  kerstr ){
+	return  1 ;}
 int  c_yee_abc__exec (c_yee_abc__struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen ){
 {
 	int  yid ;

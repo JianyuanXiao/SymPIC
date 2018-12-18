@@ -32,7 +32,7 @@ typedef enum {CD_C,CD_OpenMP,CD_OpenCL,CD_CUDA} SEQ_FIELD_TYPES;
 
 #define NUM_SYNC_KERNEL 4
 
-#define NUM_FDTD_KERNEL 18
+#define NUM_FDTD_KERNEL 22
 typedef struct { 	void *  pe ;
 	long  xlen ;
 	long  ylen ;
@@ -86,7 +86,7 @@ typedef struct { 	void *  pe ;
 	Field3D_Seq *  pFoutJ ;
 	Field3D_Seq *  pLFoutJ ;
 	Field3D_Seq *  pFoutEN ;
-	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [5];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
+	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [8];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel ;
 	void *  move_back_kernel_kernel ;
 	double  Mass ;
@@ -100,6 +100,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_kernel ;
 	void *  split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel ;
@@ -107,6 +110,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel ;
 	void *  calculate_rho_kernel ;
@@ -132,6 +138,10 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_FoutJ ;
 	Field3D_MPI  MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp ;
+	Field3D_MPI  MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldBtmp1 ;
+	Field3D_MPI  MPI_fieldPMLB ;
+	Field3D_MPI  MPI_fieldPMLE ;
 	Field3D_MPI *  pMPI_FoutJ ;
 	Field3D_MPI *  pMPI_FoutEN ;
 	Field3D_MPI  MPI_fieldE_ext ;
@@ -140,7 +150,13 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_fieldB_filter ;
 	Field3D_MPI *  pB0 ;
 	Field3D_MPI *  pB1 ;
+	int  use_pml_abc_dir ;
+	int  use_pml_level ;
 	int  use_small_grid ;
+	long  allxmax ;
+	long  allymax ;
+	long  allzmax ;
+	double  use_pml_sigma_max ;
 	double  dt ;
 } Particle_in_Cell_MPI;
 	#ifndef   LINEAR_OPERATOR_PICUS_001    
@@ -216,6 +232,10 @@ int  split_1st_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,int  use_
 	Field3D_MPI  MPI_FoutJ = 	( pthis )->MPI_FoutJ ;
 	Field3D_MPI  MPI_LFoutJ = 	( pthis )->MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp = 	( pthis )->MPI_fieldEtmp ;
+	Field3D_MPI  MPI_fieldEtmp1 = 	( pthis )->MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldBtmp1 = 	( pthis )->MPI_fieldBtmp1 ;
+	Field3D_MPI  MPI_fieldPMLB = 	( pthis )->MPI_fieldPMLB ;
+	Field3D_MPI  MPI_fieldPMLE = 	( pthis )->MPI_fieldPMLE ;
 	Field3D_MPI *  pMPI_FoutJ = 	( pthis )->pMPI_FoutJ ;
 	Field3D_MPI *  pMPI_FoutEN = 	( pthis )->pMPI_FoutEN ;
 	Field3D_MPI  MPI_fieldE_ext = 	( pthis )->MPI_fieldE_ext ;
@@ -224,7 +244,13 @@ int  split_1st_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,int  use_
 	Field3D_MPI  MPI_fieldB_filter = 	( pthis )->MPI_fieldB_filter ;
 	Field3D_MPI *  pB0 = 	( pthis )->pB0 ;
 	Field3D_MPI *  pB1 = 	( pthis )->pB1 ;
+	int  use_pml_abc_dir = 	( pthis )->use_pml_abc_dir ;
+	int  use_pml_level = 	( pthis )->use_pml_level ;
 	int  use_small_grid = 	( pthis )->use_small_grid ;
+	long  allxmax = 	( pthis )->allxmax ;
+	long  allymax = 	( pthis )->allymax ;
+	long  allzmax = 	( pthis )->allzmax ;
+	double  use_pml_sigma_max = 	( pthis )->use_pml_sigma_max ;
 	double  dt = 	( pthis )->dt ;
 	Field3D_MPI *  pMPI_fieldE = 	& ( MPI_fieldE ) ;
 	Field3D_MPI *  pMPI_fieldB = 	& ( MPI_fieldB ) ;
@@ -241,6 +267,10 @@ int  pass_GeqB (Particle_in_Cell_MPI *  pthis ,double  deltat ){
 	Field3D_MPI  MPI_FoutJ = 	( pthis )->MPI_FoutJ ;
 	Field3D_MPI  MPI_LFoutJ = 	( pthis )->MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp = 	( pthis )->MPI_fieldEtmp ;
+	Field3D_MPI  MPI_fieldEtmp1 = 	( pthis )->MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldBtmp1 = 	( pthis )->MPI_fieldBtmp1 ;
+	Field3D_MPI  MPI_fieldPMLB = 	( pthis )->MPI_fieldPMLB ;
+	Field3D_MPI  MPI_fieldPMLE = 	( pthis )->MPI_fieldPMLE ;
 	Field3D_MPI *  pMPI_FoutJ = 	( pthis )->pMPI_FoutJ ;
 	Field3D_MPI *  pMPI_FoutEN = 	( pthis )->pMPI_FoutEN ;
 	Field3D_MPI  MPI_fieldE_ext = 	( pthis )->MPI_fieldE_ext ;
@@ -249,7 +279,13 @@ int  pass_GeqB (Particle_in_Cell_MPI *  pthis ,double  deltat ){
 	Field3D_MPI  MPI_fieldB_filter = 	( pthis )->MPI_fieldB_filter ;
 	Field3D_MPI *  pB0 = 	( pthis )->pB0 ;
 	Field3D_MPI *  pB1 = 	( pthis )->pB1 ;
+	int  use_pml_abc_dir = 	( pthis )->use_pml_abc_dir ;
+	int  use_pml_level = 	( pthis )->use_pml_level ;
 	int  use_small_grid = 	( pthis )->use_small_grid ;
+	long  allxmax = 	( pthis )->allxmax ;
+	long  allymax = 	( pthis )->allymax ;
+	long  allzmax = 	( pthis )->allzmax ;
+	double  use_pml_sigma_max = 	( pthis )->use_pml_sigma_max ;
 	double  dt = 	( pthis )->dt ;
 	Field3D_MPI *  pMPI_fieldE = 	& ( MPI_fieldE ) ;
 	Field3D_MPI *  pMPI_fieldB = 	& ( MPI_fieldB ) ;
@@ -310,7 +346,12 @@ int  pass_GeqB (Particle_in_Cell_MPI *  pthis ,double  deltat ){
 	void *  blas_findmax_kernel = 	( pMPI_fieldE->data )->blas_findmax_kernel ;
 	void *  blas_dot_kernel = 	( pMPI_fieldE->data )->blas_dot_kernel ;
 	void *  blas_sum_kernel = 	( pMPI_fieldE->data )->blas_sum_kernel ;
-	if (  USE_NP_BOUNDARY  ){  
+	if (  use_pml_abc_dir  ){  
+			sync_ovlp_mpi_field ( 	& ( MPI_fieldPMLB ) );
+	MPI_PML_FDTD_CURL_BWD ( pMPI_fieldE , pMPI_fieldB , 	& ( MPI_fieldPMLE ) , 	& ( MPI_fieldPMLB ) , deltat , 0 , 0 , delta_x , delta_y , delta_z , use_pml_abc_dir , use_pml_level , 3 , use_pml_sigma_max , allxmax , allymax , allzmax );
+
+	}else{
+			if (  USE_NP_BOUNDARY  ){  
 			double  G_USE_ABC_DIR = 	call_GET_VAR ( "USE_ABC_DIR" ) ;
 	double  G_USE_PEC_DIR = 	call_GET_VAR ( "USE_PEC_DIR" ) ;
 	double  G_USE_DAMP_DIR = 	call_GET_VAR ( "USE_DAMP_DIR" ) ;
@@ -322,6 +363,8 @@ int  pass_GeqB (Particle_in_Cell_MPI *  pthis ,double  deltat ){
 			MPI_RECT_YEE_CURL_L ( pMPI_fieldE , pMPI_fieldB , delta_z , delta_y , delta_x , deltat );
 
 	 }
+
+	 }
 	return  0 ;}
 int  FDTD_2_4th_ALL_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ){
 	Field3D_MPI  MPI_fieldE = 	( pthis )->MPI_fieldE ;
@@ -330,6 +373,10 @@ int  FDTD_2_4th_ALL_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ){
 	Field3D_MPI  MPI_FoutJ = 	( pthis )->MPI_FoutJ ;
 	Field3D_MPI  MPI_LFoutJ = 	( pthis )->MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp = 	( pthis )->MPI_fieldEtmp ;
+	Field3D_MPI  MPI_fieldEtmp1 = 	( pthis )->MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldBtmp1 = 	( pthis )->MPI_fieldBtmp1 ;
+	Field3D_MPI  MPI_fieldPMLB = 	( pthis )->MPI_fieldPMLB ;
+	Field3D_MPI  MPI_fieldPMLE = 	( pthis )->MPI_fieldPMLE ;
 	Field3D_MPI *  pMPI_FoutJ = 	( pthis )->pMPI_FoutJ ;
 	Field3D_MPI *  pMPI_FoutEN = 	( pthis )->pMPI_FoutEN ;
 	Field3D_MPI  MPI_fieldE_ext = 	( pthis )->MPI_fieldE_ext ;
@@ -338,7 +385,13 @@ int  FDTD_2_4th_ALL_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ){
 	Field3D_MPI  MPI_fieldB_filter = 	( pthis )->MPI_fieldB_filter ;
 	Field3D_MPI *  pB0 = 	( pthis )->pB0 ;
 	Field3D_MPI *  pB1 = 	( pthis )->pB1 ;
+	int  use_pml_abc_dir = 	( pthis )->use_pml_abc_dir ;
+	int  use_pml_level = 	( pthis )->use_pml_level ;
 	int  use_small_grid = 	( pthis )->use_small_grid ;
+	long  allxmax = 	( pthis )->allxmax ;
+	long  allymax = 	( pthis )->allymax ;
+	long  allzmax = 	( pthis )->allzmax ;
+	double  use_pml_sigma_max = 	( pthis )->use_pml_sigma_max ;
 	double  dt = 	( pthis )->dt ;
 (dt0 = 	(  dt0 / 2 ));
 	Field3D_MPI *  pMPI_fieldE = 	& ( MPI_fieldE ) ;
@@ -354,6 +407,10 @@ int  FDTD_2_2th_ALL_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ){
 	Field3D_MPI  MPI_FoutJ = 	( pthis )->MPI_FoutJ ;
 	Field3D_MPI  MPI_LFoutJ = 	( pthis )->MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp = 	( pthis )->MPI_fieldEtmp ;
+	Field3D_MPI  MPI_fieldEtmp1 = 	( pthis )->MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldBtmp1 = 	( pthis )->MPI_fieldBtmp1 ;
+	Field3D_MPI  MPI_fieldPMLB = 	( pthis )->MPI_fieldPMLB ;
+	Field3D_MPI  MPI_fieldPMLE = 	( pthis )->MPI_fieldPMLE ;
 	Field3D_MPI *  pMPI_FoutJ = 	( pthis )->pMPI_FoutJ ;
 	Field3D_MPI *  pMPI_FoutEN = 	( pthis )->pMPI_FoutEN ;
 	Field3D_MPI  MPI_fieldE_ext = 	( pthis )->MPI_fieldE_ext ;
@@ -362,7 +419,13 @@ int  FDTD_2_2th_ALL_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ){
 	Field3D_MPI  MPI_fieldB_filter = 	( pthis )->MPI_fieldB_filter ;
 	Field3D_MPI *  pB0 = 	( pthis )->pB0 ;
 	Field3D_MPI *  pB1 = 	( pthis )->pB1 ;
+	int  use_pml_abc_dir = 	( pthis )->use_pml_abc_dir ;
+	int  use_pml_level = 	( pthis )->use_pml_level ;
 	int  use_small_grid = 	( pthis )->use_small_grid ;
+	long  allxmax = 	( pthis )->allxmax ;
+	long  allymax = 	( pthis )->allymax ;
+	long  allzmax = 	( pthis )->allzmax ;
+	double  use_pml_sigma_max = 	( pthis )->use_pml_sigma_max ;
 	double  dt = 	( pthis )->dt ;
 	Field3D_MPI *  pMPI_fieldE = 	& ( MPI_fieldE ) ;
 	Field3D_MPI *  pMPI_fieldB = 	& ( MPI_fieldB ) ;
@@ -376,6 +439,10 @@ int  ITG_split_2nd_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,doubl
 	Field3D_MPI  MPI_FoutJ = 	( pthis )->MPI_FoutJ ;
 	Field3D_MPI  MPI_LFoutJ = 	( pthis )->MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp = 	( pthis )->MPI_fieldEtmp ;
+	Field3D_MPI  MPI_fieldEtmp1 = 	( pthis )->MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldBtmp1 = 	( pthis )->MPI_fieldBtmp1 ;
+	Field3D_MPI  MPI_fieldPMLB = 	( pthis )->MPI_fieldPMLB ;
+	Field3D_MPI  MPI_fieldPMLE = 	( pthis )->MPI_fieldPMLE ;
 	Field3D_MPI *  pMPI_FoutJ = 	( pthis )->pMPI_FoutJ ;
 	Field3D_MPI *  pMPI_FoutEN = 	( pthis )->pMPI_FoutEN ;
 	Field3D_MPI  MPI_fieldE_ext = 	( pthis )->MPI_fieldE_ext ;
@@ -384,9 +451,16 @@ int  ITG_split_2nd_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,doubl
 	Field3D_MPI  MPI_fieldB_filter = 	( pthis )->MPI_fieldB_filter ;
 	Field3D_MPI *  pB0 = 	( pthis )->pB0 ;
 	Field3D_MPI *  pB1 = 	( pthis )->pB1 ;
+	int  use_pml_abc_dir = 	( pthis )->use_pml_abc_dir ;
+	int  use_pml_level = 	( pthis )->use_pml_level ;
 	int  use_small_grid = 	( pthis )->use_small_grid ;
+	long  allxmax = 	( pthis )->allxmax ;
+	long  allymax = 	( pthis )->allymax ;
+	long  allzmax = 	( pthis )->allzmax ;
+	double  use_pml_sigma_max = 	( pthis )->use_pml_sigma_max ;
 	double  dt = 	( pthis )->dt ;
 (dt0 = 	(  dt0 / 2 ));
+	static int  ct = 0 ;
 	Field3D_MPI *  pMPI_fieldE = 	& ( MPI_fieldE ) ;
 	Field3D_MPI *  pMPI_fieldB = 	& ( MPI_fieldB ) ;
 	blas_yisconst_Field3D_MPI ( pMPI_fieldB , pMPI_fieldB , 0 );
@@ -395,12 +469,12 @@ int  ITG_split_2nd_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,doubl
 	blas_yiszero_synced_Field3D_MPI ( pMPI_FoutJ , pMPI_FoutJ );
 	calculate_rho_mpi ( pthis , 0 );
 	merge_ovlp_mpi_field ( pMPI_FoutJ );
-	blas_yisconst_Field3D_MPI ( pMPI_fieldB , pMPI_fieldB , ne0 );
-	blas_get_ITG_Potential_Field3D_MPI ( pMPI_FoutJ , pMPI_FoutJ , 	& ( pthis->MPI_fieldE_ext ) , pMPI_fieldB , moqe );
+	blas_yisconst_Field3D_MPI ( pMPI_fieldE , pMPI_fieldE , ne0 );
+	blas_yisax_Field3D_MPI ( pMPI_fieldB , pMPI_fieldB , 1 , pMPI_FoutJ );
+	blas_get_ITG_Potential_Field3D_MPI ( pMPI_FoutJ , pMPI_FoutJ , 	& ( MPI_fieldB1 ) , pMPI_fieldE , moqe );
 	sync_ovlp_mpi_field ( pMPI_FoutJ );
 	MPI_Yee_FDTD_Grad_FWD ( pMPI_fieldE , pMPI_FoutJ , 0 );
-	sync_ovlp_mpi_field ( pMPI_fieldE );
-	if (  0  ){  
+	if (  	(  0 && 	(  ct == 20 ) )  ){  
 			fprintf ( stderr , "mass=%e, chg=%e\n" , 	( 	( pthis->MPI_fieldE ).particles )->Mass , 	( 	( pthis->MPI_fieldE ).particles )->Charge );
 	Gaps_IO_DataFile  gid ;
 	Gaps_IO_DataFile *  pgid = 	& ( gid ) ;
@@ -408,13 +482,23 @@ int  ITG_split_2nd_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,doubl
 	init_parallel_file_for_mpi_fields ( pMPI_FoutJ , pgid , "tmpJ1" , -1 , 0 );
 	mpi_field_write_to_file ( pMPI_FoutJ , pgid , 0 );
 	mpi_field_write_to_file ( pMPI_fieldE , pgid , 1 );
+	mpi_field_write_to_file ( 	& ( MPI_fieldB1 ) , pgid , 2 );
+	mpi_field_write_to_file ( 	& ( MPI_fieldE_ext ) , pgid , 3 );
 	PS_MPI_Barrier ( PS_MPI_COMM_WORLD );
 	exit ( 0 );
+
+	}else{
+		(ct = 	(  ct + 1 ));
+
+	 }
+	if (  USE_INIT_EXT_EB  ){  
+			blas_axpy_Field3D_MPI ( 	& ( MPI_fieldE ) , 	& ( MPI_fieldE ) , 1.00000000000000000e+00 , 	& ( MPI_fieldE_ext ) );
 
 	}else{
 		0;
 
 	 }
+	sync_ovlp_mpi_field ( pMPI_fieldE );
 	if (  use_vlo  ){  
 			split_pass_E_particle_vlo_mpi ( pthis , 	(  dt0 * 2 ) );
 
@@ -422,14 +506,25 @@ int  ITG_split_2nd_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,doubl
 			split_pass_E_particle_mpi ( pthis , 	(  dt0 * 2 ) );
 
 	 }
+	if (  USE_INIT_EXT_EB  ){  
+			blas_axpy_Field3D_MPI ( 	& ( MPI_fieldE ) , 	& ( MPI_fieldE ) , -1.00000000000000000e+00 , 	& ( MPI_fieldE_ext ) );
+
+	}else{
+		0;
+
+	 }
 	return  0 ;}
-int  split_2nd_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,int  use_vlo ){
+int  split_2nd_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,int  use_vlo ,int  use_ext_G_E ){
 	Field3D_MPI  MPI_fieldE = 	( pthis )->MPI_fieldE ;
 	Field3D_MPI  MPI_fieldB = 	( pthis )->MPI_fieldB ;
 	Field3D_MPI  MPI_fieldB1 = 	( pthis )->MPI_fieldB1 ;
 	Field3D_MPI  MPI_FoutJ = 	( pthis )->MPI_FoutJ ;
 	Field3D_MPI  MPI_LFoutJ = 	( pthis )->MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp = 	( pthis )->MPI_fieldEtmp ;
+	Field3D_MPI  MPI_fieldEtmp1 = 	( pthis )->MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldBtmp1 = 	( pthis )->MPI_fieldBtmp1 ;
+	Field3D_MPI  MPI_fieldPMLB = 	( pthis )->MPI_fieldPMLB ;
+	Field3D_MPI  MPI_fieldPMLE = 	( pthis )->MPI_fieldPMLE ;
 	Field3D_MPI *  pMPI_FoutJ = 	( pthis )->pMPI_FoutJ ;
 	Field3D_MPI *  pMPI_FoutEN = 	( pthis )->pMPI_FoutEN ;
 	Field3D_MPI  MPI_fieldE_ext = 	( pthis )->MPI_fieldE_ext ;
@@ -438,32 +533,18 @@ int  split_2nd_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,int  use_
 	Field3D_MPI  MPI_fieldB_filter = 	( pthis )->MPI_fieldB_filter ;
 	Field3D_MPI *  pB0 = 	( pthis )->pB0 ;
 	Field3D_MPI *  pB1 = 	( pthis )->pB1 ;
+	int  use_pml_abc_dir = 	( pthis )->use_pml_abc_dir ;
+	int  use_pml_level = 	( pthis )->use_pml_level ;
 	int  use_small_grid = 	( pthis )->use_small_grid ;
+	long  allxmax = 	( pthis )->allxmax ;
+	long  allymax = 	( pthis )->allymax ;
+	long  allzmax = 	( pthis )->allzmax ;
+	double  use_pml_sigma_max = 	( pthis )->use_pml_sigma_max ;
 	double  dt = 	( pthis )->dt ;
 (dt0 = 	(  dt0 / 2 ));
 	Field3D_MPI *  pMPI_fieldE = 	& ( MPI_fieldE ) ;
 	Field3D_MPI *  pMPI_fieldB = 	& ( MPI_fieldB ) ;
 	double  curt_profile_only = 	wclk_now (  ) ;
-	pass_GeqB ( pthis , dt0 );
-	if (  USE_PROFILE  ){  
-			PS_MPI_Barrier ( PS_MPI_COMM_WORLD );
-	double  cur_time = 	wclk_now (  ) ;
-	PS_MPI_Barrier ( PS_MPI_COMM_WORLD );
-	int  rank ;
-	PS_MPI_Comm_rank ( PS_MPI_COMM_WORLD , 	& ( rank ) );
-	if (  	(  rank == 0 )  ){  
-			fprintf ( stderr , "%s: %fs\n" , "GeqB" , 	(  cur_time - curt_profile_only ) );
-
-	}else{
-		0;
-
-	 }
-(curt_profile_only = cur_time);
-
-	}else{
-		0;
-
-	 }
 	split_pass_xyz_zyx_mpi_shell ( pthis , dt0 , 1 , 1 , use_vlo );
 	if (  USE_PROFILE  ){  
 			PS_MPI_Barrier ( PS_MPI_COMM_WORLD );
@@ -479,6 +560,13 @@ int  split_2nd_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,int  use_
 
 	 }
 (curt_profile_only = cur_time);
+
+	}else{
+		0;
+
+	 }
+	if (  	(  USE_INIT_EXT_EB && 	(  ! use_ext_G_E ) )  ){  
+			blas_axpy_Field3D_MPI ( pMPI_fieldE , pMPI_fieldE , 1 , 	& ( MPI_fieldE_ext ) );
 
 	}else{
 		0;
@@ -511,6 +599,48 @@ int  split_2nd_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,int  use_
 			split_pass_E_particle_mpi ( pthis , 	(  dt0 * 2 ) );
 
 	 }
+	if (  	(  USE_INIT_EXT_EB && 	(  ! use_ext_G_E ) )  ){  
+			blas_axpy_Field3D_MPI ( pMPI_fieldE , pMPI_fieldE , -1 , 	& ( MPI_fieldE_ext ) );
+
+	}else{
+		0;
+
+	 }
+	if (  	(  USE_INIT_EXT_EB && use_ext_G_E )  ){  
+			blas_yisax_Field3D_MPI ( 	& ( MPI_fieldEtmp ) , 	& ( MPI_fieldEtmp ) , 1.00000000000000000e+00 , 	& ( MPI_fieldE ) );
+	blas_yisax_Field3D_MPI ( 	& ( MPI_fieldE ) , 	& ( MPI_fieldE ) , 1.00000000000000000e+00 , 	& ( MPI_fieldE_ext ) );
+	sync_ovlp_mpi_field ( 	& ( MPI_fieldE ) );
+
+	}else{
+		0;
+
+	 }
+	if (  use_vlo  ){  
+			if (  	(  USE_INIT_EXT_EB && use_ext_G_E )  ){  
+			split_pass_E_particle_vlo_abs_charge_mpi ( pthis , 	(  dt0 * 2 ) );
+
+	}else{
+			split_pass_E_particle_vlo_mpi ( pthis , 	(  dt0 * 2 ) );
+
+	 }
+
+	}else{
+			if (  	(  USE_INIT_EXT_EB && use_ext_G_E )  ){  
+			split_pass_E_particle_abs_charge_mpi ( pthis , 	(  dt0 * 2 ) );
+
+	}else{
+			split_pass_E_particle_mpi ( pthis , 	(  dt0 * 2 ) );
+
+	 }
+
+	 }
+	if (  	(  USE_INIT_EXT_EB && use_ext_G_E )  ){  
+			blas_yisax_Field3D_MPI ( 	& ( MPI_fieldE ) , 	& ( MPI_fieldE ) , 1.00000000000000000e+00 , 	& ( MPI_fieldEtmp ) );
+
+	}else{
+		0;
+
+	 }
 	if (  USE_PROFILE  ){  
 			PS_MPI_Barrier ( PS_MPI_COMM_WORLD );
 	double  cur_time = 	wclk_now (  ) ;
@@ -530,7 +660,70 @@ int  split_2nd_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,int  use_
 		0;
 
 	 }
-	MPI_Yee_FDTD_Curl_E ( pMPI_fieldB , pMPI_fieldE , 	(  dt0 * 2 ) );
+	if (  use_pml_abc_dir  ){  
+			void *  pe = 	( pMPI_fieldE->data )->pe ;
+	long  xlen = 	( pMPI_fieldE->data )->xlen ;
+	long  ylen = 	( pMPI_fieldE->data )->ylen ;
+	long  zlen = 	( pMPI_fieldE->data )->zlen ;
+	long  xblock = 	( pMPI_fieldE->data )->xblock ;
+	long  yblock = 	( pMPI_fieldE->data )->yblock ;
+	long  zblock = 	( pMPI_fieldE->data )->zblock ;
+	long  numvec = 	( pMPI_fieldE->data )->numvec ;
+	long  x_num_thread_block = 	( pMPI_fieldE->data )->x_num_thread_block ;
+	long  y_num_thread_block = 	( pMPI_fieldE->data )->y_num_thread_block ;
+	long  z_num_thread_block = 	( pMPI_fieldE->data )->z_num_thread_block ;
+	int  ovlp = 	( pMPI_fieldE->data )->ovlp ;
+	int  num_ele = 	( pMPI_fieldE->data )->num_ele ;
+	int  CD_type = 	( pMPI_fieldE->data )->CD_type ;
+	void * *  sync_layer_pscmc = 	( pMPI_fieldE->data )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( pMPI_fieldE->data )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( pMPI_fieldE->data )->sync_kernels ;
+	void * *  fdtd_kernels = 	( pMPI_fieldE->data )->fdtd_kernels ;
+	void * *  dm_kernels = 	( pMPI_fieldE->data )->dm_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( pMPI_fieldE->data )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( pMPI_fieldE->data )->geo_yeefdtd_rect_kernels ;
+	void * *  yee_abc_kernels = 	( pMPI_fieldE->data )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( pMPI_fieldE->data )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( pMPI_fieldE->data )->yee_damp_kernels ;
+	void *  rdcd = 	( pMPI_fieldE->data )->rdcd ;
+	double *  rdcd_host = 	( pMPI_fieldE->data )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( pMPI_fieldE->data )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( pMPI_fieldE->data )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( pMPI_fieldE->data )->cur_rankz_pscmc ;
+	void *  xoffset = 	( pMPI_fieldE->data )->xoffset ;
+	void *  yoffset = 	( pMPI_fieldE->data )->yoffset ;
+	void *  zoffset = 	( pMPI_fieldE->data )->zoffset ;
+	long *  global_x_offset = 	( pMPI_fieldE->data )->global_x_offset ;
+	long *  global_y_offset = 	( pMPI_fieldE->data )->global_y_offset ;
+	long *  global_z_offset = 	( pMPI_fieldE->data )->global_z_offset ;
+	long *  global_id = 	( pMPI_fieldE->data )->global_id ;
+	long  global_pid = 	( pMPI_fieldE->data )->global_pid ;
+	long *  adj_ids = 	( pMPI_fieldE->data )->adj_ids ;
+	long *  adj_processes = 	( pMPI_fieldE->data )->adj_processes ;
+	long *  adj_local_tid = 	( pMPI_fieldE->data )->adj_local_tid ;
+	void *  main_data = 	( pMPI_fieldE->data )->main_data ;
+	double  delta_x = 	( pMPI_fieldE->data )->delta_x ;
+	double  delta_y = 	( pMPI_fieldE->data )->delta_y ;
+	double  delta_z = 	( pMPI_fieldE->data )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( pMPI_fieldE->data )->blas_yiszero_synced_kernel ;
+	void *  blas_yiszero_kernel = 	( pMPI_fieldE->data )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( pMPI_fieldE->data )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( pMPI_fieldE->data )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( pMPI_fieldE->data )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( pMPI_fieldE->data )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( pMPI_fieldE->data )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( pMPI_fieldE->data )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( pMPI_fieldE->data )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( pMPI_fieldE->data )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( pMPI_fieldE->data )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( pMPI_fieldE->data )->blas_sum_kernel ;
+	sync_ovlp_mpi_field ( 	& ( MPI_fieldPMLE ) );
+	MPI_PML_FDTD_CURL_FWD ( pMPI_fieldB , pMPI_fieldE , 	& ( MPI_fieldPMLB ) , 	& ( MPI_fieldPMLE ) , 	(  dt0 * 2 ) , 0 , 0 , delta_x , delta_y , delta_z , use_pml_abc_dir , use_pml_level , 3 , use_pml_sigma_max , allxmax , allymax , allzmax );
+
+	}else{
+			MPI_Yee_FDTD_Curl_E ( pMPI_fieldB , pMPI_fieldE , 	(  dt0 * 2 ) );
+
+	 }
 	if (  USE_PROFILE  ){  
 			PS_MPI_Barrier ( PS_MPI_COMM_WORLD );
 	double  cur_time = 	wclk_now (  ) ;
@@ -570,7 +763,7 @@ int  split_2nd_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,int  use_
 		0;
 
 	 }
-	pass_GeqB ( pthis , dt0 );
+	pass_GeqB ( pthis , 	(  dt0 * 2 ) );
 	if (  USE_PROFILE  ){  
 			PS_MPI_Barrier ( PS_MPI_COMM_WORLD );
 	double  cur_time = 	wclk_now (  ) ;
