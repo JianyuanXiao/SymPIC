@@ -2990,14 +2990,14 @@ void  init_global_particles (Particle_in_Cell_MPI *  pthis ,Field3D_MPI *  fE ,F
 	init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldE_filter ) , fE );
 	init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldB_filter ) , fE );
 	init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldEtmp ) , fE );
+(	( pthis )->use_pml_abc_dir = pml_abc_dir);
+(	( pthis )->use_pml_level = pml_level);
+(	( pthis )->use_pml_sigma_max = pml_sigma_max);
 	if (  use_pml_abc_dir  ){  
 			init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldPMLB ) , fE );
 	init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldPMLE ) , fE );
 	blas_yiszero_Field3D_MPI ( 	& ( 	( pthis )->MPI_fieldPMLB ) , 	& ( 	( pthis )->MPI_fieldPMLB ) );
 	blas_yiszero_Field3D_MPI ( 	& ( 	( pthis )->MPI_fieldPMLE ) , 	& ( 	( pthis )->MPI_fieldPMLE ) );
-(	( pthis )->use_pml_abc_dir = pml_abc_dir);
-(	( pthis )->use_pml_level = pml_level);
-(	( pthis )->use_pml_sigma_max = pml_sigma_max);
 (	( pthis )->allxmax = (allxyzmax)[0]);
 (	( pthis )->allymax = (allxyzmax)[1]);
 (	( pthis )->allzmax = (allxyzmax)[2]);
