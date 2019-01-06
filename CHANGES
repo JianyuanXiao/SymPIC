@@ -1,3 +1,10 @@
+List of Changes in SymPIC 0.1.1
+
+* Fix a PML field initialization bug
+
+* Fix the G field iteration bug
+
+
 List of Changes in SymPIC 0.1.0
 
 * New lost-cone distribution function for particles is available (can be used by seting USE_LOST_CONE_DIST, LOST_CONE_MU0, and LOST_CONE_DELTA variables). 
