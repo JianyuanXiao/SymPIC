@@ -58,6 +58,8 @@ export STDLIB=../stdlib.scm
 
 python2 gui.py
 
+The manual is also available at http://staff.ustc.edu.cn/~xiaojy/sympic_doc.html
+
 
 [1] Physics of Plasmas 22, 112504 (2015); https://aip.scitation.org/doi/abs/10.1063/1.4935904
 
