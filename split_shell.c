@@ -86,7 +86,7 @@ typedef struct { 	void *  pe ;
 	Field3D_Seq *  pFoutJ ;
 	Field3D_Seq *  pLFoutJ ;
 	Field3D_Seq *  pFoutEN ;
-	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [8];	void *   implicit_kernel  [2];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
+	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [8];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel ;
 	void *  move_back_kernel_kernel ;
 	double  Mass ;
@@ -212,7 +212,7 @@ typedef struct { 	Field3D_MPI *  r1 ;
 	 #endif
 #include "c_/c_pscmc_inc.h"
 #include "openmp_/openmp_pscmc_inc.h"
-#include "c_/implicit_particle_mover.kernel_inc.h"
+//#include "c_/implicit_particle_mover.kernel_inc.h"
 #include "c_/yeefdtd.kernel_inc.h"
 #include "c_/mergefields.kernel_inc.h"
 #include "c_/miniblas.kernel_inc.h"
@@ -227,7 +227,7 @@ typedef struct { 	Field3D_MPI *  r1 ;
 #include "c_/geo_particle_iter.kernel_inc.h"
 #include "c_/rel_particle_iter.kernel_inc.h"
 #include "c_yeefdtd.h"
-#include "openmp_/implicit_particle_mover.kernel_inc.h"
+//#include "openmp_/implicit_particle_mover.kernel_inc.h"
 #include "openmp_/yeefdtd.kernel_inc.h"
 #include "openmp_/mergefields.kernel_inc.h"
 #include "openmp_/miniblas.kernel_inc.h"
@@ -251,7 +251,7 @@ typedef struct { 	Field3D_MPI *  r1 ;
 #include "call_curl_kernel.h"
 #include "mpifields.h"
 #include "split_shell.h"
-#include "init_implicit_particle.h"
+//#include "init_implicit_particle.h"
 double  wclk_now ();
 int  split_1st_all_passes (Particle_in_Cell_MPI *  pthis ,double  dt0 ,int  use_vlo ){
 	Field3D_MPI  MPI_fieldE = 	( pthis )->MPI_fieldE ;
@@ -859,6 +859,6 @@ int  split_small_timestep (Particle_in_Cell_MPI *  pthis ,double  dt0 ,double * 
 	sync_ovlp_mpi_field ( 	& ( MPI_fieldE ) );
 	sync_ovlp_mpi_field ( 	& ( MPI_fieldB ) );
 	blas_yiszero_synced_Field3D_MPI ( 	& ( MPI_FoutJ ) , 	& ( MPI_FoutJ ) );
-	MPI_split_pass_xyzE_particle_push_r ( pthis , 	& ( MPI_fieldE ) , 	& ( MPI_fieldB ) , 	& ( MPI_FoutJ ) , pmass , pcharge , dt0 , N_l , N_M , push_J );
+	//MPI_split_pass_xyzE_particle_push_r ( pthis , 	& ( MPI_fieldE ) , 	& ( MPI_fieldB ) , 	& ( MPI_FoutJ ) , pmass , pcharge , dt0 , N_l , N_M , push_J );
 	merge_ovlp_mpi_field ( 	& ( MPI_FoutJ ) );
 	return  0 ;}
