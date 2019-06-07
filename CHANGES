@@ -1,3 +1,7 @@
+List of Changes in SymPIC 0.1.2
+
+* Add support on Windows systems with cygwin 
+
 List of Changes in SymPIC 0.1.1
 
 * Fix a PML field initialization bug
