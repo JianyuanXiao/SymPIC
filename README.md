@@ -23,6 +23,12 @@ To build the program, run the following command:
 
 We have only tested the clang5.0/6.0, gcc-7.3.1 and icc-11 compiler.
 
+The program can be also compiled under the cygwin environment on Windows 
+systems. In this case, zlib-devel, openmpi-devel, clang, gcc should be 
+installed. Using the following command to compile under the cygwin:
+
+./compile_cygwin.sh
+
 Configuration files are executable scheme (a dialect of lisp) codes. To run
 the example, 
 
