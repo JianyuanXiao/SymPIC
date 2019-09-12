@@ -37,14 +37,19 @@ Configuration files are executable scheme (a dialect of lisp) codes. To run
 the example, 
 
 cd example
+
 export STDLIB=../stdlib.scm
+
 mpirun -n 4 ../sympic x_ebw.ss
 
 We may also use the MPI-OpenMP hybrid runtime:
 
 cd example
+
 export STDLIB=../stdlib.scm
+
 export OMP_NUM_THREADS=2
+
 mpirun -n 2 ../sympic x_ebw_openmp.ss
 
 After it exits, three files (tmpEB tmpEN and tmpJ) will be generated. 
