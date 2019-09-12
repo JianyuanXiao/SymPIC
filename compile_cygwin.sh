@@ -6,6 +6,7 @@ do
 done
 make -j8
 cp libcscheme-cygwin.a libcscheme.a
+cp makefile_cygwin makefile
 rm sympic
 export OMPI_CC=clang
 make

@@ -8,7 +8,7 @@ CXX=mpicc
 CFLAG= -fopenmp -O2 -ffast-math
 CPPFLAG=
 NVCCF= -arch=sm_20
-CXXFLAG= -O2 -DCSCHEME_MAIN_PROC -lm c_yeefdtd.a openmp_yeefdtd.a -fopenmp libsmallmpi.a cfgcst.c cscheme.c -lcgapsio -lm -I../common/ -I./
+CXXFLAG= -O2 -lm c_yeefdtd.a openmp_yeefdtd.a -fopenmp libsmallmpi.a cfgcst.c -lcscheme -lcgapsio -lm -I../common/
 SWMSCC=sw5cc
 SWMSCCFLAG=-slave -ffast-math -O3
 SWMHCC=sw5cc
