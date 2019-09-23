@@ -42,7 +42,9 @@ export STDLIB=../stdlib.scm
 
 mpirun -n 4 ../sympic x_ebw.ss
 
-We may also use the MPI-OpenMP hybrid runtime:
+Note that this operation require the number of MPI processes equals to 4, to modify
+it you may edit the x_ebw.ss file and change the NUM_PROCESS parameter. We may also
+use the MPI-OpenMP hybrid runtime:
 
 cd example
 
