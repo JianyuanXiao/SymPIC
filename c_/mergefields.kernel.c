@@ -1,3 +1,8 @@
+
+#include <math.h>
+#include <assert.h>
+#include <stdio.h>
+#define IDX_OPT_MAX 1
 void  c_yee_local_scmc_kernel (double *  inout ,long  numvec ,int  num_ele ,long  xblock ,long  yblock ,long  zblock ,int  ovlp ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen ){
 	const long  pscmc_compute_unit_id = 0 ;
 	const long  pscmc_num_compute_units = 1 ;

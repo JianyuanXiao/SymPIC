@@ -384,6 +384,40 @@ int  openmp_blas_yiszero_scmc_set_parameter_zblock (openmp_blas_yiszero_struct *
 ;
 int  openmp_blas_yiszero_scmc_set_parameter_num_ele (openmp_blas_yiszero_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_blas_mulxy_numele3_init (openmp_pscmc_env *  pe ,openmp_blas_mulxy_numele3_struct *  kerstr )
+;
+void  openmp_blas_mulxy_numele3_get_struct_len (size_t *  len )
+;
+int  openmp_blas_mulxy_numele3_get_num_compute_units (openmp_blas_mulxy_numele3_struct *  kerstr )
+;
+int  openmp_blas_mulxy_numele3_get_xlen ()
+;
+int  openmp_blas_mulxy_numele3_exec (openmp_blas_mulxy_numele3_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_blas_mulxy_numele3_scmc_set_parameter_y (openmp_blas_mulxy_numele3_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_blas_mulxy_numele3_scmc_set_parameter_x (openmp_blas_mulxy_numele3_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_blas_mulxy_numele3_scmc_set_parameter_y_cpu_core (openmp_blas_mulxy_numele3_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_blas_mulxy_numele3_scmc_set_parameter_numvec (openmp_blas_mulxy_numele3_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_blas_mulxy_numele3_scmc_set_parameter_XLEN (openmp_blas_mulxy_numele3_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_blas_mulxy_numele3_scmc_set_parameter_YLEN (openmp_blas_mulxy_numele3_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_blas_mulxy_numele3_scmc_set_parameter_ZLEN (openmp_blas_mulxy_numele3_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_blas_mulxy_numele3_scmc_set_parameter_ovlp (openmp_blas_mulxy_numele3_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_blas_mulxy_numele3_scmc_set_parameter_xblock (openmp_blas_mulxy_numele3_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_blas_mulxy_numele3_scmc_set_parameter_yblock (openmp_blas_mulxy_numele3_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_blas_mulxy_numele3_scmc_set_parameter_zblock (openmp_blas_mulxy_numele3_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_blas_mulxy_numele3_scmc_set_parameter_num_ele (openmp_blas_mulxy_numele3_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_blas_yiszero_synced_init (openmp_pscmc_env *  pe ,openmp_blas_yiszero_synced_struct *  kerstr )
 ;
 void  openmp_blas_yiszero_synced_get_struct_len (size_t *  len )

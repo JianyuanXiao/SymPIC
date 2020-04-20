@@ -384,6 +384,40 @@ int  c_blas_yiszero_scmc_set_parameter_zblock (c_blas_yiszero_struct *  kerstr ,
 ;
 int  c_blas_yiszero_scmc_set_parameter_num_ele (c_blas_yiszero_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
+int  c_blas_mulxy_numele3_init (c_pscmc_env *  pe ,c_blas_mulxy_numele3_struct *  kerstr )
+;
+void  c_blas_mulxy_numele3_get_struct_len (size_t *  len )
+;
+int  c_blas_mulxy_numele3_get_xlen ()
+;
+int  c_blas_mulxy_numele3_get_num_compute_units (c_blas_mulxy_numele3_struct *  kerstr )
+;
+int  c_blas_mulxy_numele3_exec (c_blas_mulxy_numele3_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_y (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_x (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_y_cpu_core (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_numvec (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_XLEN (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_YLEN (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_ZLEN (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_ovlp (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_xblock (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_yblock (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_zblock (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_num_ele (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_blas_yiszero_synced_init (c_pscmc_env *  pe ,c_blas_yiszero_synced_struct *  kerstr )
 ;
 void  c_blas_yiszero_synced_get_struct_len (size_t *  len )

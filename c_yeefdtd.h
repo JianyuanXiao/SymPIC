@@ -1,3 +1,1569 @@
+void  c_hydro_push_rho_s_scmc_kernel (double *  out_rho_s_vx ,double *  alpha_beta_new ,double *  alpha_beta ,double *  rho_s_vx ,double *  vA ,double *  vAzero ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_rho_s_vx ,int  num_ele_vA ,int  num_ele_alpha_beta ,double  QM0 ,double  U0 ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_hydro_push_vx_scmc_kernel (double *  out_rho_s_vx ,double *  alpha_beta_new ,double *  alpha_beta ,double *  rho_s_vx ,double *  vA ,double *  vAzero ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_rho_s_vx ,int  num_ele_vA ,int  num_ele_alpha_beta ,double  QM0 ,double  U0 ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_hydro_push_alpha_beta_scmc_kernel (double *  out_alpha_beta ,double *  alpha_beta_new ,double *  alpha_beta ,double *  rho_s_vx ,double *  vA ,double *  vAzero ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_rho_s_vx ,int  num_ele_vA ,int  num_ele_alpha_beta ,double  QM0 ,double  U0 ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_hydro_push_jac_alpha_beta_scmc_kernel (double *  out_alpha_beta ,double *  alpha_beta_new ,double *  alpha_beta ,double *  rho_s_vx ,double *  vA ,double *  vAzero ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_rho_s_vx ,int  num_ele_vA ,int  num_ele_alpha_beta ,double  QM0 ,double  U0 ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_hydro_push_vA_scmc_kernel (double *  out_vA ,double *  alpha_beta_new ,double *  alpha_beta ,double *  rho_s_vx ,double *  vA ,double *  vAzero ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_rho_s_vx ,int  num_ele_vA ,int  num_ele_alpha_beta ,double  QM0 ,double  U0 ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+
+#include "local_header.h"
+int  c_hydro_push_vA_init (c_pscmc_env *  pe ,c_hydro_push_vA_struct *  kerstr )
+;
+void  c_hydro_push_vA_get_struct_len (size_t *  len )
+;
+int  c_hydro_push_vA_get_xlen ()
+;
+int  c_hydro_push_vA_get_num_compute_units (c_hydro_push_vA_struct *  kerstr )
+;
+int  c_hydro_push_vA_exec (c_hydro_push_vA_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_hydro_push_vA_scmc_set_parameter_out_vA (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_alpha_beta_new (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_alpha_beta (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_rho_s_vx (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_vA (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_vAzero (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_y_cpu_core (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_numvec (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_XLEN (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_YLEN (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_ZLEN (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_ovlp (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_xblock (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_yblock (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_zblock (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_num_ele (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_num_ele_rho_s_vx (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_num_ele_vA (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_num_ele_alpha_beta (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_QM0 (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_U0 (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_DX (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_DY (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_DZ (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vA_scmc_set_parameter_DT (c_hydro_push_vA_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_init (c_pscmc_env *  pe ,c_hydro_push_jac_alpha_beta_struct *  kerstr )
+;
+void  c_hydro_push_jac_alpha_beta_get_struct_len (size_t *  len )
+;
+int  c_hydro_push_jac_alpha_beta_get_xlen ()
+;
+int  c_hydro_push_jac_alpha_beta_get_num_compute_units (c_hydro_push_jac_alpha_beta_struct *  kerstr )
+;
+int  c_hydro_push_jac_alpha_beta_exec (c_hydro_push_jac_alpha_beta_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_out_alpha_beta (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_alpha_beta_new (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_alpha_beta (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_rho_s_vx (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_vA (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_vAzero (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_y_cpu_core (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_numvec (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_XLEN (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_YLEN (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_ZLEN (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_ovlp (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_xblock (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_yblock (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_zblock (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_num_ele (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_num_ele_rho_s_vx (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_num_ele_vA (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_num_ele_alpha_beta (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_QM0 (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_U0 (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_DX (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_DY (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_DZ (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_jac_alpha_beta_scmc_set_parameter_DT (c_hydro_push_jac_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_init (c_pscmc_env *  pe ,c_hydro_push_alpha_beta_struct *  kerstr )
+;
+void  c_hydro_push_alpha_beta_get_struct_len (size_t *  len )
+;
+int  c_hydro_push_alpha_beta_get_xlen ()
+;
+int  c_hydro_push_alpha_beta_get_num_compute_units (c_hydro_push_alpha_beta_struct *  kerstr )
+;
+int  c_hydro_push_alpha_beta_exec (c_hydro_push_alpha_beta_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_out_alpha_beta (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_alpha_beta_new (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_alpha_beta (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_rho_s_vx (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_vA (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_vAzero (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_y_cpu_core (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_numvec (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_XLEN (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_YLEN (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_ZLEN (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_ovlp (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_xblock (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_yblock (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_zblock (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_num_ele (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_num_ele_rho_s_vx (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_num_ele_vA (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_num_ele_alpha_beta (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_QM0 (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_U0 (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_DX (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_DY (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_DZ (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_alpha_beta_scmc_set_parameter_DT (c_hydro_push_alpha_beta_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_init (c_pscmc_env *  pe ,c_hydro_push_vx_struct *  kerstr )
+;
+void  c_hydro_push_vx_get_struct_len (size_t *  len )
+;
+int  c_hydro_push_vx_get_xlen ()
+;
+int  c_hydro_push_vx_get_num_compute_units (c_hydro_push_vx_struct *  kerstr )
+;
+int  c_hydro_push_vx_exec (c_hydro_push_vx_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_hydro_push_vx_scmc_set_parameter_out_rho_s_vx (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_alpha_beta_new (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_alpha_beta (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_rho_s_vx (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_vA (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_vAzero (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_y_cpu_core (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_numvec (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_XLEN (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_YLEN (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_ZLEN (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_ovlp (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_xblock (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_yblock (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_zblock (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_num_ele (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_num_ele_rho_s_vx (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_num_ele_vA (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_num_ele_alpha_beta (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_QM0 (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_U0 (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_DX (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_DY (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_DZ (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_vx_scmc_set_parameter_DT (c_hydro_push_vx_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_init (c_pscmc_env *  pe ,c_hydro_push_rho_s_struct *  kerstr )
+;
+void  c_hydro_push_rho_s_get_struct_len (size_t *  len )
+;
+int  c_hydro_push_rho_s_get_xlen ()
+;
+int  c_hydro_push_rho_s_get_num_compute_units (c_hydro_push_rho_s_struct *  kerstr )
+;
+int  c_hydro_push_rho_s_exec (c_hydro_push_rho_s_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_out_rho_s_vx (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_alpha_beta_new (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_alpha_beta (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_rho_s_vx (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_vA (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_vAzero (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_y_cpu_core (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_numvec (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_XLEN (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_YLEN (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_ZLEN (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_ovlp (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_xblock (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_yblock (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_zblock (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_num_ele (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_num_ele_rho_s_vx (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_num_ele_vA (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_num_ele_alpha_beta (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_QM0 (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_U0 (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_DX (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_DY (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_DZ (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_hydro_push_rho_s_scmc_set_parameter_DT (c_hydro_push_rho_s_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+void  c_split_pass_xyzE_particle_scmc_kernel (int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,int  N_l ,int  N_M ,int  push_J ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_split_pass_xyzE_particle_push_r_scmc_kernel (int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,int  N_l ,int  N_M ,int  push_J ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+
+#include "local_header.h"
+int  c_split_pass_xyzE_particle_push_r_init (c_pscmc_env *  pe ,c_split_pass_xyzE_particle_push_r_struct *  kerstr )
+;
+void  c_split_pass_xyzE_particle_push_r_get_struct_len (size_t *  len )
+;
+int  c_split_pass_xyzE_particle_push_r_get_xlen ()
+;
+int  c_split_pass_xyzE_particle_push_r_get_num_compute_units (c_split_pass_xyzE_particle_push_r_struct *  kerstr )
+;
+int  c_split_pass_xyzE_particle_push_r_exec (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_xyzw (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_cu_cache (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_cu_xyzw (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_fieldE (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_fieldB (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_FoutJ (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_XLEN (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_YLEN (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_ZLEN (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_ovlp (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_numvec (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_num_ele (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_grid_cache_len (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_cu_cache_length (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_Mass0 (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_Charge0 (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_Deltat (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_DELTA_X (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_DELTA_Y (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_DELTA_Z (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_N_l (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_N_M (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_push_r_scmc_set_parameter_push_J (c_split_pass_xyzE_particle_push_r_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_init (c_pscmc_env *  pe ,c_split_pass_xyzE_particle_struct *  kerstr )
+;
+void  c_split_pass_xyzE_particle_get_struct_len (size_t *  len )
+;
+int  c_split_pass_xyzE_particle_get_xlen ()
+;
+int  c_split_pass_xyzE_particle_get_num_compute_units (c_split_pass_xyzE_particle_struct *  kerstr )
+;
+int  c_split_pass_xyzE_particle_exec (c_split_pass_xyzE_particle_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_xyzw (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_cu_cache (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_cu_xyzw (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_fieldE (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_fieldB (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_FoutJ (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_XLEN (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_YLEN (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_ZLEN (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_ovlp (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_numvec (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_num_ele (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_grid_cache_len (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_cu_cache_length (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_Mass0 (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_Charge0 (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_Deltat (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_DELTA_X (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_DELTA_Y (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_DELTA_Z (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_N_l (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_N_M (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_xyzE_particle_scmc_set_parameter_push_J (c_split_pass_xyzE_particle_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+double  c_get_E1_local_opt (double *  shE0 ,double *  f1_x ,double *  f0_y ,double *  f0_z ,int  dir ,int  l_dir )
+;
+double  c_get_B1_local_opt (double *  shB0 ,double *  if1_x ,double *  if1_xplus ,double *  f1_y ,double *  f0_z ,int  dir ,int  l_dir )
+;
+void  c_cal_fun_f0 (double *  outf ,double  x ,int  ix )
+;
+void  c_cal_fun_f1 (double *  outf ,double  x ,int  ix )
+;
+void  c_cal_fun_if1 (double *  outf ,double  x ,int  ix )
+;
+void  c_cal_fun_df0 (double *  outf ,double  x ,int  ix )
+;
+void  c_cal_fun_dif1 (double *  outf ,double  x ,int  ix )
+;
+void  c_relng_1st_goto_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+
+#include "local_header.h"
+int  c_relng_1st_goto_init (c_pscmc_env *  pe ,c_relng_1st_goto_struct *  kerstr )
+;
+void  c_relng_1st_goto_get_struct_len (size_t *  len )
+;
+int  c_relng_1st_goto_get_xlen ()
+;
+int  c_relng_1st_goto_get_num_compute_units (c_relng_1st_goto_struct *  kerstr )
+;
+int  c_relng_1st_goto_exec (c_relng_1st_goto_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_relng_1st_goto_scmc_set_parameter_inoutput (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_xyzw (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_cu_cache (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_cu_xyzw (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_xoffset (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_yoffset (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_zoffset (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_fieldE (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_fieldB (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_fieldB1 (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_FoutJ (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_XLEN (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_YLEN (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_ZLEN (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_ovlp (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_numvec (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_num_ele (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_grid_cache_len (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_cu_cache_length (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_DELTA_X (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_DELTA_Y (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_DELTA_Z (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_Mass0 (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_Charge0 (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_Deltat (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_Tori_X0 (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_goto_scmc_set_parameter_Solve_Err (c_relng_1st_goto_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_flrx (double  x )
+;
+void  c_ngeo_gc_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  r0 ,double  MIN_R0 ,double  Q0 ,double  b0 ,double  zmid ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_geo_nr_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  r0 ,double  MIN_R0 ,double  Q0 ,double  b0 ,double  zmid ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_geo_nr_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  r0 ,double  MIN_R0 ,double  Q0 ,double  b0 ,double  zmid ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_geo_nr_Bfield_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  r0 ,double  MIN_R0 ,double  Q0 ,double  b0 ,double  zmid ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_geo_nr_Bfield_pushJ_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  r0 ,double  MIN_R0 ,double  Q0 ,double  b0 ,double  zmid ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_geo_nr_Bfield_pushJ_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  r0 ,double  MIN_R0 ,double  Q0 ,double  b0 ,double  zmid ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+
+#include "local_header.h"
+int  c_geo_nr_Bfield_pushJ_vlo_init (c_pscmc_env *  pe ,c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr )
+;
+void  c_geo_nr_Bfield_pushJ_vlo_get_struct_len (size_t *  len )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_get_xlen ()
+;
+int  c_geo_nr_Bfield_pushJ_vlo_get_num_compute_units (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_exec (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_inoutput (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_xyzw (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_cu_cache (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_cu_xyzw (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_xoffset (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_yoffset (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_zoffset (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_fieldE (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_fieldB (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_fieldB1 (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_FoutJ (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_XLEN (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_YLEN (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_ZLEN (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_ovlp (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_numvec (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_num_ele (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_grid_cache_len (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_cu_cache_length (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_DELTA_X (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_DELTA_Y (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_DELTA_Z (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_Mass0 (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_Charge0 (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_Deltat (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_Tori_X0 (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_r0 (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_MIN_R0 (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_Q0 (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_b0 (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_vlo_scmc_set_parameter_zmid (c_geo_nr_Bfield_pushJ_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_init (c_pscmc_env *  pe ,c_geo_nr_Bfield_pushJ_struct *  kerstr )
+;
+void  c_geo_nr_Bfield_pushJ_get_struct_len (size_t *  len )
+;
+int  c_geo_nr_Bfield_pushJ_get_xlen ()
+;
+int  c_geo_nr_Bfield_pushJ_get_num_compute_units (c_geo_nr_Bfield_pushJ_struct *  kerstr )
+;
+int  c_geo_nr_Bfield_pushJ_exec (c_geo_nr_Bfield_pushJ_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_inoutput (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_xyzw (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_cu_cache (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_cu_xyzw (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_xoffset (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_yoffset (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_zoffset (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_fieldE (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_fieldB (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_fieldB1 (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_FoutJ (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_XLEN (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_YLEN (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_ZLEN (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_ovlp (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_numvec (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_num_ele (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_grid_cache_len (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_cu_cache_length (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_DELTA_X (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_DELTA_Y (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_DELTA_Z (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_Mass0 (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_Charge0 (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_Deltat (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_Tori_X0 (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_r0 (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_MIN_R0 (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_Q0 (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_b0 (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_pushJ_scmc_set_parameter_zmid (c_geo_nr_Bfield_pushJ_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_init (c_pscmc_env *  pe ,c_geo_nr_Bfield_struct *  kerstr )
+;
+void  c_geo_nr_Bfield_get_struct_len (size_t *  len )
+;
+int  c_geo_nr_Bfield_get_xlen ()
+;
+int  c_geo_nr_Bfield_get_num_compute_units (c_geo_nr_Bfield_struct *  kerstr )
+;
+int  c_geo_nr_Bfield_exec (c_geo_nr_Bfield_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_inoutput (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_xyzw (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_cu_cache (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_cu_xyzw (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_xoffset (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_yoffset (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_zoffset (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_fieldE (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_fieldB (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_fieldB1 (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_FoutJ (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_XLEN (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_YLEN (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_ZLEN (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_ovlp (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_numvec (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_num_ele (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_grid_cache_len (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_cu_cache_length (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_DELTA_X (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_DELTA_Y (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_DELTA_Z (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_Mass0 (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_Charge0 (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_Deltat (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_Tori_X0 (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_r0 (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_MIN_R0 (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_Q0 (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_b0 (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_Bfield_scmc_set_parameter_zmid (c_geo_nr_Bfield_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_init (c_pscmc_env *  pe ,c_geo_nr_vlo_struct *  kerstr )
+;
+void  c_geo_nr_vlo_get_struct_len (size_t *  len )
+;
+int  c_geo_nr_vlo_get_xlen ()
+;
+int  c_geo_nr_vlo_get_num_compute_units (c_geo_nr_vlo_struct *  kerstr )
+;
+int  c_geo_nr_vlo_exec (c_geo_nr_vlo_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_inoutput (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_xyzw (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_cu_cache (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_cu_xyzw (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_xoffset (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_yoffset (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_zoffset (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_fieldE (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_fieldB (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_fieldB1 (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_FoutJ (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_XLEN (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_YLEN (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_ZLEN (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_ovlp (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_numvec (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_num_ele (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_grid_cache_len (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_cu_cache_length (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_DELTA_X (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_DELTA_Y (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_DELTA_Z (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_Mass0 (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_Charge0 (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_Deltat (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_Tori_X0 (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_r0 (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_MIN_R0 (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_Q0 (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_b0 (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_vlo_scmc_set_parameter_zmid (c_geo_nr_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_init (c_pscmc_env *  pe ,c_geo_nr_struct *  kerstr )
+;
+void  c_geo_nr_get_struct_len (size_t *  len )
+;
+int  c_geo_nr_get_xlen ()
+;
+int  c_geo_nr_get_num_compute_units (c_geo_nr_struct *  kerstr )
+;
+int  c_geo_nr_exec (c_geo_nr_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_geo_nr_scmc_set_parameter_inoutput (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_xyzw (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_cu_cache (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_cu_xyzw (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_xoffset (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_yoffset (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_zoffset (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_fieldE (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_fieldB (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_fieldB1 (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_FoutJ (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_XLEN (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_YLEN (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_ZLEN (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_ovlp (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_numvec (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_num_ele (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_grid_cache_len (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_cu_cache_length (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_DELTA_X (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_DELTA_Y (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_DELTA_Z (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_Mass0 (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_Charge0 (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_Deltat (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_Tori_X0 (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_r0 (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_MIN_R0 (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_Q0 (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_b0 (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_nr_scmc_set_parameter_zmid (c_geo_nr_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_init (c_pscmc_env *  pe ,c_ngeo_gc_struct *  kerstr )
+;
+void  c_ngeo_gc_get_struct_len (size_t *  len )
+;
+int  c_ngeo_gc_get_xlen ()
+;
+int  c_ngeo_gc_get_num_compute_units (c_ngeo_gc_struct *  kerstr )
+;
+int  c_ngeo_gc_exec (c_ngeo_gc_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_ngeo_gc_scmc_set_parameter_inoutput (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_xyzw (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_cu_cache (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_cu_xyzw (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_xoffset (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_yoffset (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_zoffset (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_fieldE (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_fieldB (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_fieldB1 (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_FoutJ (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_XLEN (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_YLEN (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_ZLEN (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_ovlp (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_numvec (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_num_ele (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_grid_cache_len (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_cu_cache_length (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_DELTA_X (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_DELTA_Y (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_DELTA_Z (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_Mass0 (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_Charge0 (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_Deltat (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_Tori_X0 (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_r0 (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_MIN_R0 (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_Q0 (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_b0 (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_ngeo_gc_scmc_set_parameter_zmid (c_ngeo_gc_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_mass_floorx (double  x )
+;
+void  c_geo_rel_1st_fwd_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  LFoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_geo_rel_1st_fwd_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  LFoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_geo_rel_1st_bwd_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  LFoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_geo_rel_1st_bwd_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  LFoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_relng_1st_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  LFoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_relng_1st_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  LFoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+
+#include "local_header.h"
+int  c_relng_1st_sg2_small_grids_init (c_pscmc_env *  pe ,c_relng_1st_sg2_small_grids_struct *  kerstr )
+;
+void  c_relng_1st_sg2_small_grids_get_struct_len (size_t *  len )
+;
+int  c_relng_1st_sg2_small_grids_get_xlen ()
+;
+int  c_relng_1st_sg2_small_grids_get_num_compute_units (c_relng_1st_sg2_small_grids_struct *  kerstr )
+;
+int  c_relng_1st_sg2_small_grids_exec (c_relng_1st_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_inoutput (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_xyzw (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_cu_cache (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_cu_xyzw (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_xoffset (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_yoffset (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_zoffset (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_fieldE (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_fieldB (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_fieldB1 (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_LFoutJ (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_XLEN (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_YLEN (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_ZLEN (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_ovlp (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_numvec (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_num_ele (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_grid_cache_len (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_cu_cache_length (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_DELTA_X (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_DELTA_Y (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_DELTA_Z (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_Mass0 (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_Charge0 (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_Deltat (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_Tori_X0 (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_sg2_small_grids_scmc_set_parameter_Solve_Err (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_init (c_pscmc_env *  pe ,c_relng_1st_small_grids_struct *  kerstr )
+;
+void  c_relng_1st_small_grids_get_struct_len (size_t *  len )
+;
+int  c_relng_1st_small_grids_get_xlen ()
+;
+int  c_relng_1st_small_grids_get_num_compute_units (c_relng_1st_small_grids_struct *  kerstr )
+;
+int  c_relng_1st_small_grids_exec (c_relng_1st_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_inoutput (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_xyzw (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_cu_cache (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_cu_xyzw (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_xoffset (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_yoffset (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_zoffset (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_fieldE (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_fieldB (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_fieldB1 (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_LFoutJ (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_XLEN (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_YLEN (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_ZLEN (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_ovlp (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_numvec (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_num_ele (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_grid_cache_len (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_cu_cache_length (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_DELTA_X (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_DELTA_Y (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_DELTA_Z (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_Mass0 (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_Charge0 (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_Deltat (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_Tori_X0 (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_small_grids_scmc_set_parameter_Solve_Err (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_init (c_pscmc_env *  pe ,c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr )
+;
+void  c_geo_rel_1st_bwd_sg2_small_grids_get_struct_len (size_t *  len )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_get_xlen ()
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_get_num_compute_units (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_exec (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_inoutput (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_xyzw (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_cu_cache (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_cu_xyzw (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_xoffset (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_yoffset (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_zoffset (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_fieldE (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_fieldB (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_fieldB1 (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_LFoutJ (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_XLEN (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_YLEN (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_ZLEN (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_ovlp (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_numvec (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_num_ele (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_grid_cache_len (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_cu_cache_length (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_DELTA_X (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_DELTA_Y (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_DELTA_Z (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_Mass0 (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_Charge0 (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_Deltat (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_Tori_X0 (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_Solve_Err (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_init (c_pscmc_env *  pe ,c_geo_rel_1st_bwd_small_grids_struct *  kerstr )
+;
+void  c_geo_rel_1st_bwd_small_grids_get_struct_len (size_t *  len )
+;
+int  c_geo_rel_1st_bwd_small_grids_get_xlen ()
+;
+int  c_geo_rel_1st_bwd_small_grids_get_num_compute_units (c_geo_rel_1st_bwd_small_grids_struct *  kerstr )
+;
+int  c_geo_rel_1st_bwd_small_grids_exec (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_inoutput (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_xyzw (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_cu_cache (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_cu_xyzw (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_xoffset (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_yoffset (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_zoffset (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_fieldE (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_fieldB (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_fieldB1 (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_LFoutJ (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_XLEN (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_YLEN (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_ZLEN (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_ovlp (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_numvec (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_num_ele (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_grid_cache_len (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_cu_cache_length (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_DELTA_X (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_DELTA_Y (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_DELTA_Z (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_Mass0 (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_Charge0 (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_Deltat (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_Tori_X0 (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_Solve_Err (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_init (c_pscmc_env *  pe ,c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr )
+;
+void  c_geo_rel_1st_fwd_sg2_small_grids_get_struct_len (size_t *  len )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_get_xlen ()
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_get_num_compute_units (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_exec (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_inoutput (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_xyzw (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_cu_cache (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_cu_xyzw (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_xoffset (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_yoffset (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_zoffset (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_fieldE (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_fieldB (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_fieldB1 (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_LFoutJ (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_XLEN (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_YLEN (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_ZLEN (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_ovlp (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_numvec (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_num_ele (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_grid_cache_len (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_cu_cache_length (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_DELTA_X (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_DELTA_Y (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_DELTA_Z (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_Mass0 (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_Charge0 (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_Deltat (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_Tori_X0 (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_Solve_Err (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_init (c_pscmc_env *  pe ,c_geo_rel_1st_fwd_small_grids_struct *  kerstr )
+;
+void  c_geo_rel_1st_fwd_small_grids_get_struct_len (size_t *  len )
+;
+int  c_geo_rel_1st_fwd_small_grids_get_xlen ()
+;
+int  c_geo_rel_1st_fwd_small_grids_get_num_compute_units (c_geo_rel_1st_fwd_small_grids_struct *  kerstr )
+;
+int  c_geo_rel_1st_fwd_small_grids_exec (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_inoutput (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_xyzw (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_cu_cache (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_cu_xyzw (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_xoffset (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_yoffset (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_zoffset (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_fieldE (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_fieldB (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_fieldB1 (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_LFoutJ (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_XLEN (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_YLEN (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_ZLEN (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_ovlp (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_numvec (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_num_ele (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_grid_cache_len (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_cu_cache_length (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_DELTA_X (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_DELTA_Y (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_DELTA_Z (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_Mass0 (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_Charge0 (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_Deltat (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_Tori_X0 (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_Solve_Err (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_floorx (double  x )
+;
+void  c_geo_rel_1st_fwd_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_geo_rel_1st_bwd_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+
+#include "local_header.h"
+int  c_geo_rel_1st_bwd_init (c_pscmc_env *  pe ,c_geo_rel_1st_bwd_struct *  kerstr )
+;
+void  c_geo_rel_1st_bwd_get_struct_len (size_t *  len )
+;
+int  c_geo_rel_1st_bwd_get_xlen ()
+;
+int  c_geo_rel_1st_bwd_get_num_compute_units (c_geo_rel_1st_bwd_struct *  kerstr )
+;
+int  c_geo_rel_1st_bwd_exec (c_geo_rel_1st_bwd_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_inoutput (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_xyzw (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_cu_cache (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_cu_xyzw (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_xoffset (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_yoffset (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_zoffset (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_fieldE (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_fieldB (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_fieldB1 (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_FoutJ (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_XLEN (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_YLEN (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_ZLEN (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_ovlp (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_numvec (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_num_ele (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_grid_cache_len (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_cu_cache_length (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_DELTA_X (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_DELTA_Y (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_DELTA_Z (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_Mass0 (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_Charge0 (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_Deltat (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_Tori_X0 (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_bwd_scmc_set_parameter_Solve_Err (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_init (c_pscmc_env *  pe ,c_geo_rel_1st_fwd_struct *  kerstr )
+;
+void  c_geo_rel_1st_fwd_get_struct_len (size_t *  len )
+;
+int  c_geo_rel_1st_fwd_get_xlen ()
+;
+int  c_geo_rel_1st_fwd_get_num_compute_units (c_geo_rel_1st_fwd_struct *  kerstr )
+;
+int  c_geo_rel_1st_fwd_exec (c_geo_rel_1st_fwd_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_inoutput (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_xyzw (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_cu_cache (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_cu_xyzw (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_xoffset (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_yoffset (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_zoffset (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_fieldE (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_fieldB (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_fieldB1 (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_FoutJ (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_XLEN (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_YLEN (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_ZLEN (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_ovlp (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_numvec (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_num_ele (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_grid_cache_len (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_cu_cache_length (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_DELTA_X (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_DELTA_Y (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_DELTA_Z (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_Mass0 (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_Charge0 (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_Deltat (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_Tori_X0 (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_geo_rel_1st_fwd_scmc_set_parameter_Solve_Err (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_floory (double  x )
+;
+void  c_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+
+#include "local_header.h"
+int  c_relng_1st_init (c_pscmc_env *  pe ,c_relng_1st_struct *  kerstr )
+;
+void  c_relng_1st_get_struct_len (size_t *  len )
+;
+int  c_relng_1st_get_xlen ()
+;
+int  c_relng_1st_get_num_compute_units (c_relng_1st_struct *  kerstr )
+;
+int  c_relng_1st_exec (c_relng_1st_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_relng_1st_scmc_set_parameter_inoutput (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_xyzw (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_cu_cache (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_cu_xyzw (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_xoffset (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_yoffset (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_zoffset (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_fieldE (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_fieldB (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_fieldB1 (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_FoutJ (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_XLEN (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_YLEN (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_ZLEN (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_ovlp (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_numvec (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_num_ele (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_grid_cache_len (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_cu_cache_length (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_DELTA_X (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_DELTA_Y (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_DELTA_Z (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_Mass0 (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_Charge0 (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_Deltat (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_Tori_X0 (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_relng_1st_scmc_set_parameter_Solve_Err (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 void  c_Yee_FDTD_Curl_E_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_Yee_FDTD_Curl_E_4th_scmc_kernel (double *  outEB ,double *  inEB ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
@@ -40,7 +1606,7 @@ void  c_PML_FDTD_CURL_BWD_scmc_kernel (double *  outEB ,double *  inEB ,double *
 ;
 void  c_kgm_calc_rho_scmc_kernel (double *  outEB ,double *  inEB ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,double  M ,double  Q ,double  DX ,double  refz0 ,double  q ,double  dtodx ,int  mode ,int  swap_input ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
-void  c_kgm_eqn_core_scmc_kernel (double *  outEB ,double *  inEB ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,double  M ,double  Q ,double  DX ,double  GEXT ,double  rfz0 ,int  swap_input ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+void  c_kgm_eqn_core_scmc_kernel (double *  outEB ,double *  inEB ,double *  extA0 ,double *  extA1 ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,double  M ,double  Q ,double  DX ,double  GEXT ,double  rfz0 ,double  g_beg ,int  swap_input ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 
 #include "local_header.h"
@@ -57,6 +1623,10 @@ int  c_kgm_eqn_core_exec (c_kgm_eqn_core_struct *  kerstr ,long  scmc_internal_g
 int  c_kgm_eqn_core_scmc_set_parameter_outEB (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_kgm_eqn_core_scmc_set_parameter_inEB (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_kgm_eqn_core_scmc_set_parameter_extA0 (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_kgm_eqn_core_scmc_set_parameter_extA1 (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_kgm_eqn_core_scmc_set_parameter_xoffset (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
@@ -95,6 +1665,8 @@ int  c_kgm_eqn_core_scmc_set_parameter_DX (c_kgm_eqn_core_struct *  kerstr ,c_ps
 int  c_kgm_eqn_core_scmc_set_parameter_GEXT (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_kgm_eqn_core_scmc_set_parameter_rfz0 (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_kgm_eqn_core_scmc_set_parameter_g_beg (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_kgm_eqn_core_scmc_set_parameter_swap_input (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
@@ -1090,6 +2662,8 @@ int  c_yee_local_scmc_set_parameter_ovlp (c_yee_local_struct *  kerstr ,c_pscmc_
 ;
 void  c_blas_yiszero_synced_scmc_kernel (double *  y ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
+void  c_blas_mulxy_numele3_scmc_kernel (double *  y ,double *  x ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
 void  c_blas_yiszero_scmc_kernel (double *  y ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_blas_yisconst_scmc_kernel (double *  y ,double  a ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
@@ -1498,6 +3072,40 @@ int  c_blas_yiszero_scmc_set_parameter_zblock (c_blas_yiszero_struct *  kerstr ,
 ;
 int  c_blas_yiszero_scmc_set_parameter_num_ele (c_blas_yiszero_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
+int  c_blas_mulxy_numele3_init (c_pscmc_env *  pe ,c_blas_mulxy_numele3_struct *  kerstr )
+;
+void  c_blas_mulxy_numele3_get_struct_len (size_t *  len )
+;
+int  c_blas_mulxy_numele3_get_xlen ()
+;
+int  c_blas_mulxy_numele3_get_num_compute_units (c_blas_mulxy_numele3_struct *  kerstr )
+;
+int  c_blas_mulxy_numele3_exec (c_blas_mulxy_numele3_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_y (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_x (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_y_cpu_core (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_numvec (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_XLEN (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_YLEN (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_ZLEN (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_ovlp (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_xblock (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_yblock (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_zblock (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_blas_mulxy_numele3_scmc_set_parameter_num_ele (c_blas_mulxy_numele3_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_blas_yiszero_synced_init (c_pscmc_env *  pe ,c_blas_yiszero_synced_struct *  kerstr )
 ;
 void  c_blas_yiszero_synced_get_struct_len (size_t *  len )
@@ -1836,7 +3444,11 @@ double  c_maxwell_dist_k (double  ava ,double  sig )
 ;
 void  c_split_pass_x_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
+void  c_split_pass_x_nopush_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
 void  c_split_pass_x_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_split_pass_x_vlo_nopush_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_split_pass_x_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
@@ -1846,9 +3458,15 @@ void  c_split_pass_x_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 ;
 void  c_split_pass_x_vlo_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
+void  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
 void  c_split_pass_y_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
+void  c_split_pass_y_nopush_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
 void  c_split_pass_y_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_split_pass_y_vlo_nopush_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_split_pass_y_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
@@ -1858,9 +3476,15 @@ void  c_split_pass_y_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 ;
 void  c_split_pass_y_vlo_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
+void  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
 void  c_split_pass_z_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
+void  c_split_pass_z_nopush_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
 void  c_split_pass_z_vlo_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_split_pass_z_vlo_nopush_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_split_pass_z_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
@@ -1869,6 +3493,8 @@ void  c_split_pass_z_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyz
 void  c_split_pass_z_vlo_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_split_pass_z_vlo_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  LFoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_split_pass_E_particle_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,double *  FoutEN ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass ,double  Charge ,int  SPEC ,int  NUM_SPEC ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
@@ -2260,6 +3886,64 @@ int  c_split_pass_E_particle_scmc_set_parameter_DELTA_Z (c_split_pass_E_particle
 ;
 int  c_split_pass_E_particle_scmc_set_parameter_Deltat (c_split_pass_E_particle_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_init (c_pscmc_env *  pe ,c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr )
+;
+void  c_split_pass_z_vlo_sg2_nopush_small_grids_get_struct_len (size_t *  len )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_get_xlen ()
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_get_num_compute_units (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_exec (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_inoutput (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_xyzw (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_cache (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_xyzw (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_fieldE (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_fieldB (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_LFoutJ (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_FoutEN (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_XLEN (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_YLEN (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_ZLEN (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_ovlp (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_numvec (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_num_ele (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_grid_cache_len (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_cache_length (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_Mass (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_Charge (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_SPEC (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_NUM_SPEC (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_X (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_Y (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_Deltat (c_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_split_pass_z_vlo_sg2_small_grids_init (c_pscmc_env *  pe ,c_split_pass_z_vlo_sg2_small_grids_struct *  kerstr )
 ;
 void  c_split_pass_z_vlo_sg2_small_grids_get_struct_len (size_t *  len )
@@ -2492,6 +4176,64 @@ int  c_split_pass_z_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_z_small
 ;
 int  c_split_pass_z_small_grids_scmc_set_parameter_Deltat (c_split_pass_z_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
+int  c_split_pass_z_vlo_nopush_init (c_pscmc_env *  pe ,c_split_pass_z_vlo_nopush_struct *  kerstr )
+;
+void  c_split_pass_z_vlo_nopush_get_struct_len (size_t *  len )
+;
+int  c_split_pass_z_vlo_nopush_get_xlen ()
+;
+int  c_split_pass_z_vlo_nopush_get_num_compute_units (c_split_pass_z_vlo_nopush_struct *  kerstr )
+;
+int  c_split_pass_z_vlo_nopush_exec (c_split_pass_z_vlo_nopush_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_inoutput (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_xyzw (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_cu_cache (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_cu_xyzw (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_fieldE (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_fieldB (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_FoutJ (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_FoutEN (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_XLEN (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_YLEN (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_ZLEN (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_ovlp (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_numvec (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_num_ele (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_grid_cache_len (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_cu_cache_length (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_Mass (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_Charge (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_SPEC (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_NUM_SPEC (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_DELTA_X (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_DELTA_Y (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_DELTA_Z (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_vlo_nopush_scmc_set_parameter_Deltat (c_split_pass_z_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_split_pass_z_vlo_init (c_pscmc_env *  pe ,c_split_pass_z_vlo_struct *  kerstr )
 ;
 void  c_split_pass_z_vlo_get_struct_len (size_t *  len )
@@ -2550,6 +4292,64 @@ int  c_split_pass_z_vlo_scmc_set_parameter_DELTA_Z (c_split_pass_z_vlo_struct * 
 ;
 int  c_split_pass_z_vlo_scmc_set_parameter_Deltat (c_split_pass_z_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
+int  c_split_pass_z_nopush_init (c_pscmc_env *  pe ,c_split_pass_z_nopush_struct *  kerstr )
+;
+void  c_split_pass_z_nopush_get_struct_len (size_t *  len )
+;
+int  c_split_pass_z_nopush_get_xlen ()
+;
+int  c_split_pass_z_nopush_get_num_compute_units (c_split_pass_z_nopush_struct *  kerstr )
+;
+int  c_split_pass_z_nopush_exec (c_split_pass_z_nopush_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_inoutput (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_xyzw (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_cu_cache (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_cu_xyzw (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_fieldE (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_fieldB (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_FoutJ (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_FoutEN (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_XLEN (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_YLEN (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_ZLEN (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_ovlp (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_numvec (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_num_ele (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_grid_cache_len (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_cu_cache_length (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_Mass (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_Charge (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_SPEC (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_NUM_SPEC (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_DELTA_X (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_DELTA_Y (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_DELTA_Z (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_z_nopush_scmc_set_parameter_Deltat (c_split_pass_z_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_split_pass_z_init (c_pscmc_env *  pe ,c_split_pass_z_struct *  kerstr )
 ;
 void  c_split_pass_z_get_struct_len (size_t *  len )
@@ -2607,6 +4407,64 @@ int  c_split_pass_z_scmc_set_parameter_DELTA_Y (c_split_pass_z_struct *  kerstr 
 int  c_split_pass_z_scmc_set_parameter_DELTA_Z (c_split_pass_z_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_split_pass_z_scmc_set_parameter_Deltat (c_split_pass_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_init (c_pscmc_env *  pe ,c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr )
+;
+void  c_split_pass_y_vlo_sg2_nopush_small_grids_get_struct_len (size_t *  len )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_get_xlen ()
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_get_num_compute_units (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_exec (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_inoutput (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_xyzw (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_cache (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_xyzw (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_fieldE (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_fieldB (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_LFoutJ (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_FoutEN (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_XLEN (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_YLEN (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_ZLEN (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_ovlp (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_numvec (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_num_ele (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_grid_cache_len (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_cache_length (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_Mass (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_Charge (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_SPEC (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_NUM_SPEC (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_X (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_Y (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_Deltat (c_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_split_pass_y_vlo_sg2_small_grids_init (c_pscmc_env *  pe ,c_split_pass_y_vlo_sg2_small_grids_struct *  kerstr )
 ;
@@ -2840,6 +4698,64 @@ int  c_split_pass_y_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_y_small
 ;
 int  c_split_pass_y_small_grids_scmc_set_parameter_Deltat (c_split_pass_y_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
+int  c_split_pass_y_vlo_nopush_init (c_pscmc_env *  pe ,c_split_pass_y_vlo_nopush_struct *  kerstr )
+;
+void  c_split_pass_y_vlo_nopush_get_struct_len (size_t *  len )
+;
+int  c_split_pass_y_vlo_nopush_get_xlen ()
+;
+int  c_split_pass_y_vlo_nopush_get_num_compute_units (c_split_pass_y_vlo_nopush_struct *  kerstr )
+;
+int  c_split_pass_y_vlo_nopush_exec (c_split_pass_y_vlo_nopush_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_inoutput (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_xyzw (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_cu_cache (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_cu_xyzw (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_fieldE (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_fieldB (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_FoutJ (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_FoutEN (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_XLEN (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_YLEN (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_ZLEN (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_ovlp (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_numvec (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_num_ele (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_grid_cache_len (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_cu_cache_length (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_Mass (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_Charge (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_SPEC (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_NUM_SPEC (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_DELTA_X (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_DELTA_Y (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_DELTA_Z (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_vlo_nopush_scmc_set_parameter_Deltat (c_split_pass_y_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_split_pass_y_vlo_init (c_pscmc_env *  pe ,c_split_pass_y_vlo_struct *  kerstr )
 ;
 void  c_split_pass_y_vlo_get_struct_len (size_t *  len )
@@ -2898,6 +4814,64 @@ int  c_split_pass_y_vlo_scmc_set_parameter_DELTA_Z (c_split_pass_y_vlo_struct * 
 ;
 int  c_split_pass_y_vlo_scmc_set_parameter_Deltat (c_split_pass_y_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
+int  c_split_pass_y_nopush_init (c_pscmc_env *  pe ,c_split_pass_y_nopush_struct *  kerstr )
+;
+void  c_split_pass_y_nopush_get_struct_len (size_t *  len )
+;
+int  c_split_pass_y_nopush_get_xlen ()
+;
+int  c_split_pass_y_nopush_get_num_compute_units (c_split_pass_y_nopush_struct *  kerstr )
+;
+int  c_split_pass_y_nopush_exec (c_split_pass_y_nopush_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_inoutput (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_xyzw (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_cu_cache (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_cu_xyzw (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_fieldE (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_fieldB (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_FoutJ (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_FoutEN (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_XLEN (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_YLEN (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_ZLEN (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_ovlp (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_numvec (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_num_ele (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_grid_cache_len (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_cu_cache_length (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_Mass (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_Charge (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_SPEC (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_NUM_SPEC (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_DELTA_X (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_DELTA_Y (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_DELTA_Z (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_y_nopush_scmc_set_parameter_Deltat (c_split_pass_y_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_split_pass_y_init (c_pscmc_env *  pe ,c_split_pass_y_struct *  kerstr )
 ;
 void  c_split_pass_y_get_struct_len (size_t *  len )
@@ -2955,6 +4929,64 @@ int  c_split_pass_y_scmc_set_parameter_DELTA_Y (c_split_pass_y_struct *  kerstr 
 int  c_split_pass_y_scmc_set_parameter_DELTA_Z (c_split_pass_y_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_split_pass_y_scmc_set_parameter_Deltat (c_split_pass_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_init (c_pscmc_env *  pe ,c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr )
+;
+void  c_split_pass_x_vlo_sg2_nopush_small_grids_get_struct_len (size_t *  len )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_get_xlen ()
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_get_num_compute_units (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_exec (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_inoutput (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_xyzw (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_cache (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_xyzw (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_fieldE (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_fieldB (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_LFoutJ (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_FoutEN (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_XLEN (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_YLEN (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_ZLEN (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_ovlp (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_numvec (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_num_ele (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_grid_cache_len (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_cache_length (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_Mass (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_Charge (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_SPEC (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_NUM_SPEC (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_X (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_Y (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_Deltat (c_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_split_pass_x_vlo_sg2_small_grids_init (c_pscmc_env *  pe ,c_split_pass_x_vlo_sg2_small_grids_struct *  kerstr )
 ;
@@ -3188,6 +5220,64 @@ int  c_split_pass_x_small_grids_scmc_set_parameter_DELTA_Z (c_split_pass_x_small
 ;
 int  c_split_pass_x_small_grids_scmc_set_parameter_Deltat (c_split_pass_x_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
+int  c_split_pass_x_vlo_nopush_init (c_pscmc_env *  pe ,c_split_pass_x_vlo_nopush_struct *  kerstr )
+;
+void  c_split_pass_x_vlo_nopush_get_struct_len (size_t *  len )
+;
+int  c_split_pass_x_vlo_nopush_get_xlen ()
+;
+int  c_split_pass_x_vlo_nopush_get_num_compute_units (c_split_pass_x_vlo_nopush_struct *  kerstr )
+;
+int  c_split_pass_x_vlo_nopush_exec (c_split_pass_x_vlo_nopush_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_inoutput (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_xyzw (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_cu_cache (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_cu_xyzw (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_fieldE (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_fieldB (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_FoutJ (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_FoutEN (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_XLEN (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_YLEN (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_ZLEN (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_ovlp (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_numvec (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_num_ele (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_grid_cache_len (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_cu_cache_length (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_Mass (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_Charge (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_SPEC (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_NUM_SPEC (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_DELTA_X (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_DELTA_Y (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_DELTA_Z (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_vlo_nopush_scmc_set_parameter_Deltat (c_split_pass_x_vlo_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_split_pass_x_vlo_init (c_pscmc_env *  pe ,c_split_pass_x_vlo_struct *  kerstr )
 ;
 void  c_split_pass_x_vlo_get_struct_len (size_t *  len )
@@ -3245,6 +5335,64 @@ int  c_split_pass_x_vlo_scmc_set_parameter_DELTA_Y (c_split_pass_x_vlo_struct * 
 int  c_split_pass_x_vlo_scmc_set_parameter_DELTA_Z (c_split_pass_x_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_split_pass_x_vlo_scmc_set_parameter_Deltat (c_split_pass_x_vlo_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_init (c_pscmc_env *  pe ,c_split_pass_x_nopush_struct *  kerstr )
+;
+void  c_split_pass_x_nopush_get_struct_len (size_t *  len )
+;
+int  c_split_pass_x_nopush_get_xlen ()
+;
+int  c_split_pass_x_nopush_get_num_compute_units (c_split_pass_x_nopush_struct *  kerstr )
+;
+int  c_split_pass_x_nopush_exec (c_split_pass_x_nopush_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_inoutput (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_xyzw (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_cu_cache (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_cu_xyzw (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_fieldE (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_fieldB (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_FoutJ (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_FoutEN (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_XLEN (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_YLEN (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_ZLEN (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_ovlp (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_numvec (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_num_ele (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_grid_cache_len (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_cu_cache_length (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_Mass (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_Charge (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_SPEC (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_NUM_SPEC (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_DELTA_X (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_DELTA_Y (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_DELTA_Z (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_split_pass_x_nopush_scmc_set_parameter_Deltat (c_split_pass_x_nopush_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_split_pass_x_init (c_pscmc_env *  pe ,c_split_pass_x_struct *  kerstr )
 ;
@@ -3310,11 +5458,15 @@ void  c_yee_pec__scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx 
 ;
 void  c_yee_damp__scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
+void  c_yee_setfix__scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
 void  c_yee_abc_x_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_yee_pec_x_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_yee_damp_x_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_yee_setfix_x_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_yee_abc_y_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
@@ -3322,11 +5474,15 @@ void  c_yee_pec_y_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx
 ;
 void  c_yee_damp_y_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
+void  c_yee_setfix_y_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
 void  c_yee_abc_z_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_yee_pec_z_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_yee_damp_z_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_yee_setfix_z_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_yee_abc_xy_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
@@ -3334,11 +5490,15 @@ void  c_yee_pec_xy_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rank
 ;
 void  c_yee_damp_xy_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
+void  c_yee_setfix_xy_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
 void  c_yee_abc_xz_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_yee_pec_xz_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_yee_damp_xz_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_yee_setfix_xz_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_yee_abc_yz_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
@@ -3346,14 +5506,62 @@ void  c_yee_pec_yz_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rank
 ;
 void  c_yee_damp_yz_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
+void  c_yee_setfix_yz_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
 void  c_yee_abc_xyz_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_yee_pec_xyz_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
 void  c_yee_damp_xyz_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
+void  c_yee_setfix_xyz_scmc_kernel (double *  outEB ,double *  inEB ,int *  cur_rankx ,int *  cur_ranky ,int *  cur_rankz ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  damp_vars ,double  deltat ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
 
 #include "local_header.h"
+int  c_yee_setfix_xyz_init (c_pscmc_env *  pe ,c_yee_setfix_xyz_struct *  kerstr )
+;
+void  c_yee_setfix_xyz_get_struct_len (size_t *  len )
+;
+int  c_yee_setfix_xyz_get_xlen ()
+;
+int  c_yee_setfix_xyz_get_num_compute_units (c_yee_setfix_xyz_struct *  kerstr )
+;
+int  c_yee_setfix_xyz_exec (c_yee_setfix_xyz_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_outEB (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_inEB (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_cur_rankx (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_cur_ranky (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_cur_rankz (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_y_cpu_core (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_numvec (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_XLEN (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_YLEN (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_ZLEN (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_ovlp (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_xblock (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_yblock (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_zblock (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_num_ele (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_damp_vars (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xyz_scmc_set_parameter_deltat (c_yee_setfix_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_yee_damp_xyz_init (c_pscmc_env *  pe ,c_yee_damp_xyz_struct *  kerstr )
 ;
 void  c_yee_damp_xyz_get_struct_len (size_t *  len )
@@ -3485,6 +5693,50 @@ int  c_yee_abc_xyz_scmc_set_parameter_num_ele (c_yee_abc_xyz_struct *  kerstr ,c
 int  c_yee_abc_xyz_scmc_set_parameter_damp_vars (c_yee_abc_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_yee_abc_xyz_scmc_set_parameter_deltat (c_yee_abc_xyz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_init (c_pscmc_env *  pe ,c_yee_setfix_yz_struct *  kerstr )
+;
+void  c_yee_setfix_yz_get_struct_len (size_t *  len )
+;
+int  c_yee_setfix_yz_get_xlen ()
+;
+int  c_yee_setfix_yz_get_num_compute_units (c_yee_setfix_yz_struct *  kerstr )
+;
+int  c_yee_setfix_yz_exec (c_yee_setfix_yz_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_outEB (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_inEB (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_cur_rankx (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_cur_ranky (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_cur_rankz (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_y_cpu_core (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_numvec (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_XLEN (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_YLEN (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_ZLEN (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_ovlp (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_xblock (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_yblock (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_zblock (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_num_ele (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_damp_vars (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_yz_scmc_set_parameter_deltat (c_yee_setfix_yz_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_yee_damp_yz_init (c_pscmc_env *  pe ,c_yee_damp_yz_struct *  kerstr )
 ;
@@ -3618,6 +5870,50 @@ int  c_yee_abc_yz_scmc_set_parameter_damp_vars (c_yee_abc_yz_struct *  kerstr ,c
 ;
 int  c_yee_abc_yz_scmc_set_parameter_deltat (c_yee_abc_yz_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
+int  c_yee_setfix_xz_init (c_pscmc_env *  pe ,c_yee_setfix_xz_struct *  kerstr )
+;
+void  c_yee_setfix_xz_get_struct_len (size_t *  len )
+;
+int  c_yee_setfix_xz_get_xlen ()
+;
+int  c_yee_setfix_xz_get_num_compute_units (c_yee_setfix_xz_struct *  kerstr )
+;
+int  c_yee_setfix_xz_exec (c_yee_setfix_xz_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_outEB (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_inEB (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_cur_rankx (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_cur_ranky (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_cur_rankz (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_y_cpu_core (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_numvec (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_XLEN (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_YLEN (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_ZLEN (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_ovlp (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_xblock (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_yblock (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_zblock (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_num_ele (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_damp_vars (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xz_scmc_set_parameter_deltat (c_yee_setfix_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_yee_damp_xz_init (c_pscmc_env *  pe ,c_yee_damp_xz_struct *  kerstr )
 ;
 void  c_yee_damp_xz_get_struct_len (size_t *  len )
@@ -3749,6 +6045,50 @@ int  c_yee_abc_xz_scmc_set_parameter_num_ele (c_yee_abc_xz_struct *  kerstr ,c_p
 int  c_yee_abc_xz_scmc_set_parameter_damp_vars (c_yee_abc_xz_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_yee_abc_xz_scmc_set_parameter_deltat (c_yee_abc_xz_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_init (c_pscmc_env *  pe ,c_yee_setfix_xy_struct *  kerstr )
+;
+void  c_yee_setfix_xy_get_struct_len (size_t *  len )
+;
+int  c_yee_setfix_xy_get_xlen ()
+;
+int  c_yee_setfix_xy_get_num_compute_units (c_yee_setfix_xy_struct *  kerstr )
+;
+int  c_yee_setfix_xy_exec (c_yee_setfix_xy_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_outEB (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_inEB (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_cur_rankx (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_cur_ranky (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_cur_rankz (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_y_cpu_core (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_numvec (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_XLEN (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_YLEN (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_ZLEN (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_ovlp (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_xblock (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_yblock (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_zblock (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_num_ele (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_damp_vars (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_xy_scmc_set_parameter_deltat (c_yee_setfix_xy_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_yee_damp_xy_init (c_pscmc_env *  pe ,c_yee_damp_xy_struct *  kerstr )
 ;
@@ -3882,6 +6222,50 @@ int  c_yee_abc_xy_scmc_set_parameter_damp_vars (c_yee_abc_xy_struct *  kerstr ,c
 ;
 int  c_yee_abc_xy_scmc_set_parameter_deltat (c_yee_abc_xy_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
+int  c_yee_setfix_z_init (c_pscmc_env *  pe ,c_yee_setfix_z_struct *  kerstr )
+;
+void  c_yee_setfix_z_get_struct_len (size_t *  len )
+;
+int  c_yee_setfix_z_get_xlen ()
+;
+int  c_yee_setfix_z_get_num_compute_units (c_yee_setfix_z_struct *  kerstr )
+;
+int  c_yee_setfix_z_exec (c_yee_setfix_z_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_yee_setfix_z_scmc_set_parameter_outEB (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_inEB (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_cur_rankx (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_cur_ranky (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_cur_rankz (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_y_cpu_core (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_numvec (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_XLEN (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_YLEN (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_ZLEN (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_ovlp (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_xblock (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_yblock (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_zblock (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_num_ele (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_damp_vars (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_z_scmc_set_parameter_deltat (c_yee_setfix_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_yee_damp_z_init (c_pscmc_env *  pe ,c_yee_damp_z_struct *  kerstr )
 ;
 void  c_yee_damp_z_get_struct_len (size_t *  len )
@@ -4013,6 +6397,50 @@ int  c_yee_abc_z_scmc_set_parameter_num_ele (c_yee_abc_z_struct *  kerstr ,c_psc
 int  c_yee_abc_z_scmc_set_parameter_damp_vars (c_yee_abc_z_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_yee_abc_z_scmc_set_parameter_deltat (c_yee_abc_z_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_init (c_pscmc_env *  pe ,c_yee_setfix_y_struct *  kerstr )
+;
+void  c_yee_setfix_y_get_struct_len (size_t *  len )
+;
+int  c_yee_setfix_y_get_xlen ()
+;
+int  c_yee_setfix_y_get_num_compute_units (c_yee_setfix_y_struct *  kerstr )
+;
+int  c_yee_setfix_y_exec (c_yee_setfix_y_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_yee_setfix_y_scmc_set_parameter_outEB (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_inEB (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_cur_rankx (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_cur_ranky (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_cur_rankz (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_y_cpu_core (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_numvec (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_XLEN (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_YLEN (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_ZLEN (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_ovlp (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_xblock (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_yblock (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_zblock (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_num_ele (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_damp_vars (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_y_scmc_set_parameter_deltat (c_yee_setfix_y_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_yee_damp_y_init (c_pscmc_env *  pe ,c_yee_damp_y_struct *  kerstr )
 ;
@@ -4146,6 +6574,50 @@ int  c_yee_abc_y_scmc_set_parameter_damp_vars (c_yee_abc_y_struct *  kerstr ,c_p
 ;
 int  c_yee_abc_y_scmc_set_parameter_deltat (c_yee_abc_y_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
+int  c_yee_setfix_x_init (c_pscmc_env *  pe ,c_yee_setfix_x_struct *  kerstr )
+;
+void  c_yee_setfix_x_get_struct_len (size_t *  len )
+;
+int  c_yee_setfix_x_get_xlen ()
+;
+int  c_yee_setfix_x_get_num_compute_units (c_yee_setfix_x_struct *  kerstr )
+;
+int  c_yee_setfix_x_exec (c_yee_setfix_x_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_yee_setfix_x_scmc_set_parameter_outEB (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_inEB (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_cur_rankx (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_cur_ranky (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_cur_rankz (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_y_cpu_core (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_numvec (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_XLEN (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_YLEN (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_ZLEN (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_ovlp (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_xblock (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_yblock (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_zblock (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_num_ele (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_damp_vars (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix_x_scmc_set_parameter_deltat (c_yee_setfix_x_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_yee_damp_x_init (c_pscmc_env *  pe ,c_yee_damp_x_struct *  kerstr )
 ;
 void  c_yee_damp_x_get_struct_len (size_t *  len )
@@ -4278,6 +6750,50 @@ int  c_yee_abc_x_scmc_set_parameter_damp_vars (c_yee_abc_x_struct *  kerstr ,c_p
 ;
 int  c_yee_abc_x_scmc_set_parameter_deltat (c_yee_abc_x_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
+int  c_yee_setfix__init (c_pscmc_env *  pe ,c_yee_setfix__struct *  kerstr )
+;
+void  c_yee_setfix__get_struct_len (size_t *  len )
+;
+int  c_yee_setfix__get_xlen ()
+;
+int  c_yee_setfix__get_num_compute_units (c_yee_setfix__struct *  kerstr )
+;
+int  c_yee_setfix__exec (c_yee_setfix__struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_yee_setfix__scmc_set_parameter_outEB (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_inEB (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_cur_rankx (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_cur_ranky (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_cur_rankz (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_y_cpu_core (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_numvec (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_XLEN (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_YLEN (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_ZLEN (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_ovlp (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_xblock (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_yblock (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_zblock (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_num_ele (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_damp_vars (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_yee_setfix__scmc_set_parameter_deltat (c_yee_setfix__struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_yee_damp__init (c_pscmc_env *  pe ,c_yee_damp__struct *  kerstr )
 ;
 void  c_yee_damp__get_struct_len (size_t *  len )
@@ -4409,6 +6925,400 @@ int  c_yee_abc__scmc_set_parameter_num_ele (c_yee_abc__struct *  kerstr ,c_pscmc
 int  c_yee_abc__scmc_set_parameter_damp_vars (c_yee_abc__struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_yee_abc__scmc_set_parameter_deltat (c_yee_abc__struct *  kerstr ,c_pscmc_mem *  pm )
+;
+void  c_dm_bihamt_dual_psi_eqn_J_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_dm_bihamt_eqn_dydt_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_dm_cayley_eqn_J_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_dm_calc_hamt_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_dm_exact_eqn_m_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_dm_cayley_eqn_core_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  c_dm_calc_hamt_dual_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+
+#include "local_header.h"
+int  c_dm_calc_hamt_dual_init (c_pscmc_env *  pe ,c_dm_calc_hamt_dual_struct *  kerstr )
+;
+void  c_dm_calc_hamt_dual_get_struct_len (size_t *  len )
+;
+int  c_dm_calc_hamt_dual_get_xlen ()
+;
+int  c_dm_calc_hamt_dual_get_num_compute_units (c_dm_calc_hamt_dual_struct *  kerstr )
+;
+int  c_dm_calc_hamt_dual_exec (c_dm_calc_hamt_dual_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_dphi_dt_out (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_phi_in (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_A1 (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_Y1 (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_y_cpu_core (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_numvec (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_XLEN (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_YLEN (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_ZLEN (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_ovlp (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_xblock (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_yblock (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_zblock (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_num_ele (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_num_ele_A1 (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_M (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_Q (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_DM_A (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_DX (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_DY (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_DZ (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_dual_scmc_set_parameter_DT (c_dm_calc_hamt_dual_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_init (c_pscmc_env *  pe ,c_dm_cayley_eqn_core_struct *  kerstr )
+;
+void  c_dm_cayley_eqn_core_get_struct_len (size_t *  len )
+;
+int  c_dm_cayley_eqn_core_get_xlen ()
+;
+int  c_dm_cayley_eqn_core_get_num_compute_units (c_dm_cayley_eqn_core_struct *  kerstr )
+;
+int  c_dm_cayley_eqn_core_exec (c_dm_cayley_eqn_core_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_dphi_dt_out (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_phi_in (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_A1 (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_Y1 (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_y_cpu_core (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_numvec (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_XLEN (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_YLEN (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_ZLEN (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_ovlp (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_xblock (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_yblock (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_zblock (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_num_ele (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_num_ele_A1 (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_M (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_Q (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_DM_A (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_DX (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_DY (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_DZ (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_core_scmc_set_parameter_DT (c_dm_cayley_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_init (c_pscmc_env *  pe ,c_dm_exact_eqn_m_struct *  kerstr )
+;
+void  c_dm_exact_eqn_m_get_struct_len (size_t *  len )
+;
+int  c_dm_exact_eqn_m_get_xlen ()
+;
+int  c_dm_exact_eqn_m_get_num_compute_units (c_dm_exact_eqn_m_struct *  kerstr )
+;
+int  c_dm_exact_eqn_m_exec (c_dm_exact_eqn_m_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_dphi_dt_out (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_phi_in (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_A1 (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_Y1 (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_y_cpu_core (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_numvec (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_XLEN (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_YLEN (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_ZLEN (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_ovlp (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_xblock (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_yblock (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_zblock (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_num_ele (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_num_ele_A1 (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_M (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_Q (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_DM_A (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_DX (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_DY (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_DZ (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_exact_eqn_m_scmc_set_parameter_DT (c_dm_exact_eqn_m_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_init (c_pscmc_env *  pe ,c_dm_calc_hamt_struct *  kerstr )
+;
+void  c_dm_calc_hamt_get_struct_len (size_t *  len )
+;
+int  c_dm_calc_hamt_get_xlen ()
+;
+int  c_dm_calc_hamt_get_num_compute_units (c_dm_calc_hamt_struct *  kerstr )
+;
+int  c_dm_calc_hamt_exec (c_dm_calc_hamt_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_dphi_dt_out (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_phi_in (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_A1 (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_Y1 (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_y_cpu_core (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_numvec (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_XLEN (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_YLEN (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_ZLEN (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_ovlp (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_xblock (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_yblock (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_zblock (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_num_ele (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_num_ele_A1 (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_M (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_Q (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_DM_A (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_DX (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_DY (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_DZ (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_calc_hamt_scmc_set_parameter_DT (c_dm_calc_hamt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_init (c_pscmc_env *  pe ,c_dm_cayley_eqn_J_struct *  kerstr )
+;
+void  c_dm_cayley_eqn_J_get_struct_len (size_t *  len )
+;
+int  c_dm_cayley_eqn_J_get_xlen ()
+;
+int  c_dm_cayley_eqn_J_get_num_compute_units (c_dm_cayley_eqn_J_struct *  kerstr )
+;
+int  c_dm_cayley_eqn_J_exec (c_dm_cayley_eqn_J_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_dphi_dt_out (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_phi_in (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_A1 (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_Y1 (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_y_cpu_core (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_numvec (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_XLEN (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_YLEN (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_ZLEN (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_ovlp (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_xblock (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_yblock (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_zblock (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_num_ele (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_num_ele_A1 (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_M (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_Q (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_DM_A (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_DX (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_DY (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_DZ (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_cayley_eqn_J_scmc_set_parameter_DT (c_dm_cayley_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_init (c_pscmc_env *  pe ,c_dm_bihamt_eqn_dydt_struct *  kerstr )
+;
+void  c_dm_bihamt_eqn_dydt_get_struct_len (size_t *  len )
+;
+int  c_dm_bihamt_eqn_dydt_get_xlen ()
+;
+int  c_dm_bihamt_eqn_dydt_get_num_compute_units (c_dm_bihamt_eqn_dydt_struct *  kerstr )
+;
+int  c_dm_bihamt_eqn_dydt_exec (c_dm_bihamt_eqn_dydt_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_dphi_dt_out (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_phi_in (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_A1 (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_Y1 (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_y_cpu_core (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_numvec (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_XLEN (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_YLEN (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_ZLEN (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_ovlp (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_xblock (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_yblock (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_zblock (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_num_ele (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_num_ele_A1 (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_M (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_Q (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_DM_A (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_DX (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_DY (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_DZ (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_eqn_dydt_scmc_set_parameter_DT (c_dm_bihamt_eqn_dydt_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_init (c_pscmc_env *  pe ,c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr )
+;
+void  c_dm_bihamt_dual_psi_eqn_J_get_struct_len (size_t *  len )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_get_xlen ()
+;
+int  c_dm_bihamt_dual_psi_eqn_J_get_num_compute_units (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_exec (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_dphi_dt_out (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_phi_in (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_A1 (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_Y1 (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_y_cpu_core (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_numvec (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_XLEN (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_YLEN (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_ZLEN (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_ovlp (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_xblock (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_yblock (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_zblock (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_num_ele (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_num_ele_A1 (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_M (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_Q (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_DM_A (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_DX (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_DY (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_DZ (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_dm_bihamt_dual_psi_eqn_J_scmc_set_parameter_DT (c_dm_bihamt_dual_psi_eqn_J_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 void  c_dm_1st_eqn_fdtd_scmc_kernel (double *  phi_out ,double *  phi_in ,double *  phi_1 ,double *  A1 ,double *  A2 ,double *  A3 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  DT ,double  M ,double  Q ,double  DM_A ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
@@ -4628,8 +7538,52 @@ int  c_RECT_YEE_CURL_L_scmc_set_parameter_DELTA_Z (c_RECT_YEE_CURL_L_struct *  k
 ;
 void  c_GEO_YEE_CURL_L_scmc_kernel (double *  inoutE1 ,double *  inB0 ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,double  DELTA_Z ,double  DELTA_Y ,double  DELTA_X ,double  x0 ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
+void  c_YEE_CURL_R_scmc_kernel (double *  inoutE1 ,double *  inB0 ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
 
 #include "local_header.h"
+int  c_YEE_CURL_R_init (c_pscmc_env *  pe ,c_YEE_CURL_R_struct *  kerstr )
+;
+void  c_YEE_CURL_R_get_struct_len (size_t *  len )
+;
+int  c_YEE_CURL_R_get_xlen ()
+;
+int  c_YEE_CURL_R_get_num_compute_units (c_YEE_CURL_R_struct *  kerstr )
+;
+int  c_YEE_CURL_R_exec (c_YEE_CURL_R_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_inoutE1 (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_inB0 (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_xoffset (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_yoffset (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_zoffset (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_y_cpu_core (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_numvec (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_XLEN (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_YLEN (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_ZLEN (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_ovlp (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_xblock (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_yblock (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_zblock (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_num_ele (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_YEE_CURL_R_scmc_set_parameter_DT (c_YEE_CURL_R_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_GEO_YEE_CURL_L_init (c_pscmc_env *  pe ,c_GEO_YEE_CURL_L_struct *  kerstr )
 ;
 void  c_GEO_YEE_CURL_L_get_struct_len (size_t *  len )
@@ -4679,612 +7633,6 @@ int  c_GEO_YEE_CURL_L_scmc_set_parameter_DELTA_Y (c_GEO_YEE_CURL_L_struct *  ker
 int  c_GEO_YEE_CURL_L_scmc_set_parameter_DELTA_X (c_GEO_YEE_CURL_L_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_GEO_YEE_CURL_L_scmc_set_parameter_x0 (c_GEO_YEE_CURL_L_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_mass_floorx (double  x )
-;
-void  c_geo_rel_1st_fwd_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  LFoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
-;
-void  c_geo_rel_1st_fwd_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  LFoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
-;
-void  c_geo_rel_1st_bwd_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  LFoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
-;
-void  c_geo_rel_1st_bwd_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  LFoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
-;
-void  c_relng_1st_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  LFoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
-;
-void  c_relng_1st_sg2_small_grids_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  LFoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
-;
-
-#include "local_header.h"
-int  c_relng_1st_sg2_small_grids_init (c_pscmc_env *  pe ,c_relng_1st_sg2_small_grids_struct *  kerstr )
-;
-void  c_relng_1st_sg2_small_grids_get_struct_len (size_t *  len )
-;
-int  c_relng_1st_sg2_small_grids_get_xlen ()
-;
-int  c_relng_1st_sg2_small_grids_get_num_compute_units (c_relng_1st_sg2_small_grids_struct *  kerstr )
-;
-int  c_relng_1st_sg2_small_grids_exec (c_relng_1st_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_inoutput (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_xyzw (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_cu_cache (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_cu_xyzw (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_xoffset (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_yoffset (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_zoffset (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_fieldE (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_fieldB (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_fieldB1 (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_LFoutJ (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_XLEN (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_YLEN (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_ZLEN (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_ovlp (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_numvec (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_num_ele (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_grid_cache_len (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_cu_cache_length (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_DELTA_X (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_DELTA_Y (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_DELTA_Z (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_Mass0 (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_Charge0 (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_Deltat (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_Tori_X0 (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_sg2_small_grids_scmc_set_parameter_Solve_Err (c_relng_1st_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_init (c_pscmc_env *  pe ,c_relng_1st_small_grids_struct *  kerstr )
-;
-void  c_relng_1st_small_grids_get_struct_len (size_t *  len )
-;
-int  c_relng_1st_small_grids_get_xlen ()
-;
-int  c_relng_1st_small_grids_get_num_compute_units (c_relng_1st_small_grids_struct *  kerstr )
-;
-int  c_relng_1st_small_grids_exec (c_relng_1st_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_inoutput (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_xyzw (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_cu_cache (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_cu_xyzw (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_xoffset (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_yoffset (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_zoffset (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_fieldE (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_fieldB (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_fieldB1 (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_LFoutJ (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_XLEN (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_YLEN (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_ZLEN (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_ovlp (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_numvec (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_num_ele (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_grid_cache_len (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_cu_cache_length (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_DELTA_X (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_DELTA_Y (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_DELTA_Z (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_Mass0 (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_Charge0 (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_Deltat (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_Tori_X0 (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_small_grids_scmc_set_parameter_Solve_Err (c_relng_1st_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_init (c_pscmc_env *  pe ,c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr )
-;
-void  c_geo_rel_1st_bwd_sg2_small_grids_get_struct_len (size_t *  len )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_get_xlen ()
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_get_num_compute_units (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_exec (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_inoutput (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_xyzw (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_cu_cache (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_cu_xyzw (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_xoffset (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_yoffset (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_zoffset (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_fieldE (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_fieldB (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_fieldB1 (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_LFoutJ (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_XLEN (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_YLEN (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_ZLEN (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_ovlp (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_numvec (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_num_ele (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_grid_cache_len (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_cu_cache_length (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_DELTA_X (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_DELTA_Y (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_DELTA_Z (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_Mass0 (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_Charge0 (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_Deltat (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_Tori_X0 (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_sg2_small_grids_scmc_set_parameter_Solve_Err (c_geo_rel_1st_bwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_init (c_pscmc_env *  pe ,c_geo_rel_1st_bwd_small_grids_struct *  kerstr )
-;
-void  c_geo_rel_1st_bwd_small_grids_get_struct_len (size_t *  len )
-;
-int  c_geo_rel_1st_bwd_small_grids_get_xlen ()
-;
-int  c_geo_rel_1st_bwd_small_grids_get_num_compute_units (c_geo_rel_1st_bwd_small_grids_struct *  kerstr )
-;
-int  c_geo_rel_1st_bwd_small_grids_exec (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_inoutput (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_xyzw (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_cu_cache (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_cu_xyzw (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_xoffset (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_yoffset (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_zoffset (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_fieldE (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_fieldB (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_fieldB1 (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_LFoutJ (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_XLEN (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_YLEN (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_ZLEN (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_ovlp (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_numvec (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_num_ele (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_grid_cache_len (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_cu_cache_length (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_DELTA_X (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_DELTA_Y (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_DELTA_Z (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_Mass0 (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_Charge0 (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_Deltat (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_Tori_X0 (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_small_grids_scmc_set_parameter_Solve_Err (c_geo_rel_1st_bwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_init (c_pscmc_env *  pe ,c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr )
-;
-void  c_geo_rel_1st_fwd_sg2_small_grids_get_struct_len (size_t *  len )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_get_xlen ()
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_get_num_compute_units (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_exec (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_inoutput (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_xyzw (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_cu_cache (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_cu_xyzw (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_xoffset (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_yoffset (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_zoffset (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_fieldE (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_fieldB (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_fieldB1 (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_LFoutJ (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_XLEN (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_YLEN (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_ZLEN (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_ovlp (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_numvec (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_num_ele (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_grid_cache_len (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_cu_cache_length (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_DELTA_X (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_DELTA_Y (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_DELTA_Z (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_Mass0 (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_Charge0 (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_Deltat (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_Tori_X0 (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_sg2_small_grids_scmc_set_parameter_Solve_Err (c_geo_rel_1st_fwd_sg2_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_init (c_pscmc_env *  pe ,c_geo_rel_1st_fwd_small_grids_struct *  kerstr )
-;
-void  c_geo_rel_1st_fwd_small_grids_get_struct_len (size_t *  len )
-;
-int  c_geo_rel_1st_fwd_small_grids_get_xlen ()
-;
-int  c_geo_rel_1st_fwd_small_grids_get_num_compute_units (c_geo_rel_1st_fwd_small_grids_struct *  kerstr )
-;
-int  c_geo_rel_1st_fwd_small_grids_exec (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_inoutput (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_xyzw (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_cu_cache (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_cu_xyzw (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_xoffset (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_yoffset (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_zoffset (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_fieldE (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_fieldB (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_fieldB1 (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_LFoutJ (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_XLEN (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_YLEN (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_ZLEN (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_ovlp (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_numvec (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_num_ele (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_grid_cache_len (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_cu_cache_length (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_DELTA_X (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_DELTA_Y (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_DELTA_Z (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_Mass0 (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_Charge0 (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_Deltat (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_Tori_X0 (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_small_grids_scmc_set_parameter_Solve_Err (c_geo_rel_1st_fwd_small_grids_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_floorx (double  x )
-;
-void  c_geo_rel_1st_fwd_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
-;
-void  c_geo_rel_1st_bwd_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
-;
-
-#include "local_header.h"
-int  c_geo_rel_1st_bwd_init (c_pscmc_env *  pe ,c_geo_rel_1st_bwd_struct *  kerstr )
-;
-void  c_geo_rel_1st_bwd_get_struct_len (size_t *  len )
-;
-int  c_geo_rel_1st_bwd_get_xlen ()
-;
-int  c_geo_rel_1st_bwd_get_num_compute_units (c_geo_rel_1st_bwd_struct *  kerstr )
-;
-int  c_geo_rel_1st_bwd_exec (c_geo_rel_1st_bwd_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_inoutput (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_xyzw (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_cu_cache (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_cu_xyzw (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_xoffset (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_yoffset (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_zoffset (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_fieldE (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_fieldB (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_fieldB1 (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_FoutJ (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_XLEN (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_YLEN (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_ZLEN (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_ovlp (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_numvec (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_num_ele (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_grid_cache_len (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_cu_cache_length (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_DELTA_X (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_DELTA_Y (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_DELTA_Z (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_Mass0 (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_Charge0 (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_Deltat (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_Tori_X0 (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_bwd_scmc_set_parameter_Solve_Err (c_geo_rel_1st_bwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_init (c_pscmc_env *  pe ,c_geo_rel_1st_fwd_struct *  kerstr )
-;
-void  c_geo_rel_1st_fwd_get_struct_len (size_t *  len )
-;
-int  c_geo_rel_1st_fwd_get_xlen ()
-;
-int  c_geo_rel_1st_fwd_get_num_compute_units (c_geo_rel_1st_fwd_struct *  kerstr )
-;
-int  c_geo_rel_1st_fwd_exec (c_geo_rel_1st_fwd_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_inoutput (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_xyzw (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_cu_cache (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_cu_xyzw (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_xoffset (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_yoffset (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_zoffset (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_fieldE (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_fieldB (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_fieldB1 (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_FoutJ (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_XLEN (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_YLEN (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_ZLEN (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_ovlp (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_numvec (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_num_ele (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_grid_cache_len (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_cu_cache_length (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_DELTA_X (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_DELTA_Y (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_DELTA_Z (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_Mass0 (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_Charge0 (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_Deltat (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_Tori_X0 (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_geo_rel_1st_fwd_scmc_set_parameter_Solve_Err (c_geo_rel_1st_fwd_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_floory (double  x )
-;
-void  c_relng_1st_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,int *  xoffset ,int *  yoffset ,int *  zoffset ,double *  fieldE ,double *  fieldB ,double *  fieldB1 ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  Tori_X0 ,double  Solve_Err ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
-;
-
-#include "local_header.h"
-int  c_relng_1st_init (c_pscmc_env *  pe ,c_relng_1st_struct *  kerstr )
-;
-void  c_relng_1st_get_struct_len (size_t *  len )
-;
-int  c_relng_1st_get_xlen ()
-;
-int  c_relng_1st_get_num_compute_units (c_relng_1st_struct *  kerstr )
-;
-int  c_relng_1st_exec (c_relng_1st_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
-;
-int  c_relng_1st_scmc_set_parameter_inoutput (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_xyzw (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_cu_cache (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_cu_xyzw (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_xoffset (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_yoffset (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_zoffset (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_fieldE (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_fieldB (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_fieldB1 (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_FoutJ (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_XLEN (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_YLEN (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_ZLEN (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_ovlp (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_numvec (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_num_ele (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_grid_cache_len (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_cu_cache_length (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_DELTA_X (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_DELTA_Y (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_DELTA_Z (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_Mass0 (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_Charge0 (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_Deltat (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_Tori_X0 (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
-;
-int  c_relng_1st_scmc_set_parameter_Solve_Err (c_relng_1st_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 
 #include "local_header.h"

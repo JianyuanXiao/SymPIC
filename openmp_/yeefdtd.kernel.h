@@ -40,5 +40,5 @@ void  openmp_PML_FDTD_CURL_BWD_scmc_kernel (double *  outEB ,double *  inEB ,dou
 ;
 void  openmp_kgm_calc_rho_scmc_kernel (double *  outEB ,double *  inEB ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,double  M ,double  Q ,double  DX ,double  refz0 ,double  q ,double  dtodx ,int  mode ,int  swap_input ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;
-void  openmp_kgm_eqn_core_scmc_kernel (double *  outEB ,double *  inEB ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,double  M ,double  Q ,double  DX ,double  GEXT ,double  rfz0 ,int  swap_input ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+void  openmp_kgm_eqn_core_scmc_kernel (double *  outEB ,double *  inEB ,double *  extA0 ,double *  extA1 ,int *  xoffset ,int *  yoffset ,int *  zoffset ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,double  DT ,double  M ,double  Q ,double  DX ,double  GEXT ,double  rfz0 ,double  g_beg ,int  swap_input ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
 ;

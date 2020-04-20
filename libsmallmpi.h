@@ -18,6 +18,8 @@ int  PS_MPI_Get_processor_name (char *  name ,int *  resultlen )
 ;
 int  PS_MPI_Init (int *  argc ,char * * *  argv )
 ;
+int  PS_MPI_Send (void *  buf ,int  count ,MPI_Datatype  datatype ,int  dest ,int  tag ,MPI_Comm  comm )
+;
 int  PS_MPI_Isend (void *  buf ,int  count ,MPI_Datatype  datatype ,int  dest ,int  tag ,MPI_Comm  comm ,MPI_Request *  request )
 ;
 int  PS_MPI_Recv (void *  buf ,int  count ,MPI_Datatype  datatype ,int  source ,int  tag ,MPI_Comm  comm ,MPI_Status *  status )

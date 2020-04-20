@@ -5,6 +5,8 @@
 	#ifndef   NCSPIC_SEQ_FIELD    
 		#include <mpi.h>
 
+#define PS_MPI_CHAR MPI_CHAR
+
 #define PS_MPI_INT MPI_INT
 
 #define PS_MPI_DOUBLE MPI_DOUBLE
@@ -49,7 +51,7 @@ typedef struct { 	void *  pe ;
 	int  ovlp ;
 	int  num_ele ;
 	int  CD_type ;
-	void *   sync_layer_pscmc  [NUM_SYNC_LAYER];	void *   swap_layer_pscmc  [NUM_SYNC_LAYER];	void *   sync_kernels  [NUM_SYNC_KERNEL];	void *   fdtd_kernels  [NUM_FDTD_KERNEL];	void *   dm_kernels  [1];	void *   geo_yeefdtd_kernels  [1];	void *   geo_yeefdtd_rect_kernels  [1];	void *   yee_abc_kernels  [8];	void *   yee_pec_kernels  [8];	void *   yee_damp_kernels  [8];	void *  rdcd ;
+	void *   sync_layer_pscmc  [NUM_SYNC_LAYER];	void *   swap_layer_pscmc  [NUM_SYNC_LAYER];	void *   sync_kernels  [NUM_SYNC_KERNEL];	void *   fdtd_kernels  [NUM_FDTD_KERNEL];	void *   dm_kernels  [3];	void *   dmbihamt_kernels  [7];	void *   geo_yeefdtd_kernels  [2];	void *   geo_yeefdtd_rect_kernels  [1];	void *   hydroA_kernels  [8];	void *   yee_abc_kernels  [8];	void *   yee_pec_kernels  [8];	void *   yee_damp_kernels  [8];	void *   yee_setfix_kernels  [8];	void *  rdcd ;
 	double *  rdcd_host ;
 	void *  cur_rankx_pscmc ;
 	void *  cur_ranky_pscmc ;
@@ -70,6 +72,7 @@ typedef struct { 	void *  pe ;
 	double  delta_y ;
 	double  delta_z ;
 	void *  blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel ;
@@ -88,7 +91,7 @@ typedef struct { 	void *  pe ;
 	Field3D_Seq *  pFoutJ ;
 	Field3D_Seq *  pLFoutJ ;
 	Field3D_Seq *  pFoutEN ;
-	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [8];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
+	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [9];	void *   implicit_kernel  [2];	void *   rel_1st_kernel  [2];	void *   krook_collision_test_kernel  [2];	void *   nonrel_test_kernel  [18];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel ;
 	void *  move_back_kernel_kernel ;
 	double  Mass ;
@@ -99,6 +102,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_kernel ;
 	void *  split_pass_y_kernel ;
 	void *  split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel ;
@@ -109,12 +115,18 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel ;
 	void *  calculate_rho_kernel ;
@@ -141,6 +153,7 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp ;
 	Field3D_MPI  MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldEtmp2 ;
 	Field3D_MPI  MPI_fieldBtmp1 ;
 	Field3D_MPI  MPI_fieldPMLB ;
 	Field3D_MPI  MPI_fieldPMLE ;
@@ -160,6 +173,11 @@ typedef struct { 	void *  pe ;
 	long  allzmax ;
 	double  use_pml_sigma_max ;
 	double  dt ;
+	int  o_N_l ;
+	int  o_N_M ;
+	double *  o_pmass ;
+	double *  o_pcharge ;
+	int *  o_particle_type ;
 } Particle_in_Cell_MPI;
 	#ifndef   LINEAR_OPERATOR_PICUS_001    
 		
@@ -183,7 +201,18 @@ typedef struct { 	Field3D_MPI *  r1 ;
 	void *  fv ;
 	int  zmax ;
 	double  solve_err ;
-} bicg_space;
+} bicg_space;typedef struct { 	bicg_space  bs ;
+	linear_operator_mpi  oscc ;
+	Field3D_MPI *  x0 ;
+	Field3D_MPI *  oscc_x0 ;
+	Field3D_MPI *  res_tmp ;
+	void *  fv ;
+	void *   p_vfv  [5];	int  newton_zmax ;
+	int  zmax ;
+	double  solve_err ;
+	double  newton_solve_err ;
+	double  epsl ;
+} jfnk_newton_space;
 	#else
 		
 	 #endif
@@ -191,8 +220,16 @@ typedef struct { 	Field3D_MPI *  r1 ;
 #include "cfgcst.h"
 #include "init_field3d_mpi.h"
 #include "sync_fields.h"
+void  user_defined_particle_distribution (double *  xyzvx ,long  xyzx ,long  xyzy ,long  xyzz ,int  cur_sp ,long  l ,long  grid_load ,long  external_para );
 #include "c_/c_pscmc_inc.h"
 #include "openmp_/openmp_pscmc_inc.h"
+#include "c_/hydro_A.kernel_inc.h"
+#include "c_/implicit_particle_mover.kernel_inc.h"
+#include "c_/type3_georel.kernel_inc.h"
+#include "c_/inner_split_pass.kernel_inc.h"
+#include "c_/geo_particle_iter_mass.kernel_inc.h"
+#include "c_/geo_particle_iter.kernel_inc.h"
+#include "c_/rel_particle_iter.kernel_inc.h"
 #include "c_/yeefdtd.kernel_inc.h"
 #include "c_/mergefields.kernel_inc.h"
 #include "c_/miniblas.kernel_inc.h"
@@ -200,13 +237,18 @@ typedef struct { 	Field3D_MPI *  r1 ;
 #include "c_/move_back.kernel_inc.h"
 #include "c_/particle_iter.kernel_inc.h"
 #include "c_/mur_abc.kernel_inc.h"
+#include "c_/dmbihamt.kernel_inc.h"
 #include "c_/dm.kernel_inc.h"
 #include "c_/geo_yeefdtd_rect.kernel_inc.h"
 #include "c_/geo_yeefdtd.kernel_inc.h"
-#include "c_/geo_particle_iter_mass.kernel_inc.h"
-#include "c_/geo_particle_iter.kernel_inc.h"
-#include "c_/rel_particle_iter.kernel_inc.h"
 #include "c_yeefdtd.h"
+#include "openmp_/hydro_A.kernel_inc.h"
+#include "openmp_/implicit_particle_mover.kernel_inc.h"
+#include "openmp_/type3_georel.kernel_inc.h"
+#include "openmp_/inner_split_pass.kernel_inc.h"
+#include "openmp_/geo_particle_iter_mass.kernel_inc.h"
+#include "openmp_/geo_particle_iter.kernel_inc.h"
+#include "openmp_/rel_particle_iter.kernel_inc.h"
 #include "openmp_/yeefdtd.kernel_inc.h"
 #include "openmp_/mergefields.kernel_inc.h"
 #include "openmp_/miniblas.kernel_inc.h"
@@ -214,14 +256,12 @@ typedef struct { 	Field3D_MPI *  r1 ;
 #include "openmp_/move_back.kernel_inc.h"
 #include "openmp_/particle_iter.kernel_inc.h"
 #include "openmp_/mur_abc.kernel_inc.h"
+#include "openmp_/dmbihamt.kernel_inc.h"
 #include "openmp_/dm.kernel_inc.h"
 #include "openmp_/geo_yeefdtd_rect.kernel_inc.h"
 #include "openmp_/geo_yeefdtd.kernel_inc.h"
-#include "openmp_/geo_particle_iter_mass.kernel_inc.h"
-#include "openmp_/geo_particle_iter.kernel_inc.h"
-#include "openmp_/rel_particle_iter.kernel_inc.h"
 #include "openmp_yeefdtd.h"
-long  find_vec_id (long  id ,long *  adj_ids ,long  numvec ){
+extern long  srand_seed;long  find_vec_id (long  id ,long *  adj_ids ,long  numvec ){
 	long  num_id_min = (adj_ids)[	(  NUM_SYNC_LAYER / 2 )] ;
 	long  num_id_max = 	(  num_id_min + 	(  numvec - 1 ) ) ;
 	if (  	(  	(  id < num_id_min ) || 	(  id > num_id_max ) )  ){  
@@ -235,26 +275,14 @@ int  init_particle (One_Particle_Collection *  pthis ,Field3D_Seq *  pfield ,dou
 		(grid_cache_len = 	(  4 * 	(  	(  grid_cache_len / 4 ) + 1 ) ));
 
 	}else{
-			if (  	(  grid_cache_len == 0 )  ){  
-		(grid_cache_len = 4);
-
-	}else{
 		0;
-
-	 }
 
 	 }
 	if (  	(  cu_cache_length % 4 )  ){  
 		(cu_cache_length = 	(  4 * 	(  	(  cu_cache_length / 4 ) + 1 ) ));
 
 	}else{
-			if (  	(  cu_cache_length == 0 )  ){  
-		(cu_cache_length = 4);
-
-	}else{
 		0;
-
-	 }
 
 	 }
 (	( pthis )->pfield = pfield);
@@ -283,11 +311,14 @@ int  init_particle (One_Particle_Collection *  pthis ,Field3D_Seq *  pfield ,dou
 	void * *  sync_kernels = 	( pfield )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pfield )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pfield )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pfield )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pfield )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pfield )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pfield )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pfield )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pfield )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pfield )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pfield )->yee_setfix_kernels ;
 	void *  rdcd = 	( pfield )->rdcd ;
 	double *  rdcd_host = 	( pfield )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pfield )->cur_rankx_pscmc ;
@@ -309,6 +340,7 @@ int  init_particle (One_Particle_Collection *  pthis ,Field3D_Seq *  pfield ,dou
 	double  delta_y = 	( pfield )->delta_y ;
 	double  delta_z = 	( pfield )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pfield )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pfield )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pfield )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pfield )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pfield )->blas_get_ITG_Potential_kernel ;
@@ -327,6 +359,470 @@ int  init_particle (One_Particle_Collection *  pthis ,Field3D_Seq *  pfield ,dou
 (	( pthis )->cu_xyzw = 	malloc ( ((	(  0 == CD_type ))?(sizeof(c_pscmc_mem )):(((	(  1 == CD_type ))?(sizeof(openmp_pscmc_mem )):(0)))) ));
 (	( pthis )->adjoint_vec_pids = 	malloc ( ((	(  0 == CD_type ))?(sizeof(c_pscmc_mem )):(((	(  1 == CD_type ))?(sizeof(openmp_pscmc_mem )):(0)))) ));
 {
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_ngeo_gc_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_ngeo_gc_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[17] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_ngeo_gc_init ( pe , (	( pthis )->nonrel_test_kernel)[17] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_ngeo_gc_init ( pe , (	( pthis )->nonrel_test_kernel)[17] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_geo_nr_Bfield_pushJ_vlo_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_geo_nr_Bfield_pushJ_vlo_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[16] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_geo_nr_Bfield_pushJ_vlo_init ( pe , (	( pthis )->nonrel_test_kernel)[16] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_geo_nr_Bfield_pushJ_vlo_init ( pe , (	( pthis )->nonrel_test_kernel)[16] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_geo_nr_Bfield_pushJ_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_geo_nr_Bfield_pushJ_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[15] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_geo_nr_Bfield_pushJ_init ( pe , (	( pthis )->nonrel_test_kernel)[15] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_geo_nr_Bfield_pushJ_init ( pe , (	( pthis )->nonrel_test_kernel)[15] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_geo_nr_vlo_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_geo_nr_vlo_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[14] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_geo_nr_vlo_init ( pe , (	( pthis )->nonrel_test_kernel)[14] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_geo_nr_vlo_init ( pe , (	( pthis )->nonrel_test_kernel)[14] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_geo_nr_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_geo_nr_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[13] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_geo_nr_init ( pe , (	( pthis )->nonrel_test_kernel)[13] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_geo_nr_init ( pe , (	( pthis )->nonrel_test_kernel)[13] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_z_vlo_sg2_small_grids_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_z_vlo_sg2_small_grids_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[2] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_z_vlo_sg2_small_grids_init ( pe , (	( pthis )->nonrel_test_kernel)[2] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_z_vlo_sg2_small_grids_init ( pe , (	( pthis )->nonrel_test_kernel)[2] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_y_vlo_sg2_small_grids_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_y_vlo_sg2_small_grids_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[1] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_y_vlo_sg2_small_grids_init ( pe , (	( pthis )->nonrel_test_kernel)[1] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_y_vlo_sg2_small_grids_init ( pe , (	( pthis )->nonrel_test_kernel)[1] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_x_vlo_sg2_small_grids_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_x_vlo_sg2_small_grids_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[0] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_x_vlo_sg2_small_grids_init ( pe , (	( pthis )->nonrel_test_kernel)[0] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_x_vlo_sg2_small_grids_init ( pe , (	( pthis )->nonrel_test_kernel)[0] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_E_particle_vlo_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_E_particle_vlo_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[7] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_E_particle_vlo_init ( pe , (	( pthis )->nonrel_test_kernel)[7] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_E_particle_vlo_init ( pe , (	( pthis )->nonrel_test_kernel)[7] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_E_particle_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_E_particle_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[6] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_E_particle_init ( pe , (	( pthis )->nonrel_test_kernel)[6] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_E_particle_init ( pe , (	( pthis )->nonrel_test_kernel)[6] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_z_vlo_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_z_vlo_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[5] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_z_vlo_init ( pe , (	( pthis )->nonrel_test_kernel)[5] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_z_vlo_init ( pe , (	( pthis )->nonrel_test_kernel)[5] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_z_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_z_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[4] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_z_init ( pe , (	( pthis )->nonrel_test_kernel)[4] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_z_init ( pe , (	( pthis )->nonrel_test_kernel)[4] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_y_vlo_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_y_vlo_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[3] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_y_vlo_init ( pe , (	( pthis )->nonrel_test_kernel)[3] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_y_vlo_init ( pe , (	( pthis )->nonrel_test_kernel)[3] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_y_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_y_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[2] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_y_init ( pe , (	( pthis )->nonrel_test_kernel)[2] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_y_init ( pe , (	( pthis )->nonrel_test_kernel)[2] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_x_vlo_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_x_vlo_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[1] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_x_vlo_init ( pe , (	( pthis )->nonrel_test_kernel)[1] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_x_vlo_init ( pe , (	( pthis )->nonrel_test_kernel)[1] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_x_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_x_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->nonrel_test_kernel)[0] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_x_init ( pe , (	( pthis )->nonrel_test_kernel)[0] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_x_init ( pe , (	( pthis )->nonrel_test_kernel)[0] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
 	size_t  structlen ;
 	if (  	(  0 == CD_type )  ){  
 			c_relng_1st_sg2_small_grids_get_struct_len ( 	& ( structlen ) );
@@ -561,6 +1057,35 @@ int  init_particle (One_Particle_Collection *  pthis ,Field3D_Seq *  pfield ,dou
 }{
 	size_t  structlen ;
 	if (  	(  0 == CD_type )  ){  
+			c_relng_1st_goto_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_relng_1st_goto_get_struct_len ( 	& ( structlen ) );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+((	( pthis )->rel_1st_kernel)[1] = 	malloc ( structlen ));
+	if (  	(  0 == CD_type )  ){  
+			c_relng_1st_goto_init ( pe , (	( pthis )->rel_1st_kernel)[1] );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_relng_1st_goto_init ( pe , (	( pthis )->rel_1st_kernel)[1] );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}{
+	size_t  structlen ;
+	if (  	(  0 == CD_type )  ){  
 			c_relng_1st_get_struct_len ( 	& ( structlen ) );
 
 	}else{
@@ -759,6 +1284,48 @@ int  init_particle (One_Particle_Collection *  pthis ,Field3D_Seq *  pfield ,dou
 	 }
 
 	 }
+(	( pthis )->split_pass_x_nopush_kernel = 	malloc ( ((	(  0 == CD_type ))?(sizeof(c_split_pass_x_nopush_struct )):(((	(  1 == CD_type ))?(sizeof(openmp_split_pass_x_nopush_struct )):(0)))) ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_x_nopush_init ( pe , 	( pthis )->split_pass_x_nopush_kernel );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_x_nopush_init ( pe , 	( pthis )->split_pass_x_nopush_kernel );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+(	( pthis )->split_pass_y_nopush_kernel = 	malloc ( ((	(  0 == CD_type ))?(sizeof(c_split_pass_y_nopush_struct )):(((	(  1 == CD_type ))?(sizeof(openmp_split_pass_y_nopush_struct )):(0)))) ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_y_nopush_init ( pe , 	( pthis )->split_pass_y_nopush_kernel );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_y_nopush_init ( pe , 	( pthis )->split_pass_y_nopush_kernel );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+(	( pthis )->split_pass_z_nopush_kernel = 	malloc ( ((	(  0 == CD_type ))?(sizeof(c_split_pass_z_nopush_struct )):(((	(  1 == CD_type ))?(sizeof(openmp_split_pass_z_nopush_struct )):(0)))) ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_z_nopush_init ( pe , 	( pthis )->split_pass_z_nopush_kernel );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_z_nopush_init ( pe , 	( pthis )->split_pass_z_nopush_kernel );
+
+	}else{
+		0;
+
+	 }
+
+	 }
 (	( pthis )->split_pass_x_small_grids_kernel = 	malloc ( ((	(  0 == CD_type ))?(sizeof(c_split_pass_x_small_grids_struct )):(((	(  1 == CD_type ))?(sizeof(openmp_split_pass_x_small_grids_struct )):(0)))) ));
 	if (  	(  0 == CD_type )  ){  
 			c_split_pass_x_small_grids_init ( pe , 	( pthis )->split_pass_x_small_grids_kernel );
@@ -899,6 +1466,48 @@ int  init_particle (One_Particle_Collection *  pthis ,Field3D_Seq *  pfield ,dou
 	 }
 
 	 }
+(	( pthis )->split_pass_x_vlo_nopush_kernel = 	malloc ( ((	(  0 == CD_type ))?(sizeof(c_split_pass_x_vlo_nopush_struct )):(((	(  1 == CD_type ))?(sizeof(openmp_split_pass_x_vlo_nopush_struct )):(0)))) ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_x_vlo_nopush_init ( pe , 	( pthis )->split_pass_x_vlo_nopush_kernel );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_x_vlo_nopush_init ( pe , 	( pthis )->split_pass_x_vlo_nopush_kernel );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+(	( pthis )->split_pass_y_vlo_nopush_kernel = 	malloc ( ((	(  0 == CD_type ))?(sizeof(c_split_pass_y_vlo_nopush_struct )):(((	(  1 == CD_type ))?(sizeof(openmp_split_pass_y_vlo_nopush_struct )):(0)))) ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_y_vlo_nopush_init ( pe , 	( pthis )->split_pass_y_vlo_nopush_kernel );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_y_vlo_nopush_init ( pe , 	( pthis )->split_pass_y_vlo_nopush_kernel );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+(	( pthis )->split_pass_z_vlo_nopush_kernel = 	malloc ( ((	(  0 == CD_type ))?(sizeof(c_split_pass_z_vlo_nopush_struct )):(((	(  1 == CD_type ))?(sizeof(openmp_split_pass_z_vlo_nopush_struct )):(0)))) ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_z_vlo_nopush_init ( pe , 	( pthis )->split_pass_z_vlo_nopush_kernel );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_z_vlo_nopush_init ( pe , 	( pthis )->split_pass_z_vlo_nopush_kernel );
+
+	}else{
+		0;
+
+	 }
+
+	 }
 (	( pthis )->split_pass_x_vlo_small_grids_kernel = 	malloc ( ((	(  0 == CD_type ))?(sizeof(c_split_pass_x_vlo_small_grids_struct )):(((	(  1 == CD_type ))?(sizeof(openmp_split_pass_x_vlo_small_grids_struct )):(0)))) ));
 	if (  	(  0 == CD_type )  ){  
 			c_split_pass_x_vlo_small_grids_init ( pe , 	( pthis )->split_pass_x_vlo_small_grids_kernel );
@@ -976,6 +1585,48 @@ int  init_particle (One_Particle_Collection *  pthis ,Field3D_Seq *  pfield ,dou
 	}else{
 			if (  	(  1 == CD_type )  ){  
 			openmp_split_pass_z_vlo_sg2_small_grids_init ( pe , 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+(	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel = 	malloc ( ((	(  0 == CD_type ))?(sizeof(c_split_pass_x_vlo_sg2_nopush_small_grids_struct )):(((	(  1 == CD_type ))?(sizeof(openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct )):(0)))) ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_x_vlo_sg2_nopush_small_grids_init ( pe , 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_x_vlo_sg2_nopush_small_grids_init ( pe , 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+(	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel = 	malloc ( ((	(  0 == CD_type ))?(sizeof(c_split_pass_y_vlo_sg2_nopush_small_grids_struct )):(((	(  1 == CD_type ))?(sizeof(openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct )):(0)))) ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_y_vlo_sg2_nopush_small_grids_init ( pe , 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_y_vlo_sg2_nopush_small_grids_init ( pe , 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+(	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel = 	malloc ( ((	(  0 == CD_type ))?(sizeof(c_split_pass_z_vlo_sg2_nopush_small_grids_struct )):(((	(  1 == CD_type ))?(sizeof(openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct )):(0)))) ));
+	if (  	(  0 == CD_type )  ){  
+			c_split_pass_z_vlo_sg2_nopush_small_grids_init ( pe , 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_split_pass_z_vlo_sg2_nopush_small_grids_init ( pe , 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel );
 
 	}else{
 		0;
@@ -1264,8 +1915,10 @@ int  init_particle (One_Particle_Collection *  pthis ,Field3D_Seq *  pfield ,dou
 	Field3D_Seq *  pFoutEN = 	( pthis )->pFoutEN ;
 	void * *  sort_kernel = 	( pthis )->sort_kernel ;
 	void * *  geo_rel_1st_kernel = 	( pthis )->geo_rel_1st_kernel ;
+	void * *  implicit_kernel = 	( pthis )->implicit_kernel ;
 	void * *  rel_1st_kernel = 	( pthis )->rel_1st_kernel ;
 	void * *  krook_collision_test_kernel = 	( pthis )->krook_collision_test_kernel ;
+	void * *  nonrel_test_kernel = 	( pthis )->nonrel_test_kernel ;
 	void * *  boris_yee_kernel = 	( pthis )->boris_yee_kernel ;
 	void *  cu_swap_l_kernel = 	( pthis )->cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel = 	( pthis )->cu_swap_r_kernel ;
@@ -1278,6 +1931,9 @@ int  init_particle (One_Particle_Collection *  pthis ,Field3D_Seq *  pfield ,dou
 	void *  split_pass_x_kernel = 	( pthis )->split_pass_x_kernel ;
 	void *  split_pass_y_kernel = 	( pthis )->split_pass_y_kernel ;
 	void *  split_pass_z_kernel = 	( pthis )->split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel = 	( pthis )->split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel = 	( pthis )->split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel = 	( pthis )->split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
@@ -1288,12 +1944,18 @@ int  init_particle (One_Particle_Collection *  pthis ,Field3D_Seq *  pfield ,dou
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel = 	( pthis )->split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel = 	( pthis )->split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel = 	( pthis )->split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel = 	( pthis )->split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -1346,8 +2008,10 @@ int  delete_particle (One_Particle_Collection *  pthis ){
 	Field3D_Seq *  pFoutEN = 	( pthis )->pFoutEN ;
 	void * *  sort_kernel = 	( pthis )->sort_kernel ;
 	void * *  geo_rel_1st_kernel = 	( pthis )->geo_rel_1st_kernel ;
+	void * *  implicit_kernel = 	( pthis )->implicit_kernel ;
 	void * *  rel_1st_kernel = 	( pthis )->rel_1st_kernel ;
 	void * *  krook_collision_test_kernel = 	( pthis )->krook_collision_test_kernel ;
+	void * *  nonrel_test_kernel = 	( pthis )->nonrel_test_kernel ;
 	void * *  boris_yee_kernel = 	( pthis )->boris_yee_kernel ;
 	void *  cu_swap_l_kernel = 	( pthis )->cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel = 	( pthis )->cu_swap_r_kernel ;
@@ -1360,6 +2024,9 @@ int  delete_particle (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_kernel = 	( pthis )->split_pass_x_kernel ;
 	void *  split_pass_y_kernel = 	( pthis )->split_pass_y_kernel ;
 	void *  split_pass_z_kernel = 	( pthis )->split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel = 	( pthis )->split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel = 	( pthis )->split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel = 	( pthis )->split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
@@ -1370,12 +2037,18 @@ int  delete_particle (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel = 	( pthis )->split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel = 	( pthis )->split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel = 	( pthis )->split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel = 	( pthis )->split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -1403,11 +2076,14 @@ int  delete_particle (One_Particle_Collection *  pthis ){
 	void * *  sync_kernels = 	( pfield )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pfield )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pfield )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pfield )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pfield )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pfield )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pfield )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pfield )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pfield )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pfield )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pfield )->yee_setfix_kernels ;
 	void *  rdcd = 	( pfield )->rdcd ;
 	double *  rdcd_host = 	( pfield )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pfield )->cur_rankx_pscmc ;
@@ -1429,6 +2105,7 @@ int  delete_particle (One_Particle_Collection *  pthis ){
 	double  delta_y = 	( pfield )->delta_y ;
 	double  delta_z = 	( pfield )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pfield )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pfield )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pfield )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pfield )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pfield )->blas_get_ITG_Potential_kernel ;
@@ -1544,11 +2221,14 @@ int  init_particle_mpi (Field3D_MPI *  pthis ,int  num_spec ,double *  Mass ,dou
 	void * *  sync_kernels = 	( 	(  	( pthis )->data + j ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  	( pthis )->data + j ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  	( pthis )->data + j ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  	( pthis )->data + j ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  	( pthis )->data + j ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  	( pthis )->data + j ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  	( pthis )->data + j ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  	( pthis )->data + j ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  	( pthis )->data + j ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  	( pthis )->data + j ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  	( pthis )->data + j ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  	( pthis )->data + j ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  	( pthis )->data + j ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  	( pthis )->data + j ) )->cur_rankx_pscmc ;
@@ -1570,6 +2250,7 @@ int  init_particle_mpi (Field3D_MPI *  pthis ,int  num_spec ,double *  Mass ,dou
 	double  delta_y = 	( 	(  	( pthis )->data + j ) )->delta_y ;
 	double  delta_z = 	( 	(  	( pthis )->data + j ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  	( pthis )->data + j ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  	( pthis )->data + j ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  	( pthis )->data + j ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  	( pthis )->data + j ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  	( pthis )->data + j ) )->blas_get_ITG_Potential_kernel ;
@@ -1662,8 +2343,10 @@ int  generate_random_self_particle (One_Particle_Collection *  pthis ){
 	Field3D_Seq *  pFoutEN = 	( pthis )->pFoutEN ;
 	void * *  sort_kernel = 	( pthis )->sort_kernel ;
 	void * *  geo_rel_1st_kernel = 	( pthis )->geo_rel_1st_kernel ;
+	void * *  implicit_kernel = 	( pthis )->implicit_kernel ;
 	void * *  rel_1st_kernel = 	( pthis )->rel_1st_kernel ;
 	void * *  krook_collision_test_kernel = 	( pthis )->krook_collision_test_kernel ;
+	void * *  nonrel_test_kernel = 	( pthis )->nonrel_test_kernel ;
 	void * *  boris_yee_kernel = 	( pthis )->boris_yee_kernel ;
 	void *  cu_swap_l_kernel = 	( pthis )->cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel = 	( pthis )->cu_swap_r_kernel ;
@@ -1676,6 +2359,9 @@ int  generate_random_self_particle (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_kernel = 	( pthis )->split_pass_x_kernel ;
 	void *  split_pass_y_kernel = 	( pthis )->split_pass_y_kernel ;
 	void *  split_pass_z_kernel = 	( pthis )->split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel = 	( pthis )->split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel = 	( pthis )->split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel = 	( pthis )->split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
@@ -1686,12 +2372,18 @@ int  generate_random_self_particle (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel = 	( pthis )->split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel = 	( pthis )->split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel = 	( pthis )->split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel = 	( pthis )->split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -1710,8 +2402,10 @@ int  generate_random_self_particle (One_Particle_Collection *  pthis ){
 	Field3D_Seq *  pFoutEN = 	( pthis )->pFoutEN ;
 	void * *  sort_kernel = 	( pthis )->sort_kernel ;
 	void * *  geo_rel_1st_kernel = 	( pthis )->geo_rel_1st_kernel ;
+	void * *  implicit_kernel = 	( pthis )->implicit_kernel ;
 	void * *  rel_1st_kernel = 	( pthis )->rel_1st_kernel ;
 	void * *  krook_collision_test_kernel = 	( pthis )->krook_collision_test_kernel ;
+	void * *  nonrel_test_kernel = 	( pthis )->nonrel_test_kernel ;
 	void * *  boris_yee_kernel = 	( pthis )->boris_yee_kernel ;
 	void *  cu_swap_l_kernel = 	( pthis )->cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel = 	( pthis )->cu_swap_r_kernel ;
@@ -1724,6 +2418,9 @@ int  generate_random_self_particle (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_kernel = 	( pthis )->split_pass_x_kernel ;
 	void *  split_pass_y_kernel = 	( pthis )->split_pass_y_kernel ;
 	void *  split_pass_z_kernel = 	( pthis )->split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel = 	( pthis )->split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel = 	( pthis )->split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel = 	( pthis )->split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
@@ -1734,12 +2431,18 @@ int  generate_random_self_particle (One_Particle_Collection *  pthis ){
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel = 	( pthis )->split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel = 	( pthis )->split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel = 	( pthis )->split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel = 	( pthis )->split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -1767,11 +2470,14 @@ int  generate_random_self_particle (One_Particle_Collection *  pthis ){
 	void * *  sync_kernels = 	( pfield )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pfield )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pfield )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pfield )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pfield )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pfield )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pfield )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pfield )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pfield )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pfield )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pfield )->yee_setfix_kernels ;
 	void *  rdcd = 	( pfield )->rdcd ;
 	double *  rdcd_host = 	( pfield )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pfield )->cur_rankx_pscmc ;
@@ -1793,6 +2499,7 @@ int  generate_random_self_particle (One_Particle_Collection *  pthis ){
 	double  delta_y = 	( pfield )->delta_y ;
 	double  delta_z = 	( pfield )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pfield )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pfield )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pfield )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pfield )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pfield )->blas_get_ITG_Potential_kernel ;
@@ -1808,7 +2515,6 @@ int  generate_random_self_particle (One_Particle_Collection *  pthis ){
 	long  cur_pcid ;
 	double *  host_data = (((double * * )inoutput))[0] ;
 	int *  xyzw_data = (((int * * )xyzw))[0] ;
-	fprintf ( stderr , "xyzw=0x%x\n" , xyzw_data );
 	for (cur_pcid=0 ; 	(  cur_pcid < numvec ) ; cur_pcid++)
 	{
 	double *  grid_r_0 = 	(  host_data + 	(  cur_pcid * 	(  alllenoff * 	(  6 * grid_cache_len ) ) ) ) ;
@@ -1859,11 +2565,14 @@ int  generate_random_self_particle (One_Particle_Collection *  pthis ){
 	void * *  sync_kernels = 	( pfield )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pfield )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pfield )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pfield )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pfield )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pfield )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pfield )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pfield )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pfield )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pfield )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pfield )->yee_setfix_kernels ;
 	void *  rdcd = 	( pfield )->rdcd ;
 	double *  rdcd_host = 	( pfield )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pfield )->cur_rankx_pscmc ;
@@ -1885,6 +2594,7 @@ int  generate_random_self_particle (One_Particle_Collection *  pthis ){
 	double  delta_y = 	( pfield )->delta_y ;
 	double  delta_z = 	( pfield )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pfield )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pfield )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pfield )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pfield )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pfield )->blas_get_ITG_Potential_kernel ;
@@ -1947,8 +2657,10 @@ int  init_maxwell_dist_particle_opc (One_Particle_Collection *  pthis ,int  tgri
 	Field3D_Seq *  pFoutEN = 	( pthis )->pFoutEN ;
 	void * *  sort_kernel = 	( pthis )->sort_kernel ;
 	void * *  geo_rel_1st_kernel = 	( pthis )->geo_rel_1st_kernel ;
+	void * *  implicit_kernel = 	( pthis )->implicit_kernel ;
 	void * *  rel_1st_kernel = 	( pthis )->rel_1st_kernel ;
 	void * *  krook_collision_test_kernel = 	( pthis )->krook_collision_test_kernel ;
+	void * *  nonrel_test_kernel = 	( pthis )->nonrel_test_kernel ;
 	void * *  boris_yee_kernel = 	( pthis )->boris_yee_kernel ;
 	void *  cu_swap_l_kernel = 	( pthis )->cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel = 	( pthis )->cu_swap_r_kernel ;
@@ -1961,6 +2673,9 @@ int  init_maxwell_dist_particle_opc (One_Particle_Collection *  pthis ,int  tgri
 	void *  split_pass_x_kernel = 	( pthis )->split_pass_x_kernel ;
 	void *  split_pass_y_kernel = 	( pthis )->split_pass_y_kernel ;
 	void *  split_pass_z_kernel = 	( pthis )->split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel = 	( pthis )->split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel = 	( pthis )->split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel = 	( pthis )->split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
@@ -1971,12 +2686,18 @@ int  init_maxwell_dist_particle_opc (One_Particle_Collection *  pthis ,int  tgri
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel = 	( pthis )->split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel = 	( pthis )->split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel = 	( pthis )->split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel = 	( pthis )->split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -1995,8 +2716,10 @@ int  init_maxwell_dist_particle_opc (One_Particle_Collection *  pthis ,int  tgri
 	Field3D_Seq *  pFoutEN = 	( pthis )->pFoutEN ;
 	void * *  sort_kernel = 	( pthis )->sort_kernel ;
 	void * *  geo_rel_1st_kernel = 	( pthis )->geo_rel_1st_kernel ;
+	void * *  implicit_kernel = 	( pthis )->implicit_kernel ;
 	void * *  rel_1st_kernel = 	( pthis )->rel_1st_kernel ;
 	void * *  krook_collision_test_kernel = 	( pthis )->krook_collision_test_kernel ;
+	void * *  nonrel_test_kernel = 	( pthis )->nonrel_test_kernel ;
 	void * *  boris_yee_kernel = 	( pthis )->boris_yee_kernel ;
 	void *  cu_swap_l_kernel = 	( pthis )->cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel = 	( pthis )->cu_swap_r_kernel ;
@@ -2009,6 +2732,9 @@ int  init_maxwell_dist_particle_opc (One_Particle_Collection *  pthis ,int  tgri
 	void *  split_pass_x_kernel = 	( pthis )->split_pass_x_kernel ;
 	void *  split_pass_y_kernel = 	( pthis )->split_pass_y_kernel ;
 	void *  split_pass_z_kernel = 	( pthis )->split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel = 	( pthis )->split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel = 	( pthis )->split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel = 	( pthis )->split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
@@ -2019,12 +2745,18 @@ int  init_maxwell_dist_particle_opc (One_Particle_Collection *  pthis ,int  tgri
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel = 	( pthis )->split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel = 	( pthis )->split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel = 	( pthis )->split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel = 	( pthis )->split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -2052,11 +2784,14 @@ int  init_maxwell_dist_particle_opc (One_Particle_Collection *  pthis ,int  tgri
 	void * *  sync_kernels = 	( pfield )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pfield )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pfield )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pfield )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pfield )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pfield )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pfield )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pfield )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pfield )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pfield )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pfield )->yee_setfix_kernels ;
 	void *  rdcd = 	( pfield )->rdcd ;
 	double *  rdcd_host = 	( pfield )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pfield )->cur_rankx_pscmc ;
@@ -2078,6 +2813,7 @@ int  init_maxwell_dist_particle_opc (One_Particle_Collection *  pthis ,int  tgri
 	double  delta_y = 	( pfield )->delta_y ;
 	double  delta_z = 	( pfield )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pfield )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pfield )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pfield )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pfield )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pfield )->blas_get_ITG_Potential_kernel ;
@@ -2093,7 +2829,6 @@ int  init_maxwell_dist_particle_opc (One_Particle_Collection *  pthis ,int  tgri
 	long  cur_pcid ;
 	double *  host_data = (((double * * )inoutput))[0] ;
 	int *  xyzw_data = (((int * * )xyzw))[0] ;
-	fprintf ( stderr , "xyzw=0x%x\n" , xyzw_data );
 	for (cur_pcid=0 ; 	(  cur_pcid < numvec ) ; cur_pcid++)
 	{
 	double *  grid_r_0 = 	(  host_data + 	(  cur_pcid * 	(  alllenoff * 	(  6 * grid_cache_len ) ) ) ) ;
@@ -2176,11 +2911,14 @@ int  init_maxwell_dist_particle_opc (One_Particle_Collection *  pthis ,int  tgri
 	void * *  sync_kernels = 	( pfield )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pfield )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pfield )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pfield )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pfield )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pfield )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pfield )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pfield )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pfield )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pfield )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pfield )->yee_setfix_kernels ;
 	void *  rdcd = 	( pfield )->rdcd ;
 	double *  rdcd_host = 	( pfield )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pfield )->cur_rankx_pscmc ;
@@ -2202,6 +2940,7 @@ int  init_maxwell_dist_particle_opc (One_Particle_Collection *  pthis ,int  tgri
 	double  delta_y = 	( pfield )->delta_y ;
 	double  delta_z = 	( pfield )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pfield )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pfield )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pfield )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pfield )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pfield )->blas_get_ITG_Potential_kernel ;
@@ -2280,11 +3019,25 @@ int  init_maxwell_dist_particle_fmpi (Field3D_MPI *  pthis ){
 	int  j ;
 	for (i=0 ; 	(  i < num_spec ) ; i++)
 	{
+	if (  srand_seed  ){  
+			srand ( srand_seed );
+
+	}else{
+		0;
+
+	 }
+	if (  	(  (	( ((Particle_in_Cell_MPI * )pthis) )->o_particle_type)[i] == 0 )  ){  
+			fprintf ( stderr , "info init_maxwell_dist_particle_fmpi: spec=%d\n" , i );
 	for (j=0 ; 	(  j < num_runtime ) ; j++)
 	{
 	init_maxwell_dist_particle_opc ( 	(  	( pthis )->particles + 	(  	(  i * num_runtime ) + j ) ) , 	call_GET_INIT_LOAD ( i ) , 	call_GET_INIT_VT ( i ) , ((	(  i == 0 ))?(use_lost_cone):(0)) , mu0 , delta );
-}}	return  0 ;}
-int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load ,int  cur_sp ,double  VT ){
+}
+	}else{
+		0;
+
+	 }
+}	return  0 ;}
+int  init_user_defined_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load ,int  cur_sp ,double  vt ,int  external_para ){
 	Field3D_Seq *  pfield = 	( pthis )->pfield ;
 	Field3D_Seq *  pfieldE = 	( pthis )->pfieldE ;
 	Field3D_Seq *  pfieldB = 	( pthis )->pfieldB ;
@@ -2294,8 +3047,10 @@ int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_loa
 	Field3D_Seq *  pFoutEN = 	( pthis )->pFoutEN ;
 	void * *  sort_kernel = 	( pthis )->sort_kernel ;
 	void * *  geo_rel_1st_kernel = 	( pthis )->geo_rel_1st_kernel ;
+	void * *  implicit_kernel = 	( pthis )->implicit_kernel ;
 	void * *  rel_1st_kernel = 	( pthis )->rel_1st_kernel ;
 	void * *  krook_collision_test_kernel = 	( pthis )->krook_collision_test_kernel ;
+	void * *  nonrel_test_kernel = 	( pthis )->nonrel_test_kernel ;
 	void * *  boris_yee_kernel = 	( pthis )->boris_yee_kernel ;
 	void *  cu_swap_l_kernel = 	( pthis )->cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel = 	( pthis )->cu_swap_r_kernel ;
@@ -2308,6 +3063,9 @@ int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_loa
 	void *  split_pass_x_kernel = 	( pthis )->split_pass_x_kernel ;
 	void *  split_pass_y_kernel = 	( pthis )->split_pass_y_kernel ;
 	void *  split_pass_z_kernel = 	( pthis )->split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel = 	( pthis )->split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel = 	( pthis )->split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel = 	( pthis )->split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
@@ -2318,12 +3076,18 @@ int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_loa
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel = 	( pthis )->split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel = 	( pthis )->split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel = 	( pthis )->split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel = 	( pthis )->split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -2342,8 +3106,10 @@ int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_loa
 	Field3D_Seq *  pFoutEN = 	( pthis )->pFoutEN ;
 	void * *  sort_kernel = 	( pthis )->sort_kernel ;
 	void * *  geo_rel_1st_kernel = 	( pthis )->geo_rel_1st_kernel ;
+	void * *  implicit_kernel = 	( pthis )->implicit_kernel ;
 	void * *  rel_1st_kernel = 	( pthis )->rel_1st_kernel ;
 	void * *  krook_collision_test_kernel = 	( pthis )->krook_collision_test_kernel ;
+	void * *  nonrel_test_kernel = 	( pthis )->nonrel_test_kernel ;
 	void * *  boris_yee_kernel = 	( pthis )->boris_yee_kernel ;
 	void *  cu_swap_l_kernel = 	( pthis )->cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel = 	( pthis )->cu_swap_r_kernel ;
@@ -2356,6 +3122,9 @@ int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_loa
 	void *  split_pass_x_kernel = 	( pthis )->split_pass_x_kernel ;
 	void *  split_pass_y_kernel = 	( pthis )->split_pass_y_kernel ;
 	void *  split_pass_z_kernel = 	( pthis )->split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel = 	( pthis )->split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel = 	( pthis )->split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel = 	( pthis )->split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
@@ -2366,12 +3135,18 @@ int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_loa
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel = 	( pthis )->split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel = 	( pthis )->split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel = 	( pthis )->split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel = 	( pthis )->split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -2399,11 +3174,14 @@ int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_loa
 	void * *  sync_kernels = 	( pfield )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pfield )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pfield )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pfield )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pfield )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pfield )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pfield )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pfield )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pfield )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pfield )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pfield )->yee_setfix_kernels ;
 	void *  rdcd = 	( pfield )->rdcd ;
 	double *  rdcd_host = 	( pfield )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pfield )->cur_rankx_pscmc ;
@@ -2425,6 +3203,7 @@ int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_loa
 	double  delta_y = 	( pfield )->delta_y ;
 	double  delta_z = 	( pfield )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pfield )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pfield )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pfield )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pfield )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pfield )->blas_get_ITG_Potential_kernel ;
@@ -2440,7 +3219,365 @@ int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_loa
 	long  cur_pcid ;
 	double *  host_data = (((double * * )inoutput))[0] ;
 	int *  xyzw_data = (((int * * )xyzw))[0] ;
-	fprintf ( stderr , "xyzw=0x%x\n" , xyzw_data );
+	for (cur_pcid=0 ; 	(  cur_pcid < numvec ) ; cur_pcid++)
+	{
+	double *  grid_r_0 = 	(  host_data + 	(  cur_pcid * 	(  alllenoff * 	(  6 * grid_cache_len ) ) ) ) ;
+	int *  xyzw_0 = 	(  xyzw_data + 	(  cur_pcid * 	(  alllenoff * 4 ) ) ) ;
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < zlen ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < ylen ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < xlen ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	double *  grid_r = 	(  grid_r_0 + 	(  0 + 	(  	(  6 * grid_cache_len ) * 	(  xyzx + 	(  xlen * 	(  xyzy + 	(  ylen * xyzz ) ) ) ) ) ) ) ;
+	int *  grid_xyzw = 	(  xyzw_0 + 	(  0 + 	(  4 * 	(  xyzx + 	(  xlen * 	(  xyzy + 	(  ylen * xyzz ) ) ) ) ) ) ) ;
+	long  l = 0 ;
+	long  grid_load = 	(  ((USE_NON_UNI_DENSITY)?(	call_GET_INIT_DENSITY_DIST ( cur_sp , 	(  (global_z_offset)[cur_pcid] + 	(  xyzz + 5.00000000000000000e-01 ) ) , 	(  (global_y_offset)[cur_pcid] + 	(  xyzy + 5.00000000000000000e-01 ) ) , 	(  (global_x_offset)[cur_pcid] + 	(  xyzx + 5.00000000000000000e-01 ) ) )):(1)) * tgrid_load ) ;
+	if (  	(  grid_load > grid_cache_len )  ){  
+			fprintf ( stderr , "Error, gl=%d gcl=%d global_id=%d cur_picid=%d\n" , grid_load , grid_cache_len , (global_id)[cur_pcid] , cur_pcid );
+
+	}else{
+		0;
+
+	 }
+	assert ( 	(  grid_load <= grid_cache_len ) );
+	for (l ; 	(  l < grid_load ) ; l++)
+	{
+((grid_xyzw)[0] = grid_load);
+	double *  xyzvs = 	(  grid_r + 	(  l * 6 ) ) ;
+	user_defined_particle_distribution ( xyzvs , 	(  (global_x_offset)[cur_pcid] + xyzx ) , 	(  (global_y_offset)[cur_pcid] + xyzy ) , 	(  (global_z_offset)[cur_pcid] + xyzz ) , cur_sp , l , tgrid_load , external_para );
+	double  lx = (xyzvs)[0] ;
+	double  ly = (xyzvs)[1] ;
+	double  lz = (xyzvs)[2] ;
+	double  lvx = (xyzvs)[3] ;
+	double  lvy = (xyzvs)[4] ;
+	double  lvz = (xyzvs)[5] ;
+((xyzvs)[0] = 	(  (xyzvs)[0] + xyzx ));
+((xyzvs)[1] = 	(  (xyzvs)[1] + xyzy ));
+((xyzvs)[2] = 	(  (xyzvs)[2] + xyzz ));
+}}}}}}}}}{
+	void *  pe = 	( pfield )->pe ;
+	long  xlen = 	( pfield )->xlen ;
+	long  ylen = 	( pfield )->ylen ;
+	long  zlen = 	( pfield )->zlen ;
+	long  xblock = 	( pfield )->xblock ;
+	long  yblock = 	( pfield )->yblock ;
+	long  zblock = 	( pfield )->zblock ;
+	long  numvec = 	( pfield )->numvec ;
+	long  x_num_thread_block = 	( pfield )->x_num_thread_block ;
+	long  y_num_thread_block = 	( pfield )->y_num_thread_block ;
+	long  z_num_thread_block = 	( pfield )->z_num_thread_block ;
+	int  ovlp = 	( pfield )->ovlp ;
+	int  num_ele = 	( pfield )->num_ele ;
+	int  CD_type = 	( pfield )->CD_type ;
+	void * *  sync_layer_pscmc = 	( pfield )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( pfield )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( pfield )->sync_kernels ;
+	void * *  fdtd_kernels = 	( pfield )->fdtd_kernels ;
+	void * *  dm_kernels = 	( pfield )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pfield )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( pfield )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( pfield )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pfield )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( pfield )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( pfield )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( pfield )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pfield )->yee_setfix_kernels ;
+	void *  rdcd = 	( pfield )->rdcd ;
+	double *  rdcd_host = 	( pfield )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( pfield )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( pfield )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( pfield )->cur_rankz_pscmc ;
+	void *  xoffset = 	( pfield )->xoffset ;
+	void *  yoffset = 	( pfield )->yoffset ;
+	void *  zoffset = 	( pfield )->zoffset ;
+	long *  global_x_offset = 	( pfield )->global_x_offset ;
+	long *  global_y_offset = 	( pfield )->global_y_offset ;
+	long *  global_z_offset = 	( pfield )->global_z_offset ;
+	long *  global_id = 	( pfield )->global_id ;
+	long  global_pid = 	( pfield )->global_pid ;
+	long *  adj_ids = 	( pfield )->adj_ids ;
+	long *  adj_processes = 	( pfield )->adj_processes ;
+	long *  adj_local_tid = 	( pfield )->adj_local_tid ;
+	void *  main_data = 	( pfield )->main_data ;
+	double  delta_x = 	( pfield )->delta_x ;
+	double  delta_y = 	( pfield )->delta_y ;
+	double  delta_z = 	( pfield )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( pfield )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pfield )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( pfield )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( pfield )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( pfield )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( pfield )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( pfield )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( pfield )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( pfield )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( pfield )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( pfield )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( pfield )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( pfield )->blas_sum_kernel ;
+	memset ( (((int * * )cu_xyzw))[0] , 0 , 	(  4 * 	(  sizeof(int ) * numvec ) ) );
+	if (  	(  0 == CD_type )  ){  
+			c_pscmc_mem_sync_h2d ( inoutput );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_pscmc_mem_sync_h2d ( inoutput );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+	if (  	(  0 == CD_type )  ){  
+			c_pscmc_mem_sync_h2d ( xyzw );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_pscmc_mem_sync_h2d ( xyzw );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+	if (  	(  0 == CD_type )  ){  
+			c_pscmc_mem_sync_h2d ( cu_xyzw );
+
+	}else{
+			if (  	(  1 == CD_type )  ){  
+			openmp_pscmc_mem_sync_h2d ( cu_xyzw );
+
+	}else{
+		0;
+
+	 }
+
+	 }
+}	return  0 ;}
+int  init_user_defined_particle_fmpi (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	int  i ;
+	int  j ;
+	for (i=0 ; 	(  i < num_spec ) ; i++)
+	{
+	if (  srand_seed  ){  
+			srand ( srand_seed );
+
+	}else{
+		0;
+
+	 }
+	if (  	(  (	( ((Particle_in_Cell_MPI * )pthis) )->o_particle_type)[i] == 0 )  ){  
+			fprintf ( stderr , "info init_user_defined_particle_fmpi: spec=%d\n" , i );
+	for (j=0 ; 	(  j < num_runtime ) ; j++)
+	{
+	init_user_defined_particle_opc ( 	(  	( pthis )->particles + 	(  	(  i * num_runtime ) + j ) ) , 	call_GET_INIT_LOAD ( i ) , i , 	call_GET_INIT_VT ( i ) , 0 );
+}
+	}else{
+		0;
+
+	 }
+}	return  0 ;}
+int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load ,int  cur_sp ,double  VT ,double  vmax ){
+	Field3D_Seq *  pfield = 	( pthis )->pfield ;
+	Field3D_Seq *  pfieldE = 	( pthis )->pfieldE ;
+	Field3D_Seq *  pfieldB = 	( pthis )->pfieldB ;
+	Field3D_Seq *  pfieldB1 = 	( pthis )->pfieldB1 ;
+	Field3D_Seq *  pFoutJ = 	( pthis )->pFoutJ ;
+	Field3D_Seq *  pLFoutJ = 	( pthis )->pLFoutJ ;
+	Field3D_Seq *  pFoutEN = 	( pthis )->pFoutEN ;
+	void * *  sort_kernel = 	( pthis )->sort_kernel ;
+	void * *  geo_rel_1st_kernel = 	( pthis )->geo_rel_1st_kernel ;
+	void * *  implicit_kernel = 	( pthis )->implicit_kernel ;
+	void * *  rel_1st_kernel = 	( pthis )->rel_1st_kernel ;
+	void * *  krook_collision_test_kernel = 	( pthis )->krook_collision_test_kernel ;
+	void * *  nonrel_test_kernel = 	( pthis )->nonrel_test_kernel ;
+	void * *  boris_yee_kernel = 	( pthis )->boris_yee_kernel ;
+	void *  cu_swap_l_kernel = 	( pthis )->cu_swap_l_kernel ;
+	void *  cu_swap_r_kernel = 	( pthis )->cu_swap_r_kernel ;
+	void *  move_back_kernel_kernel = 	( pthis )->move_back_kernel_kernel ;
+	double  Mass = 	( pthis )->Mass ;
+	double  Charge = 	( pthis )->Charge ;
+	double  Number_particle_per_marker = 	( pthis )->Number_particle_per_marker ;
+	long  grid_cache_len = 	( pthis )->grid_cache_len ;
+	long  cu_cache_length = 	( pthis )->cu_cache_length ;
+	void *  split_pass_x_kernel = 	( pthis )->split_pass_x_kernel ;
+	void *  split_pass_y_kernel = 	( pthis )->split_pass_y_kernel ;
+	void *  split_pass_z_kernel = 	( pthis )->split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel = 	( pthis )->split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel = 	( pthis )->split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel = 	( pthis )->split_pass_z_nopush_kernel ;
+	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
+	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
+	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
+	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
+	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
+	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
+	void *  split_pass_z_vlo_kernel = 	( pthis )->split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel = 	( pthis )->split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel = 	( pthis )->split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel = 	( pthis )->split_pass_z_vlo_nopush_kernel ;
+	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
+	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
+	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
+	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
+	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
+	void *  inoutput = 	( pthis )->inoutput ;
+	void *  xyzw = 	( pthis )->xyzw ;
+	void *  cu_cache = 	( pthis )->cu_cache ;
+	void *  cu_xyzw = 	( pthis )->cu_xyzw ;
+	void *  adjoint_vec_pids = 	( pthis )->adjoint_vec_pids ;
+{
+	Field3D_Seq *  pfield = 	( pthis )->pfield ;
+	Field3D_Seq *  pfieldE = 	( pthis )->pfieldE ;
+	Field3D_Seq *  pfieldB = 	( pthis )->pfieldB ;
+	Field3D_Seq *  pfieldB1 = 	( pthis )->pfieldB1 ;
+	Field3D_Seq *  pFoutJ = 	( pthis )->pFoutJ ;
+	Field3D_Seq *  pLFoutJ = 	( pthis )->pLFoutJ ;
+	Field3D_Seq *  pFoutEN = 	( pthis )->pFoutEN ;
+	void * *  sort_kernel = 	( pthis )->sort_kernel ;
+	void * *  geo_rel_1st_kernel = 	( pthis )->geo_rel_1st_kernel ;
+	void * *  implicit_kernel = 	( pthis )->implicit_kernel ;
+	void * *  rel_1st_kernel = 	( pthis )->rel_1st_kernel ;
+	void * *  krook_collision_test_kernel = 	( pthis )->krook_collision_test_kernel ;
+	void * *  nonrel_test_kernel = 	( pthis )->nonrel_test_kernel ;
+	void * *  boris_yee_kernel = 	( pthis )->boris_yee_kernel ;
+	void *  cu_swap_l_kernel = 	( pthis )->cu_swap_l_kernel ;
+	void *  cu_swap_r_kernel = 	( pthis )->cu_swap_r_kernel ;
+	void *  move_back_kernel_kernel = 	( pthis )->move_back_kernel_kernel ;
+	double  Mass = 	( pthis )->Mass ;
+	double  Charge = 	( pthis )->Charge ;
+	double  Number_particle_per_marker = 	( pthis )->Number_particle_per_marker ;
+	long  grid_cache_len = 	( pthis )->grid_cache_len ;
+	long  cu_cache_length = 	( pthis )->cu_cache_length ;
+	void *  split_pass_x_kernel = 	( pthis )->split_pass_x_kernel ;
+	void *  split_pass_y_kernel = 	( pthis )->split_pass_y_kernel ;
+	void *  split_pass_z_kernel = 	( pthis )->split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel = 	( pthis )->split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel = 	( pthis )->split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel = 	( pthis )->split_pass_z_nopush_kernel ;
+	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
+	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
+	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
+	void *  split_pass_x_sg2_small_grids_kernel = 	( pthis )->split_pass_x_sg2_small_grids_kernel ;
+	void *  split_pass_y_sg2_small_grids_kernel = 	( pthis )->split_pass_y_sg2_small_grids_kernel ;
+	void *  split_pass_z_sg2_small_grids_kernel = 	( pthis )->split_pass_z_sg2_small_grids_kernel ;
+	void *  split_pass_E_particle_kernel = 	( pthis )->split_pass_E_particle_kernel ;
+	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
+	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
+	void *  split_pass_z_vlo_kernel = 	( pthis )->split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel = 	( pthis )->split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel = 	( pthis )->split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel = 	( pthis )->split_pass_z_vlo_nopush_kernel ;
+	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
+	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
+	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
+	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
+	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
+	void *  inoutput = 	( pthis )->inoutput ;
+	void *  xyzw = 	( pthis )->xyzw ;
+	void *  cu_cache = 	( pthis )->cu_cache ;
+	void *  cu_xyzw = 	( pthis )->cu_xyzw ;
+	void *  adjoint_vec_pids = 	( pthis )->adjoint_vec_pids ;
+	void *  pe = 	( pfield )->pe ;
+	long  xlen = 	( pfield )->xlen ;
+	long  ylen = 	( pfield )->ylen ;
+	long  zlen = 	( pfield )->zlen ;
+	long  xblock = 	( pfield )->xblock ;
+	long  yblock = 	( pfield )->yblock ;
+	long  zblock = 	( pfield )->zblock ;
+	long  numvec = 	( pfield )->numvec ;
+	long  x_num_thread_block = 	( pfield )->x_num_thread_block ;
+	long  y_num_thread_block = 	( pfield )->y_num_thread_block ;
+	long  z_num_thread_block = 	( pfield )->z_num_thread_block ;
+	int  ovlp = 	( pfield )->ovlp ;
+	int  num_ele = 	( pfield )->num_ele ;
+	int  CD_type = 	( pfield )->CD_type ;
+	void * *  sync_layer_pscmc = 	( pfield )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( pfield )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( pfield )->sync_kernels ;
+	void * *  fdtd_kernels = 	( pfield )->fdtd_kernels ;
+	void * *  dm_kernels = 	( pfield )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pfield )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( pfield )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( pfield )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pfield )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( pfield )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( pfield )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( pfield )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pfield )->yee_setfix_kernels ;
+	void *  rdcd = 	( pfield )->rdcd ;
+	double *  rdcd_host = 	( pfield )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( pfield )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( pfield )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( pfield )->cur_rankz_pscmc ;
+	void *  xoffset = 	( pfield )->xoffset ;
+	void *  yoffset = 	( pfield )->yoffset ;
+	void *  zoffset = 	( pfield )->zoffset ;
+	long *  global_x_offset = 	( pfield )->global_x_offset ;
+	long *  global_y_offset = 	( pfield )->global_y_offset ;
+	long *  global_z_offset = 	( pfield )->global_z_offset ;
+	long *  global_id = 	( pfield )->global_id ;
+	long  global_pid = 	( pfield )->global_pid ;
+	long *  adj_ids = 	( pfield )->adj_ids ;
+	long *  adj_processes = 	( pfield )->adj_processes ;
+	long *  adj_local_tid = 	( pfield )->adj_local_tid ;
+	void *  main_data = 	( pfield )->main_data ;
+	double  delta_x = 	( pfield )->delta_x ;
+	double  delta_y = 	( pfield )->delta_y ;
+	double  delta_z = 	( pfield )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( pfield )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pfield )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( pfield )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( pfield )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( pfield )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( pfield )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( pfield )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( pfield )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( pfield )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( pfield )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( pfield )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( pfield )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( pfield )->blas_sum_kernel ;
+	long  alllenoff = 	(  xlen * 	(  ylen * zlen ) ) ;
+	long  cur_pcid ;
+	double *  host_data = (((double * * )inoutput))[0] ;
+	int *  xyzw_data = (((int * * )xyzw))[0] ;
 	for (cur_pcid=0 ; 	(  cur_pcid < numvec ) ; cur_pcid++)
 	{
 	double *  grid_r_0 = 	(  host_data + 	(  cur_pcid * 	(  alllenoff * 	(  6 * grid_cache_len ) ) ) ) ;
@@ -2507,7 +3644,7 @@ int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_loa
 	double  vx = (xyzvs)[3] ;
 	double  vy = (xyzvs)[4] ;
 	double  vz = (xyzvs)[5] ;
-	if (  	(  	(  	(  	(  vx * vx ) + 	(  vy * vy ) ) + 	(  vz * vz ) ) >= 1 )  ){  
+	if (  	(  	(  	(  	(  vx * vx ) + 	(  vy * vy ) ) + 	(  vz * vz ) ) >= vmax )  ){  
 			goto befmaxinit;
 	}else{
 		0;
@@ -2533,11 +3670,14 @@ int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_loa
 	void * *  sync_kernels = 	( pfield )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pfield )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pfield )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pfield )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pfield )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pfield )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pfield )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pfield )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pfield )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pfield )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pfield )->yee_setfix_kernels ;
 	void *  rdcd = 	( pfield )->rdcd ;
 	double *  rdcd_host = 	( pfield )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pfield )->cur_rankx_pscmc ;
@@ -2559,6 +3699,7 @@ int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_loa
 	double  delta_y = 	( pfield )->delta_y ;
 	double  delta_z = 	( pfield )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pfield )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pfield )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pfield )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pfield )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pfield )->blas_get_ITG_Potential_kernel ;
@@ -2611,7 +3752,7 @@ int  init_non_uni_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_loa
 
 	 }
 }	return  0 ;}
-int  init_non_uni_particle_fmpi (Field3D_MPI *  pthis ){
+int  init_non_uni_particle_fmpi (Field3D_MPI *  pthis ,double  vmax ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -2626,10 +3767,24 @@ int  init_non_uni_particle_fmpi (Field3D_MPI *  pthis ){
 	int  j ;
 	for (i=0 ; 	(  i < num_spec ) ; i++)
 	{
+	if (  srand_seed  ){  
+			srand ( srand_seed );
+
+	}else{
+		0;
+
+	 }
+	if (  	(  (	( ((Particle_in_Cell_MPI * )pthis) )->o_particle_type)[i] == 0 )  ){  
+			fprintf ( stderr , "info init_non_uni_particle_fmpi: spec=%d\n" , i );
 	for (j=0 ; 	(  j < num_runtime ) ; j++)
 	{
-	init_non_uni_particle_opc ( 	(  	( pthis )->particles + 	(  	(  i * num_runtime ) + j ) ) , 	call_GET_INIT_LOAD ( i ) , i , 	call_GET_INIT_VT ( i ) );
-}}	return  0 ;}
+	init_non_uni_particle_opc ( 	(  	( pthis )->particles + 	(  	(  i * num_runtime ) + j ) ) , 	call_GET_INIT_LOAD ( i ) , i , 	call_GET_INIT_VT ( i ) , vmax );
+}
+	}else{
+		0;
+
+	 }
+}	return  0 ;}
 int  init_single_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load ){
 	Field3D_Seq *  pfield = 	( pthis )->pfield ;
 	Field3D_Seq *  pfieldE = 	( pthis )->pfieldE ;
@@ -2640,8 +3795,10 @@ int  init_single_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load
 	Field3D_Seq *  pFoutEN = 	( pthis )->pFoutEN ;
 	void * *  sort_kernel = 	( pthis )->sort_kernel ;
 	void * *  geo_rel_1st_kernel = 	( pthis )->geo_rel_1st_kernel ;
+	void * *  implicit_kernel = 	( pthis )->implicit_kernel ;
 	void * *  rel_1st_kernel = 	( pthis )->rel_1st_kernel ;
 	void * *  krook_collision_test_kernel = 	( pthis )->krook_collision_test_kernel ;
+	void * *  nonrel_test_kernel = 	( pthis )->nonrel_test_kernel ;
 	void * *  boris_yee_kernel = 	( pthis )->boris_yee_kernel ;
 	void *  cu_swap_l_kernel = 	( pthis )->cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel = 	( pthis )->cu_swap_r_kernel ;
@@ -2654,6 +3811,9 @@ int  init_single_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load
 	void *  split_pass_x_kernel = 	( pthis )->split_pass_x_kernel ;
 	void *  split_pass_y_kernel = 	( pthis )->split_pass_y_kernel ;
 	void *  split_pass_z_kernel = 	( pthis )->split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel = 	( pthis )->split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel = 	( pthis )->split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel = 	( pthis )->split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
@@ -2664,12 +3824,18 @@ int  init_single_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel = 	( pthis )->split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel = 	( pthis )->split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel = 	( pthis )->split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel = 	( pthis )->split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -2688,8 +3854,10 @@ int  init_single_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load
 	Field3D_Seq *  pFoutEN = 	( pthis )->pFoutEN ;
 	void * *  sort_kernel = 	( pthis )->sort_kernel ;
 	void * *  geo_rel_1st_kernel = 	( pthis )->geo_rel_1st_kernel ;
+	void * *  implicit_kernel = 	( pthis )->implicit_kernel ;
 	void * *  rel_1st_kernel = 	( pthis )->rel_1st_kernel ;
 	void * *  krook_collision_test_kernel = 	( pthis )->krook_collision_test_kernel ;
+	void * *  nonrel_test_kernel = 	( pthis )->nonrel_test_kernel ;
 	void * *  boris_yee_kernel = 	( pthis )->boris_yee_kernel ;
 	void *  cu_swap_l_kernel = 	( pthis )->cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel = 	( pthis )->cu_swap_r_kernel ;
@@ -2702,6 +3870,9 @@ int  init_single_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load
 	void *  split_pass_x_kernel = 	( pthis )->split_pass_x_kernel ;
 	void *  split_pass_y_kernel = 	( pthis )->split_pass_y_kernel ;
 	void *  split_pass_z_kernel = 	( pthis )->split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel = 	( pthis )->split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel = 	( pthis )->split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel = 	( pthis )->split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel = 	( pthis )->split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel = 	( pthis )->split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel = 	( pthis )->split_pass_z_small_grids_kernel ;
@@ -2712,12 +3883,18 @@ int  init_single_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load
 	void *  split_pass_x_vlo_kernel = 	( pthis )->split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel = 	( pthis )->split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel = 	( pthis )->split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel = 	( pthis )->split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel = 	( pthis )->split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel = 	( pthis )->split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel = 	( pthis )->split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel = 	( pthis )->split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel = 	( pthis )->split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel = 	( pthis )->split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel = 	( pthis )->split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel = 	( pthis )->dump_ene_num_kernel ;
 	void *  calculate_rho_kernel = 	( pthis )->calculate_rho_kernel ;
@@ -2745,11 +3922,14 @@ int  init_single_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load
 	void * *  sync_kernels = 	( pfield )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pfield )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pfield )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pfield )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pfield )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pfield )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pfield )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pfield )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pfield )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pfield )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pfield )->yee_setfix_kernels ;
 	void *  rdcd = 	( pfield )->rdcd ;
 	double *  rdcd_host = 	( pfield )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pfield )->cur_rankx_pscmc ;
@@ -2771,6 +3951,7 @@ int  init_single_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load
 	double  delta_y = 	( pfield )->delta_y ;
 	double  delta_z = 	( pfield )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pfield )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pfield )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pfield )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pfield )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pfield )->blas_get_ITG_Potential_kernel ;
@@ -2786,7 +3967,6 @@ int  init_single_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load
 	long  cur_pcid ;
 	double *  host_data = (((double * * )inoutput))[0] ;
 	int *  xyzw_data = (((int * * )xyzw))[0] ;
-	fprintf ( stderr , "xyzw=0x%x\n" , xyzw_data );
 	for (cur_pcid=0 ; 	(  cur_pcid < numvec ) ; cur_pcid++)
 	{
 	double *  grid_r_0 = 	(  host_data + 	(  cur_pcid * 	(  alllenoff * 	(  6 * grid_cache_len ) ) ) ) ;
@@ -2859,11 +4039,14 @@ int  init_single_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load
 	void * *  sync_kernels = 	( pfield )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pfield )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pfield )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pfield )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pfield )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pfield )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pfield )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pfield )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pfield )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pfield )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pfield )->yee_setfix_kernels ;
 	void *  rdcd = 	( pfield )->rdcd ;
 	double *  rdcd_host = 	( pfield )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pfield )->cur_rankx_pscmc ;
@@ -2885,6 +4068,7 @@ int  init_single_particle_opc (One_Particle_Collection *  pthis ,int  tgrid_load
 	double  delta_y = 	( pfield )->delta_y ;
 	double  delta_z = 	( pfield )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pfield )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pfield )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pfield )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pfield )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pfield )->blas_get_ITG_Potential_kernel ;
@@ -2952,11 +4136,25 @@ int  init_single_particle_fmpi (Field3D_MPI *  pthis ){
 	int  j ;
 	for (i=0 ; 	(  i < num_spec ) ; i++)
 	{
+	if (  srand_seed  ){  
+			srand ( srand_seed );
+
+	}else{
+		0;
+
+	 }
+	if (  	(  (	( ((Particle_in_Cell_MPI * )pthis) )->o_particle_type)[i] == 0 )  ){  
+			fprintf ( stderr , "info init_single_particle_fmpi: spec=%d\n" , i );
 	for (j=0 ; 	(  j < num_runtime ) ; j++)
 	{
 	init_single_particle_opc ( 	(  	( pthis )->particles + 	(  	(  i * num_runtime ) + j ) ) , ((	(  j == 0 ))?(1):(0)) );
-}}	return  0 ;}
-void  init_global_particles (Particle_in_Cell_MPI *  pthis ,Field3D_MPI *  fE ,Field3D_MPI *  fEN ,int  use_small_num_grids ,int  pml_abc_dir ,int  pml_level ,double  pml_sigma_max ,double  deltat ,int  num_spec ,long *  allxyzmax ,double *  massp ,double *  chargep ,double *  npm ,long *  grid_cache_len ,long *  cu_cache_len ){
+}
+	}else{
+		0;
+
+	 }
+}	return  0 ;}
+void  init_global_particles (Particle_in_Cell_MPI *  pthis ,Field3D_MPI *  fE ,Field3D_MPI *  fEN ,int  use_small_num_grids ,int  pml_abc_dir ,int  pml_level ,double  pml_sigma_max ,double  deltat ,int  num_spec ,long *  allxyzmax ,double *  massp ,double *  chargep ,double *  npm ,long *  grid_cache_len ,long *  cu_cache_len ,int *  particle_types ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ,double  random_rate ){
 	Field3D_MPI  MPI_fieldE = 	( pthis )->MPI_fieldE ;
 	Field3D_MPI  MPI_fieldB = 	( pthis )->MPI_fieldB ;
 	Field3D_MPI  MPI_fieldB1 = 	( pthis )->MPI_fieldB1 ;
@@ -2964,6 +4162,7 @@ void  init_global_particles (Particle_in_Cell_MPI *  pthis ,Field3D_MPI *  fE ,F
 	Field3D_MPI  MPI_LFoutJ = 	( pthis )->MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp = 	( pthis )->MPI_fieldEtmp ;
 	Field3D_MPI  MPI_fieldEtmp1 = 	( pthis )->MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldEtmp2 = 	( pthis )->MPI_fieldEtmp2 ;
 	Field3D_MPI  MPI_fieldBtmp1 = 	( pthis )->MPI_fieldBtmp1 ;
 	Field3D_MPI  MPI_fieldPMLB = 	( pthis )->MPI_fieldPMLB ;
 	Field3D_MPI  MPI_fieldPMLE = 	( pthis )->MPI_fieldPMLE ;
@@ -2983,6 +4182,11 @@ void  init_global_particles (Particle_in_Cell_MPI *  pthis ,Field3D_MPI *  fE ,F
 	long  allzmax = 	( pthis )->allzmax ;
 	double  use_pml_sigma_max = 	( pthis )->use_pml_sigma_max ;
 	double  dt = 	( pthis )->dt ;
+	int  o_N_l = 	( pthis )->o_N_l ;
+	int  o_N_M = 	( pthis )->o_N_M ;
+	double *  o_pmass = 	( pthis )->o_pmass ;
+	double *  o_pcharge = 	( pthis )->o_pcharge ;
+	int *  o_particle_type = 	( pthis )->o_particle_type ;
 	init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldE ) , fE );
 	init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldB ) , fE );
 	init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldE_ext ) , fE );
@@ -2990,10 +4194,18 @@ void  init_global_particles (Particle_in_Cell_MPI *  pthis ,Field3D_MPI *  fE ,F
 	init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldE_filter ) , fE );
 	init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldB_filter ) , fE );
 	init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldEtmp ) , fE );
-(	( pthis )->use_pml_abc_dir = pml_abc_dir);
+	init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldEtmp2 ) , fE );
+(	( pthis )->o_particle_type = particle_types);
+	int  use_small_ts = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_spec ) ; (i = 	(  i + 1 )))
+	{
+(use_small_ts = 	(  use_small_ts + (particle_types)[i] ));
+}}(	( pthis )->use_pml_abc_dir = pml_abc_dir);
 (	( pthis )->use_pml_level = pml_level);
 (	( pthis )->use_pml_sigma_max = pml_sigma_max);
-	if (  use_pml_abc_dir  ){  
+	if (  pml_abc_dir  ){  
 			init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldPMLB ) , fE );
 	init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldPMLE ) , fE );
 	blas_yiszero_Field3D_MPI ( 	& ( 	( pthis )->MPI_fieldPMLB ) , 	& ( 	( pthis )->MPI_fieldPMLB ) );
@@ -3006,7 +4218,7 @@ void  init_global_particles (Particle_in_Cell_MPI *  pthis ,Field3D_MPI *  fE ,F
 		0;
 
 	 }
-	if (  	(  USE_FILTER == 2 )  ){  
+	if (  	(  	(  USE_FILTER == 2 ) || use_small_ts )  ){  
 			init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldEtmp1 ) , fE );
 	init_Field3D_MPI_from ( 	& ( 	( pthis )->MPI_fieldBtmp1 ) , fE );
 
@@ -3044,8 +4256,8 @@ void  init_global_particles (Particle_in_Cell_MPI *  pthis ,Field3D_MPI *  fE ,F
 
 	 }
 	if (  USE_INIT_EXT_EB  ){  
-			init_external_field3d_E ( 	& ( 	( pthis )->MPI_fieldE_ext ) );
-	init_external_field3d_B ( 	& ( 	( pthis )->MPI_fieldB_ext ) );
+			init_external_field3d_E_2d_extend ( 	& ( 	( pthis )->MPI_fieldE_ext ) , reduce_dim , r_x_rat , r_y_rat , r_z_rat );
+	init_external_field3d_B_2d_extend ( 	& ( 	( pthis )->MPI_fieldB_ext ) , reduce_dim , 	(  r_y_rat * r_z_rat ) , 	(  r_x_rat * r_z_rat ) , 	(  r_x_rat * r_y_rat ) );
 	sync_main_data_h2d ( 	& ( 	( pthis )->MPI_fieldE_ext ) );
 	sync_main_data_h2d ( 	& ( 	( pthis )->MPI_fieldB_ext ) );
 
@@ -3054,8 +4266,8 @@ void  init_global_particles (Particle_in_Cell_MPI *  pthis ,Field3D_MPI *  fE ,F
 
 	 }
 	if (  USE_INIT_EB0  ){  
-			init_external_field3d_E0 ( 	& ( 	( pthis )->MPI_fieldE ) );
-	init_external_field3d_B0 ( 	& ( 	( pthis )->MPI_fieldB ) );
+			init_external_field3d_E0_2d_extend_rand ( 	& ( 	( pthis )->MPI_fieldE ) , reduce_dim , r_x_rat , r_y_rat , r_z_rat , random_rate );
+	init_external_field3d_B0_2d_extend_rand ( 	& ( 	( pthis )->MPI_fieldB ) , reduce_dim , 	(  r_y_rat * r_z_rat ) , 	(  r_x_rat * r_z_rat ) , 	(  r_x_rat * r_y_rat ) , random_rate );
 
 	}else{
 			test_set_mainland ( 	& ( pthis->MPI_fieldB ) , 0.00000000000000000e+00 );

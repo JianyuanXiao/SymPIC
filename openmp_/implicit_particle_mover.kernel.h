@@ -1,0 +1,4 @@
+void  openmp_split_pass_xyzE_particle_scmc_kernel (int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,int  N_l ,int  N_M ,int  push_J ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  openmp_split_pass_xyzE_particle_push_r_scmc_kernel (int *  xyzw ,double *  cu_cache ,int *  cu_xyzw ,double *  fieldE ,double *  fieldB ,double *  FoutJ ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  numvec ,int  num_ele ,long  grid_cache_len ,long  cu_cache_length ,double  Mass0 ,double  Charge0 ,double  Deltat ,double  DELTA_X ,double  DELTA_Y ,double  DELTA_Z ,int  N_l ,int  N_M ,int  push_J ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;

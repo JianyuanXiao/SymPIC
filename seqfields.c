@@ -5,6 +5,8 @@
 	#ifndef   NCSPIC_SEQ_FIELD    
 		#include <mpi.h>
 
+#define PS_MPI_CHAR MPI_CHAR
+
 #define PS_MPI_INT MPI_INT
 
 #define PS_MPI_DOUBLE MPI_DOUBLE
@@ -49,7 +51,7 @@ typedef struct { 	void *  pe ;
 	int  ovlp ;
 	int  num_ele ;
 	int  CD_type ;
-	void *   sync_layer_pscmc  [NUM_SYNC_LAYER];	void *   swap_layer_pscmc  [NUM_SYNC_LAYER];	void *   sync_kernels  [NUM_SYNC_KERNEL];	void *   fdtd_kernels  [NUM_FDTD_KERNEL];	void *   dm_kernels  [1];	void *   geo_yeefdtd_kernels  [1];	void *   geo_yeefdtd_rect_kernels  [1];	void *   yee_abc_kernels  [8];	void *   yee_pec_kernels  [8];	void *   yee_damp_kernels  [8];	void *  rdcd ;
+	void *   sync_layer_pscmc  [NUM_SYNC_LAYER];	void *   swap_layer_pscmc  [NUM_SYNC_LAYER];	void *   sync_kernels  [NUM_SYNC_KERNEL];	void *   fdtd_kernels  [NUM_FDTD_KERNEL];	void *   dm_kernels  [3];	void *   dmbihamt_kernels  [7];	void *   geo_yeefdtd_kernels  [2];	void *   geo_yeefdtd_rect_kernels  [1];	void *   hydroA_kernels  [8];	void *   yee_abc_kernels  [8];	void *   yee_pec_kernels  [8];	void *   yee_damp_kernels  [8];	void *   yee_setfix_kernels  [8];	void *  rdcd ;
 	double *  rdcd_host ;
 	void *  cur_rankx_pscmc ;
 	void *  cur_ranky_pscmc ;
@@ -70,6 +72,7 @@ typedef struct { 	void *  pe ;
 	double  delta_y ;
 	double  delta_z ;
 	void *  blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel ;
@@ -88,7 +91,7 @@ typedef struct { 	void *  pe ;
 	Field3D_Seq *  pFoutJ ;
 	Field3D_Seq *  pLFoutJ ;
 	Field3D_Seq *  pFoutEN ;
-	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [8];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
+	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [9];	void *   implicit_kernel  [2];	void *   rel_1st_kernel  [2];	void *   krook_collision_test_kernel  [2];	void *   nonrel_test_kernel  [18];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel ;
 	void *  move_back_kernel_kernel ;
 	double  Mass ;
@@ -99,6 +102,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_kernel ;
 	void *  split_pass_y_kernel ;
 	void *  split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel ;
@@ -109,12 +115,18 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel ;
 	void *  calculate_rho_kernel ;
@@ -141,6 +153,7 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp ;
 	Field3D_MPI  MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldEtmp2 ;
 	Field3D_MPI  MPI_fieldBtmp1 ;
 	Field3D_MPI  MPI_fieldPMLB ;
 	Field3D_MPI  MPI_fieldPMLE ;
@@ -160,6 +173,11 @@ typedef struct { 	void *  pe ;
 	long  allzmax ;
 	double  use_pml_sigma_max ;
 	double  dt ;
+	int  o_N_l ;
+	int  o_N_M ;
+	double *  o_pmass ;
+	double *  o_pcharge ;
+	int *  o_particle_type ;
 } Particle_in_Cell_MPI;
 	#ifndef   LINEAR_OPERATOR_PICUS_001    
 		
@@ -183,12 +201,30 @@ typedef struct { 	Field3D_MPI *  r1 ;
 	void *  fv ;
 	int  zmax ;
 	double  solve_err ;
-} bicg_space;
+} bicg_space;typedef struct { 	bicg_space  bs ;
+	linear_operator_mpi  oscc ;
+	Field3D_MPI *  x0 ;
+	Field3D_MPI *  oscc_x0 ;
+	Field3D_MPI *  res_tmp ;
+	void *  fv ;
+	void *   p_vfv  [5];	int  newton_zmax ;
+	int  zmax ;
+	double  solve_err ;
+	double  newton_solve_err ;
+	double  epsl ;
+} jfnk_newton_space;
 	#else
 		
 	 #endif
 #include "c_/c_pscmc_inc.h"
 #include "openmp_/openmp_pscmc_inc.h"
+#include "c_/hydro_A.kernel_inc.h"
+#include "c_/implicit_particle_mover.kernel_inc.h"
+#include "c_/type3_georel.kernel_inc.h"
+#include "c_/inner_split_pass.kernel_inc.h"
+#include "c_/geo_particle_iter_mass.kernel_inc.h"
+#include "c_/geo_particle_iter.kernel_inc.h"
+#include "c_/rel_particle_iter.kernel_inc.h"
 #include "c_/yeefdtd.kernel_inc.h"
 #include "c_/mergefields.kernel_inc.h"
 #include "c_/miniblas.kernel_inc.h"
@@ -196,13 +232,18 @@ typedef struct { 	Field3D_MPI *  r1 ;
 #include "c_/move_back.kernel_inc.h"
 #include "c_/particle_iter.kernel_inc.h"
 #include "c_/mur_abc.kernel_inc.h"
+#include "c_/dmbihamt.kernel_inc.h"
 #include "c_/dm.kernel_inc.h"
 #include "c_/geo_yeefdtd_rect.kernel_inc.h"
 #include "c_/geo_yeefdtd.kernel_inc.h"
-#include "c_/geo_particle_iter_mass.kernel_inc.h"
-#include "c_/geo_particle_iter.kernel_inc.h"
-#include "c_/rel_particle_iter.kernel_inc.h"
 #include "c_yeefdtd.h"
+#include "openmp_/hydro_A.kernel_inc.h"
+#include "openmp_/implicit_particle_mover.kernel_inc.h"
+#include "openmp_/type3_georel.kernel_inc.h"
+#include "openmp_/inner_split_pass.kernel_inc.h"
+#include "openmp_/geo_particle_iter_mass.kernel_inc.h"
+#include "openmp_/geo_particle_iter.kernel_inc.h"
+#include "openmp_/rel_particle_iter.kernel_inc.h"
 #include "openmp_/yeefdtd.kernel_inc.h"
 #include "openmp_/mergefields.kernel_inc.h"
 #include "openmp_/miniblas.kernel_inc.h"
@@ -210,12 +251,10 @@ typedef struct { 	Field3D_MPI *  r1 ;
 #include "openmp_/move_back.kernel_inc.h"
 #include "openmp_/particle_iter.kernel_inc.h"
 #include "openmp_/mur_abc.kernel_inc.h"
+#include "openmp_/dmbihamt.kernel_inc.h"
 #include "openmp_/dm.kernel_inc.h"
 #include "openmp_/geo_yeefdtd_rect.kernel_inc.h"
 #include "openmp_/geo_yeefdtd.kernel_inc.h"
-#include "openmp_/geo_particle_iter_mass.kernel_inc.h"
-#include "openmp_/geo_particle_iter.kernel_inc.h"
-#include "openmp_/rel_particle_iter.kernel_inc.h"
 #include "openmp_yeefdtd.h"
 #include "seqfields.h"
 #include <stdio.h>
@@ -239,11 +278,14 @@ int  build_Field_compute_unit_from_seq_field (Field3D_Seq *  pthis ,Field3D_Seq 
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -265,6 +307,7 @@ int  build_Field_compute_unit_from_seq_field (Field3D_Seq *  pthis ,Field3D_Seq 
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -281,7 +324,6 @@ int  build_Field_compute_unit_from_seq_field (Field3D_Seq *  pthis ,Field3D_Seq 
 	fprintf ( stderr , "newnumele=%d numcu=%d\n" , new_num_ele , num_cu );
 ((pthis)[0] = (input_E)[0]);
 (	( pthis )->num_ele = new_num_ele);
-	alloc_Field3D_Seq ( pthis , 0 );
 	return  0 ;}
 int  build_Field_compute_unit_from_mpi_field (Field3D_MPI *  pthis ,Field3D_MPI *  input_E ){
 	Field3D_Seq *  data = 	( pthis )->data ;

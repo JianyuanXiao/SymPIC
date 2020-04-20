@@ -28,13 +28,19 @@ int  openmp_kgm_eqn_core_exec (openmp_kgm_eqn_core_struct *  kerstr ,long  scmc_
 	{
 	for ((xid = 0) ; 	(  xid < scmc_internal_g_xlen ) ; (xid = 	(  xid + 1 )))
 	{
-	openmp_kgm_eqn_core_scmc_kernel ( 	( kerstr )->outEB , 	( kerstr )->inEB , 	( kerstr )->xoffset , 	( kerstr )->yoffset , 	( kerstr )->zoffset , (	( kerstr )->y_cpu_core)[0] , (	( kerstr )->numvec)[0] , (	( kerstr )->XLEN)[0] , (	( kerstr )->YLEN)[0] , (	( kerstr )->ZLEN)[0] , (	( kerstr )->ovlp)[0] , (	( kerstr )->xblock)[0] , (	( kerstr )->yblock)[0] , (	( kerstr )->zblock)[0] , (	( kerstr )->num_ele)[0] , (	( kerstr )->DT)[0] , (	( kerstr )->M)[0] , (	( kerstr )->Q)[0] , (	( kerstr )->DX)[0] , (	( kerstr )->GEXT)[0] , (	( kerstr )->rfz0)[0] , (	( kerstr )->swap_input)[0] , yid , scmc_internal_g_ylen );
+	openmp_kgm_eqn_core_scmc_kernel ( 	( kerstr )->outEB , 	( kerstr )->inEB , 	( kerstr )->extA0 , 	( kerstr )->extA1 , 	( kerstr )->xoffset , 	( kerstr )->yoffset , 	( kerstr )->zoffset , (	( kerstr )->y_cpu_core)[0] , (	( kerstr )->numvec)[0] , (	( kerstr )->XLEN)[0] , (	( kerstr )->YLEN)[0] , (	( kerstr )->ZLEN)[0] , (	( kerstr )->ovlp)[0] , (	( kerstr )->xblock)[0] , (	( kerstr )->yblock)[0] , (	( kerstr )->zblock)[0] , (	( kerstr )->num_ele)[0] , (	( kerstr )->DT)[0] , (	( kerstr )->M)[0] , (	( kerstr )->Q)[0] , (	( kerstr )->DX)[0] , (	( kerstr )->GEXT)[0] , (	( kerstr )->rfz0)[0] , (	( kerstr )->g_beg)[0] , (	( kerstr )->swap_input)[0] , yid , scmc_internal_g_ylen );
 }}}	return  0 ;}
 int  openmp_kgm_eqn_core_scmc_set_parameter_outEB (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm ){
 (	( kerstr )->outEB = pm->d_data);
 }
 int  openmp_kgm_eqn_core_scmc_set_parameter_inEB (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm ){
 (	( kerstr )->inEB = pm->d_data);
+}
+int  openmp_kgm_eqn_core_scmc_set_parameter_extA0 (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm ){
+(	( kerstr )->extA0 = pm->d_data);
+}
+int  openmp_kgm_eqn_core_scmc_set_parameter_extA1 (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm ){
+(	( kerstr )->extA1 = pm->d_data);
 }
 int  openmp_kgm_eqn_core_scmc_set_parameter_xoffset (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm ){
 (	( kerstr )->xoffset = pm->d_data);
@@ -92,6 +98,9 @@ int  openmp_kgm_eqn_core_scmc_set_parameter_GEXT (openmp_kgm_eqn_core_struct *  
 }
 int  openmp_kgm_eqn_core_scmc_set_parameter_rfz0 (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm ){
 (	( kerstr )->rfz0 = pm->d_data);
+}
+int  openmp_kgm_eqn_core_scmc_set_parameter_g_beg (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm ){
+(	( kerstr )->g_beg = pm->d_data);
 }
 int  openmp_kgm_eqn_core_scmc_set_parameter_swap_input (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm ){
 (	( kerstr )->swap_input = pm->d_data);

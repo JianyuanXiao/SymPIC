@@ -374,6 +374,64 @@ int  openmp_split_pass_E_particle_scmc_set_parameter_DELTA_Z (openmp_split_pass_
 ;
 int  openmp_split_pass_E_particle_scmc_set_parameter_Deltat (openmp_split_pass_E_particle_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr )
+;
+void  openmp_split_pass_z_vlo_sg2_nopush_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_get_num_compute_units (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_get_xlen ()
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_exec (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_inoutput (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_xyzw (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_cache (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_xyzw (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_fieldE (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_fieldB (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_LFoutJ (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_FoutEN (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_XLEN (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_YLEN (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_ZLEN (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_ovlp (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_numvec (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_num_ele (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_grid_cache_len (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_cache_length (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_Mass (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_Charge (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_SPEC (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_NUM_SPEC (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_X (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_Y (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_Z (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_sg2_nopush_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_z_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_split_pass_z_vlo_sg2_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_z_vlo_sg2_small_grids_struct *  kerstr )
 ;
 void  openmp_split_pass_z_vlo_sg2_small_grids_get_struct_len (size_t *  len )
@@ -606,6 +664,64 @@ int  openmp_split_pass_z_small_grids_scmc_set_parameter_DELTA_Z (openmp_split_pa
 ;
 int  openmp_split_pass_z_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_z_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_split_pass_z_vlo_nopush_init (openmp_pscmc_env *  pe ,openmp_split_pass_z_vlo_nopush_struct *  kerstr )
+;
+void  openmp_split_pass_z_vlo_nopush_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_z_vlo_nopush_get_num_compute_units (openmp_split_pass_z_vlo_nopush_struct *  kerstr )
+;
+int  openmp_split_pass_z_vlo_nopush_get_xlen ()
+;
+int  openmp_split_pass_z_vlo_nopush_exec (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_inoutput (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_xyzw (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_cu_cache (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_cu_xyzw (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_fieldE (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_fieldB (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_FoutJ (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_FoutEN (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_XLEN (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_YLEN (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_ZLEN (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_ovlp (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_numvec (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_num_ele (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_grid_cache_len (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_cu_cache_length (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_Mass (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_Charge (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_SPEC (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_NUM_SPEC (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_DELTA_X (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_DELTA_Y (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_DELTA_Z (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_vlo_nopush_scmc_set_parameter_Deltat (openmp_split_pass_z_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_split_pass_z_vlo_init (openmp_pscmc_env *  pe ,openmp_split_pass_z_vlo_struct *  kerstr )
 ;
 void  openmp_split_pass_z_vlo_get_struct_len (size_t *  len )
@@ -664,6 +780,64 @@ int  openmp_split_pass_z_vlo_scmc_set_parameter_DELTA_Z (openmp_split_pass_z_vlo
 ;
 int  openmp_split_pass_z_vlo_scmc_set_parameter_Deltat (openmp_split_pass_z_vlo_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_split_pass_z_nopush_init (openmp_pscmc_env *  pe ,openmp_split_pass_z_nopush_struct *  kerstr )
+;
+void  openmp_split_pass_z_nopush_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_z_nopush_get_num_compute_units (openmp_split_pass_z_nopush_struct *  kerstr )
+;
+int  openmp_split_pass_z_nopush_get_xlen ()
+;
+int  openmp_split_pass_z_nopush_exec (openmp_split_pass_z_nopush_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_inoutput (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_xyzw (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_cu_cache (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_cu_xyzw (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_fieldE (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_fieldB (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_FoutJ (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_FoutEN (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_XLEN (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_YLEN (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_ZLEN (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_ovlp (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_numvec (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_num_ele (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_grid_cache_len (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_cu_cache_length (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_Mass (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_Charge (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_SPEC (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_NUM_SPEC (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_DELTA_X (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_DELTA_Y (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_DELTA_Z (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_z_nopush_scmc_set_parameter_Deltat (openmp_split_pass_z_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_split_pass_z_init (openmp_pscmc_env *  pe ,openmp_split_pass_z_struct *  kerstr )
 ;
 void  openmp_split_pass_z_get_struct_len (size_t *  len )
@@ -721,6 +895,64 @@ int  openmp_split_pass_z_scmc_set_parameter_DELTA_Y (openmp_split_pass_z_struct 
 int  openmp_split_pass_z_scmc_set_parameter_DELTA_Z (openmp_split_pass_z_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
 int  openmp_split_pass_z_scmc_set_parameter_Deltat (openmp_split_pass_z_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr )
+;
+void  openmp_split_pass_y_vlo_sg2_nopush_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_get_num_compute_units (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_get_xlen ()
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_exec (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_inoutput (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_xyzw (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_cache (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_xyzw (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_fieldE (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_fieldB (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_LFoutJ (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_FoutEN (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_XLEN (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_YLEN (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_ZLEN (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_ovlp (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_numvec (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_num_ele (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_grid_cache_len (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_cache_length (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_Mass (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_Charge (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_SPEC (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_NUM_SPEC (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_X (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_Y (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_Z (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_sg2_nopush_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_y_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
 int  openmp_split_pass_y_vlo_sg2_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_y_vlo_sg2_small_grids_struct *  kerstr )
 ;
@@ -954,6 +1186,64 @@ int  openmp_split_pass_y_small_grids_scmc_set_parameter_DELTA_Z (openmp_split_pa
 ;
 int  openmp_split_pass_y_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_y_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_split_pass_y_vlo_nopush_init (openmp_pscmc_env *  pe ,openmp_split_pass_y_vlo_nopush_struct *  kerstr )
+;
+void  openmp_split_pass_y_vlo_nopush_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_y_vlo_nopush_get_num_compute_units (openmp_split_pass_y_vlo_nopush_struct *  kerstr )
+;
+int  openmp_split_pass_y_vlo_nopush_get_xlen ()
+;
+int  openmp_split_pass_y_vlo_nopush_exec (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_inoutput (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_xyzw (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_cu_cache (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_cu_xyzw (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_fieldE (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_fieldB (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_FoutJ (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_FoutEN (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_XLEN (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_YLEN (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_ZLEN (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_ovlp (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_numvec (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_num_ele (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_grid_cache_len (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_cu_cache_length (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_Mass (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_Charge (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_SPEC (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_NUM_SPEC (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_DELTA_X (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_DELTA_Y (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_DELTA_Z (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_vlo_nopush_scmc_set_parameter_Deltat (openmp_split_pass_y_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_split_pass_y_vlo_init (openmp_pscmc_env *  pe ,openmp_split_pass_y_vlo_struct *  kerstr )
 ;
 void  openmp_split_pass_y_vlo_get_struct_len (size_t *  len )
@@ -1012,6 +1302,64 @@ int  openmp_split_pass_y_vlo_scmc_set_parameter_DELTA_Z (openmp_split_pass_y_vlo
 ;
 int  openmp_split_pass_y_vlo_scmc_set_parameter_Deltat (openmp_split_pass_y_vlo_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_split_pass_y_nopush_init (openmp_pscmc_env *  pe ,openmp_split_pass_y_nopush_struct *  kerstr )
+;
+void  openmp_split_pass_y_nopush_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_y_nopush_get_num_compute_units (openmp_split_pass_y_nopush_struct *  kerstr )
+;
+int  openmp_split_pass_y_nopush_get_xlen ()
+;
+int  openmp_split_pass_y_nopush_exec (openmp_split_pass_y_nopush_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_inoutput (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_xyzw (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_cu_cache (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_cu_xyzw (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_fieldE (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_fieldB (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_FoutJ (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_FoutEN (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_XLEN (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_YLEN (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_ZLEN (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_ovlp (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_numvec (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_num_ele (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_grid_cache_len (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_cu_cache_length (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_Mass (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_Charge (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_SPEC (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_NUM_SPEC (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_DELTA_X (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_DELTA_Y (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_DELTA_Z (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_y_nopush_scmc_set_parameter_Deltat (openmp_split_pass_y_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_split_pass_y_init (openmp_pscmc_env *  pe ,openmp_split_pass_y_struct *  kerstr )
 ;
 void  openmp_split_pass_y_get_struct_len (size_t *  len )
@@ -1069,6 +1417,64 @@ int  openmp_split_pass_y_scmc_set_parameter_DELTA_Y (openmp_split_pass_y_struct 
 int  openmp_split_pass_y_scmc_set_parameter_DELTA_Z (openmp_split_pass_y_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
 int  openmp_split_pass_y_scmc_set_parameter_Deltat (openmp_split_pass_y_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr )
+;
+void  openmp_split_pass_x_vlo_sg2_nopush_small_grids_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_get_num_compute_units (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_get_xlen ()
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_exec (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_inoutput (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_xyzw (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_cache (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_xyzw (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_fieldE (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_fieldB (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_LFoutJ (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_FoutEN (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_XLEN (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_YLEN (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_ZLEN (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_ovlp (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_numvec (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_num_ele (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_grid_cache_len (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_cu_cache_length (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_Mass (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_Charge (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_SPEC (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_NUM_SPEC (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_X (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_Y (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_DELTA_Z (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_sg2_nopush_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_x_vlo_sg2_nopush_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
 int  openmp_split_pass_x_vlo_sg2_small_grids_init (openmp_pscmc_env *  pe ,openmp_split_pass_x_vlo_sg2_small_grids_struct *  kerstr )
 ;
@@ -1302,6 +1708,64 @@ int  openmp_split_pass_x_small_grids_scmc_set_parameter_DELTA_Z (openmp_split_pa
 ;
 int  openmp_split_pass_x_small_grids_scmc_set_parameter_Deltat (openmp_split_pass_x_small_grids_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_split_pass_x_vlo_nopush_init (openmp_pscmc_env *  pe ,openmp_split_pass_x_vlo_nopush_struct *  kerstr )
+;
+void  openmp_split_pass_x_vlo_nopush_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_x_vlo_nopush_get_num_compute_units (openmp_split_pass_x_vlo_nopush_struct *  kerstr )
+;
+int  openmp_split_pass_x_vlo_nopush_get_xlen ()
+;
+int  openmp_split_pass_x_vlo_nopush_exec (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_inoutput (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_xyzw (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_cu_cache (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_cu_xyzw (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_fieldE (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_fieldB (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_FoutJ (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_FoutEN (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_XLEN (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_YLEN (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_ZLEN (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_ovlp (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_numvec (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_num_ele (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_grid_cache_len (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_cu_cache_length (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_Mass (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_Charge (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_SPEC (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_NUM_SPEC (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_DELTA_X (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_DELTA_Y (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_DELTA_Z (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_vlo_nopush_scmc_set_parameter_Deltat (openmp_split_pass_x_vlo_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_split_pass_x_vlo_init (openmp_pscmc_env *  pe ,openmp_split_pass_x_vlo_struct *  kerstr )
 ;
 void  openmp_split_pass_x_vlo_get_struct_len (size_t *  len )
@@ -1359,6 +1823,64 @@ int  openmp_split_pass_x_vlo_scmc_set_parameter_DELTA_Y (openmp_split_pass_x_vlo
 int  openmp_split_pass_x_vlo_scmc_set_parameter_DELTA_Z (openmp_split_pass_x_vlo_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
 int  openmp_split_pass_x_vlo_scmc_set_parameter_Deltat (openmp_split_pass_x_vlo_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_init (openmp_pscmc_env *  pe ,openmp_split_pass_x_nopush_struct *  kerstr )
+;
+void  openmp_split_pass_x_nopush_get_struct_len (size_t *  len )
+;
+int  openmp_split_pass_x_nopush_get_num_compute_units (openmp_split_pass_x_nopush_struct *  kerstr )
+;
+int  openmp_split_pass_x_nopush_get_xlen ()
+;
+int  openmp_split_pass_x_nopush_exec (openmp_split_pass_x_nopush_struct *  kerstr ,long  scmc_internal_g_xlen ,long  scmc_internal_g_ylen )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_inoutput (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_xyzw (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_cu_cache (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_cu_xyzw (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_fieldE (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_fieldB (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_FoutJ (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_FoutEN (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_XLEN (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_YLEN (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_ZLEN (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_ovlp (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_numvec (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_num_ele (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_grid_cache_len (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_cu_cache_length (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_Mass (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_Charge (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_SPEC (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_NUM_SPEC (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_DELTA_X (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_DELTA_Y (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_DELTA_Z (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_split_pass_x_nopush_scmc_set_parameter_Deltat (openmp_split_pass_x_nopush_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
 int  openmp_split_pass_x_init (openmp_pscmc_env *  pe ,openmp_split_pass_x_struct *  kerstr )
 ;

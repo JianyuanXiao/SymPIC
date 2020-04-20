@@ -1,10 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include <math.h>
+#include <complex.h>
 #include <assert.h>
 	#ifndef   NCSPIC_SEQ_FIELD    
 		#include <mpi.h>
+
+#define PS_MPI_CHAR MPI_CHAR
 
 #define PS_MPI_INT MPI_INT
 
@@ -50,7 +54,7 @@ typedef struct { 	void *  pe ;
 	int  ovlp ;
 	int  num_ele ;
 	int  CD_type ;
-	void *   sync_layer_pscmc  [NUM_SYNC_LAYER];	void *   swap_layer_pscmc  [NUM_SYNC_LAYER];	void *   sync_kernels  [NUM_SYNC_KERNEL];	void *   fdtd_kernels  [NUM_FDTD_KERNEL];	void *   dm_kernels  [1];	void *   geo_yeefdtd_kernels  [1];	void *   geo_yeefdtd_rect_kernels  [1];	void *   yee_abc_kernels  [8];	void *   yee_pec_kernels  [8];	void *   yee_damp_kernels  [8];	void *  rdcd ;
+	void *   sync_layer_pscmc  [NUM_SYNC_LAYER];	void *   swap_layer_pscmc  [NUM_SYNC_LAYER];	void *   sync_kernels  [NUM_SYNC_KERNEL];	void *   fdtd_kernels  [NUM_FDTD_KERNEL];	void *   dm_kernels  [3];	void *   dmbihamt_kernels  [7];	void *   geo_yeefdtd_kernels  [2];	void *   geo_yeefdtd_rect_kernels  [1];	void *   hydroA_kernels  [8];	void *   yee_abc_kernels  [8];	void *   yee_pec_kernels  [8];	void *   yee_damp_kernels  [8];	void *   yee_setfix_kernels  [8];	void *  rdcd ;
 	double *  rdcd_host ;
 	void *  cur_rankx_pscmc ;
 	void *  cur_ranky_pscmc ;
@@ -71,6 +75,7 @@ typedef struct { 	void *  pe ;
 	double  delta_y ;
 	double  delta_z ;
 	void *  blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel ;
@@ -89,7 +94,7 @@ typedef struct { 	void *  pe ;
 	Field3D_Seq *  pFoutJ ;
 	Field3D_Seq *  pLFoutJ ;
 	Field3D_Seq *  pFoutEN ;
-	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [8];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
+	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [9];	void *   implicit_kernel  [2];	void *   rel_1st_kernel  [2];	void *   krook_collision_test_kernel  [2];	void *   nonrel_test_kernel  [18];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel ;
 	void *  move_back_kernel_kernel ;
 	double  Mass ;
@@ -100,6 +105,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_kernel ;
 	void *  split_pass_y_kernel ;
 	void *  split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel ;
@@ -110,12 +118,18 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel ;
 	void *  calculate_rho_kernel ;
@@ -142,6 +156,7 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp ;
 	Field3D_MPI  MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldEtmp2 ;
 	Field3D_MPI  MPI_fieldBtmp1 ;
 	Field3D_MPI  MPI_fieldPMLB ;
 	Field3D_MPI  MPI_fieldPMLE ;
@@ -161,6 +176,11 @@ typedef struct { 	void *  pe ;
 	long  allzmax ;
 	double  use_pml_sigma_max ;
 	double  dt ;
+	int  o_N_l ;
+	int  o_N_M ;
+	double *  o_pmass ;
+	double *  o_pcharge ;
+	int *  o_particle_type ;
 } Particle_in_Cell_MPI;
 	#ifndef   LINEAR_OPERATOR_PICUS_001    
 		
@@ -184,12 +204,30 @@ typedef struct { 	Field3D_MPI *  r1 ;
 	void *  fv ;
 	int  zmax ;
 	double  solve_err ;
-} bicg_space;
+} bicg_space;typedef struct { 	bicg_space  bs ;
+	linear_operator_mpi  oscc ;
+	Field3D_MPI *  x0 ;
+	Field3D_MPI *  oscc_x0 ;
+	Field3D_MPI *  res_tmp ;
+	void *  fv ;
+	void *   p_vfv  [5];	int  newton_zmax ;
+	int  zmax ;
+	double  solve_err ;
+	double  newton_solve_err ;
+	double  epsl ;
+} jfnk_newton_space;
 	#else
 		
 	 #endif
 #include "c_/c_pscmc_inc.h"
 #include "openmp_/openmp_pscmc_inc.h"
+#include "c_/hydro_A.kernel_inc.h"
+#include "c_/implicit_particle_mover.kernel_inc.h"
+#include "c_/type3_georel.kernel_inc.h"
+#include "c_/inner_split_pass.kernel_inc.h"
+#include "c_/geo_particle_iter_mass.kernel_inc.h"
+#include "c_/geo_particle_iter.kernel_inc.h"
+#include "c_/rel_particle_iter.kernel_inc.h"
 #include "c_/yeefdtd.kernel_inc.h"
 #include "c_/mergefields.kernel_inc.h"
 #include "c_/miniblas.kernel_inc.h"
@@ -197,13 +235,18 @@ typedef struct { 	Field3D_MPI *  r1 ;
 #include "c_/move_back.kernel_inc.h"
 #include "c_/particle_iter.kernel_inc.h"
 #include "c_/mur_abc.kernel_inc.h"
+#include "c_/dmbihamt.kernel_inc.h"
 #include "c_/dm.kernel_inc.h"
 #include "c_/geo_yeefdtd_rect.kernel_inc.h"
 #include "c_/geo_yeefdtd.kernel_inc.h"
-#include "c_/geo_particle_iter_mass.kernel_inc.h"
-#include "c_/geo_particle_iter.kernel_inc.h"
-#include "c_/rel_particle_iter.kernel_inc.h"
 #include "c_yeefdtd.h"
+#include "openmp_/hydro_A.kernel_inc.h"
+#include "openmp_/implicit_particle_mover.kernel_inc.h"
+#include "openmp_/type3_georel.kernel_inc.h"
+#include "openmp_/inner_split_pass.kernel_inc.h"
+#include "openmp_/geo_particle_iter_mass.kernel_inc.h"
+#include "openmp_/geo_particle_iter.kernel_inc.h"
+#include "openmp_/rel_particle_iter.kernel_inc.h"
 #include "openmp_/yeefdtd.kernel_inc.h"
 #include "openmp_/mergefields.kernel_inc.h"
 #include "openmp_/miniblas.kernel_inc.h"
@@ -211,12 +254,10 @@ typedef struct { 	Field3D_MPI *  r1 ;
 #include "openmp_/move_back.kernel_inc.h"
 #include "openmp_/particle_iter.kernel_inc.h"
 #include "openmp_/mur_abc.kernel_inc.h"
+#include "openmp_/dmbihamt.kernel_inc.h"
 #include "openmp_/dm.kernel_inc.h"
 #include "openmp_/geo_yeefdtd_rect.kernel_inc.h"
 #include "openmp_/geo_yeefdtd.kernel_inc.h"
-#include "openmp_/geo_particle_iter_mass.kernel_inc.h"
-#include "openmp_/geo_particle_iter.kernel_inc.h"
-#include "openmp_/rel_particle_iter.kernel_inc.h"
 #include "openmp_yeefdtd.h"
 #include "space_filling_curve.h"
 #include "init_adjoint_relation.h"
@@ -267,6 +308,109 @@ void  reinit_Field3D_MPI (Field3D_MPI *  pthis ,int  new_num_ele ){
 	Field3D_Seq *  tmpdata = pthis->data ;
 (	( pthis )->data = 	malloc ( 	(  sizeof(Field3D_Seq ) * num_runtime ) ));
 (	( pthis )->rqst = 	malloc ( 	(  sizeof(PS_MPI_Request * ) * num_runtime ) ));
+	if (  new_num_ele  ){  
+		{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < 3 ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < 3 ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 3 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	void *  pe = 	( tmpdata )->pe ;
+	long  xlen = 	( tmpdata )->xlen ;
+	long  ylen = 	( tmpdata )->ylen ;
+	long  zlen = 	( tmpdata )->zlen ;
+	long  xblock = 	( tmpdata )->xblock ;
+	long  yblock = 	( tmpdata )->yblock ;
+	long  zblock = 	( tmpdata )->zblock ;
+	long  numvec = 	( tmpdata )->numvec ;
+	long  x_num_thread_block = 	( tmpdata )->x_num_thread_block ;
+	long  y_num_thread_block = 	( tmpdata )->y_num_thread_block ;
+	long  z_num_thread_block = 	( tmpdata )->z_num_thread_block ;
+	int  ovlp = 	( tmpdata )->ovlp ;
+	int  num_ele = 	( tmpdata )->num_ele ;
+	int  CD_type = 	( tmpdata )->CD_type ;
+	void * *  sync_layer_pscmc = 	( tmpdata )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( tmpdata )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( tmpdata )->sync_kernels ;
+	void * *  fdtd_kernels = 	( tmpdata )->fdtd_kernels ;
+	void * *  dm_kernels = 	( tmpdata )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( tmpdata )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( tmpdata )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( tmpdata )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( tmpdata )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( tmpdata )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( tmpdata )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( tmpdata )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( tmpdata )->yee_setfix_kernels ;
+	void *  rdcd = 	( tmpdata )->rdcd ;
+	double *  rdcd_host = 	( tmpdata )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( tmpdata )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( tmpdata )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( tmpdata )->cur_rankz_pscmc ;
+	void *  xoffset = 	( tmpdata )->xoffset ;
+	void *  yoffset = 	( tmpdata )->yoffset ;
+	void *  zoffset = 	( tmpdata )->zoffset ;
+	long *  global_x_offset = 	( tmpdata )->global_x_offset ;
+	long *  global_y_offset = 	( tmpdata )->global_y_offset ;
+	long *  global_z_offset = 	( tmpdata )->global_z_offset ;
+	long *  global_id = 	( tmpdata )->global_id ;
+	long  global_pid = 	( tmpdata )->global_pid ;
+	long *  adj_ids = 	( tmpdata )->adj_ids ;
+	long *  adj_processes = 	( tmpdata )->adj_processes ;
+	long *  adj_local_tid = 	( tmpdata )->adj_local_tid ;
+	void *  main_data = 	( tmpdata )->main_data ;
+	double  delta_x = 	( tmpdata )->delta_x ;
+	double  delta_y = 	( tmpdata )->delta_y ;
+	double  delta_z = 	( tmpdata )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( tmpdata )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( tmpdata )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( tmpdata )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( tmpdata )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( tmpdata )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( tmpdata )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( tmpdata )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( tmpdata )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( tmpdata )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( tmpdata )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( tmpdata )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( tmpdata )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( tmpdata )->blas_sum_kernel ;
+	long  rxlen = ovlp ;
+	long  rylen = ovlp ;
+	long  rzlen = ovlp ;
+	if (  	(  xyzx == 1 )  ){  
+		(rxlen = xlen);
+
+	}else{
+		0;
+
+	 }
+	if (  	(  xyzy == 1 )  ){  
+		(rylen = ylen);
+
+	}else{
+		0;
+
+	 }
+	if (  	(  xyzz == 1 )  ){  
+		(rzlen = zlen);
+
+	}else{
+		0;
+
+	 }
+((pthis->sync_layer_len)[	(  0 + 	(  1 * 	(  xyzx + 	(  3 * 	(  xyzy + 	(  3 * xyzz ) ) ) ) ) )] = 	(  rxlen * 	(  rylen * 	(  rzlen * new_num_ele ) ) ));
+}}}}}}
+	}else{
+		0;
+
+	 }
 {
 	long  i ;
 	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
@@ -299,7 +443,7 @@ void  reinit_Field3D_MPI (Field3D_MPI *  pthis ,int  new_num_ele ){
 	memcpy ( 	( 	(  pthis->data + i ) )->adj_local_tid , 	( 	(  tmpdata + i ) )->adj_local_tid , 	(  sizeof(long ) * 	(  NUM_SYNC_LAYER * numvec ) ) );
 }((pthis->rqst)[i] = 	malloc ( 	(  sizeof(PS_MPI_Request ) * 	(  NUM_SYNC_LAYER * pthis->data->numvec ) ) ));
 }}}}
-int  init_Field3D_MPI_ALL (Field3D_MPI *  pthis ,Field3D_Seq *  sample_field ,long  n_hilbert ,int  ndim ,int  adjoint_type ,long *  tids ,long *  local_tid_array ,int *  cd_types ,int *  dev_nums ,long  num_runtime ,PS_MPI_Comm  comm ,long  cur_rank ,long  num_mpi_process ){
+int  init_Field3D_MPI_ALL (Field3D_MPI *  pthis ,Field3D_Seq *  sample_field ,long  n_hilbert ,int  ndim ,int  adjoint_type ,long *  tids ,int64_t *  local_tid_array ,int *  cd_types ,int *  dev_nums ,long  num_runtime ,PS_MPI_Comm  comm ,long  cur_rank ,long  num_mpi_process ){
 (	( pthis )->num_runtime = num_runtime);
 (	( pthis )->comm = comm);
 (	( pthis )->cur_rank = cur_rank);
@@ -423,11 +567,14 @@ int  init_Field3D_MPI_ALL (Field3D_MPI *  pthis ,Field3D_Seq *  sample_field ,lo
 	void * *  sync_kernels = 	( sample_field )->sync_kernels ;
 	void * *  fdtd_kernels = 	( sample_field )->fdtd_kernels ;
 	void * *  dm_kernels = 	( sample_field )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( sample_field )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( sample_field )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( sample_field )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( sample_field )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( sample_field )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( sample_field )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( sample_field )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( sample_field )->yee_setfix_kernels ;
 	void *  rdcd = 	( sample_field )->rdcd ;
 	double *  rdcd_host = 	( sample_field )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( sample_field )->cur_rankx_pscmc ;
@@ -449,6 +596,7 @@ int  init_Field3D_MPI_ALL (Field3D_MPI *  pthis ,Field3D_Seq *  sample_field ,lo
 	double  delta_y = 	( sample_field )->delta_y ;
 	double  delta_z = 	( sample_field )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( sample_field )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( sample_field )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( sample_field )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( sample_field )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( sample_field )->blas_get_ITG_Potential_kernel ;
@@ -520,7 +668,7 @@ int  delete_Field3D_MPI (Field3D_MPI *  pthis ){
 	{
 	delete_Field3D_Seq ( 	(  data + i ) );
 }	return  0 ;}
-void  init_external_field3d_E (Field3D_MPI *  pthis ){
+void  init_external_field3d_E_2d_extend_rand (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ,double  random_rate ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -531,6 +679,12 @@ void  init_external_field3d_E (Field3D_MPI *  pthis ){
 	One_Particle_Collection *  particles = 	( pthis )->particles ;
 	int  num_spec = 	( pthis )->num_spec ;
 	double  damp_vars = 	( pthis )->damp_vars ;
+	int  reduce_x = 	(  reduce_dim == 1 ) ;
+	int  reduce_y = 	(  reduce_dim == 2 ) ;
+	int  reduce_z = 	(  reduce_dim == 3 ) ;
+	double   r_r_r  [3];((r_r_r)[0] = r_x_rat);
+((r_r_r)[1] = r_y_rat);
+((r_r_r)[2] = r_z_rat);
 	char *  nm = "E_file" ;
 	FILE *  fp = 	fopen ( nm , "r" ) ;
 	if (  fp  ){  
@@ -562,11 +716,14 @@ void  init_external_field3d_E (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -588,6 +745,7 @@ void  init_external_field3d_E (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -599,8 +757,7 @@ void  init_external_field3d_E (Field3D_MPI *  pthis ){
 	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
 	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
 	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
-	if (  1  ){  
-		{
+{
 	long  j ;
 	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
 	{
@@ -626,41 +783,38 @@ void  init_external_field3d_E (Field3D_MPI *  pthis ){
 	long  imax = (	( pgid )->pdimarray)[1] ;
 	long  jmax = (	( pgid )->pdimarray)[2] ;
 	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * xlen ) );
-}}}}}}}}
-	}else{
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  ((reduce_x)?(0):(is)) + 	(  ((reduce_x)?(1):(imax)) * 	(  ((reduce_y)?(0):(js)) + 	(  ((reduce_y)?(1):(jmax)) * ((reduce_z)?(0):(ks)) ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * ((reduce_x)?(1):(xlen)) ) );
+	if (  reduce_dim  ){  
 		{
-	long  j ;
-	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	long  g ;
+	for ((g = 0) ; 	(  g < ((reduce_x)?(1):(xlen)) ) ; (g = 	(  g + 1 )))
 	{
 {
-	long  xyzz ;
-	for ((xyzz = 0) ; 	(  xyzz < 	(  zlen + 	(  2 * ovlp ) ) ) ; (xyzz = 	(  xyzz + 1 )))
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
 	{
-{
-	long  xyzy ;
-	for ((xyzy = 0) ; 	(  xyzy < 	(  ylen + 	(  2 * ovlp ) ) ) ; (xyzy = 	(  xyzy + 1 )))
-	{
-{
-	long  xyzx ;
-	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
-	{
-	long  is = 	(  (global_x_offset)[j] + 0 ) ;
-	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
-	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
-	assert ( 	(  	( pgid )->dim == 4 ) );
-	assert ( 	(  	( pgid )->version == 0 ) );
-	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
-	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
-	long  imax = (	( pgid )->pdimarray)[1] ;
-	long  jmax = (	( pgid )->pdimarray)[2] ;
-	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	- ( ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  	(  xyzy - ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  	(  xyzz - ovlp ) + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * 	(  xlen + 	(  2 * ovlp ) ) ) );
-}}}}}}}}
+	if (  	(  l < 3 )  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  (r_r_r)[l] * ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ));
+
+	}else{
+		0;
+
 	 }
-}}
+	if (  random_rate  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] * 	(  random_rate * 	rand01 ( 0 , 1 ) ) ) ));
+
+	}else{
+		0;
+
+	 }
+}}}}
+	}else{
+		0;
+
+	 }
+}}}}}}}}}}	GAPS_IO_DeleteDataInfo ( pgid );
+
 	}else{
 		{
 	long  i ;
@@ -685,11 +839,14 @@ void  init_external_field3d_E (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -711,6 +868,7 @@ void  init_external_field3d_E (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -749,7 +907,7 @@ void  init_external_field3d_E (Field3D_MPI *  pthis ){
 }}}}}}}}}}}}
 	 }
 }
-void  init_external_field3d_B (Field3D_MPI *  pthis ){
+void  init_external_field3d_E_2d_extend (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -760,6 +918,36 @@ void  init_external_field3d_B (Field3D_MPI *  pthis ){
 	One_Particle_Collection *  particles = 	( pthis )->particles ;
 	int  num_spec = 	( pthis )->num_spec ;
 	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_E_2d_extend_rand ( pthis , reduce_dim , r_x_rat , r_y_rat , r_z_rat , 0 ) ;}
+void  init_external_field3d_E (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_E_2d_extend ( pthis , 0 , 1 , 1 , 1 ) ;}
+void  init_external_field3d_B_2d_extend_rand (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ,double  random_rate ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	int  reduce_x = 	(  reduce_dim == 1 ) ;
+	int  reduce_y = 	(  reduce_dim == 2 ) ;
+	int  reduce_z = 	(  reduce_dim == 3 ) ;
+	double   r_r_r  [3];((r_r_r)[0] = r_x_rat);
+((r_r_r)[1] = r_y_rat);
+((r_r_r)[2] = r_z_rat);
 	char *  nm = "B_file" ;
 	FILE *  fp = 	fopen ( nm , "r" ) ;
 	if (  fp  ){  
@@ -791,11 +979,14 @@ void  init_external_field3d_B (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -817,6 +1008,7 @@ void  init_external_field3d_B (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -828,8 +1020,7 @@ void  init_external_field3d_B (Field3D_MPI *  pthis ){
 	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
 	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
 	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
-	if (  1  ){  
-		{
+{
 	long  j ;
 	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
 	{
@@ -855,41 +1046,38 @@ void  init_external_field3d_B (Field3D_MPI *  pthis ){
 	long  imax = (	( pgid )->pdimarray)[1] ;
 	long  jmax = (	( pgid )->pdimarray)[2] ;
 	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * xlen ) );
-}}}}}}}}
-	}else{
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  ((reduce_x)?(0):(is)) + 	(  ((reduce_x)?(1):(imax)) * 	(  ((reduce_y)?(0):(js)) + 	(  ((reduce_y)?(1):(jmax)) * ((reduce_z)?(0):(ks)) ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * ((reduce_x)?(1):(xlen)) ) );
+	if (  reduce_dim  ){  
 		{
-	long  j ;
-	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	long  g ;
+	for ((g = 0) ; 	(  g < ((reduce_x)?(1):(xlen)) ) ; (g = 	(  g + 1 )))
 	{
 {
-	long  xyzz ;
-	for ((xyzz = 0) ; 	(  xyzz < 	(  zlen + 	(  2 * ovlp ) ) ) ; (xyzz = 	(  xyzz + 1 )))
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
 	{
-{
-	long  xyzy ;
-	for ((xyzy = 0) ; 	(  xyzy < 	(  ylen + 	(  2 * ovlp ) ) ) ; (xyzy = 	(  xyzy + 1 )))
-	{
-{
-	long  xyzx ;
-	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
-	{
-	long  is = 	(  (global_x_offset)[j] + 0 ) ;
-	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
-	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
-	assert ( 	(  	( pgid )->dim == 4 ) );
-	assert ( 	(  	( pgid )->version == 0 ) );
-	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
-	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
-	long  imax = (	( pgid )->pdimarray)[1] ;
-	long  jmax = (	( pgid )->pdimarray)[2] ;
-	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	- ( ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  	(  xyzy - ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  	(  xyzz - ovlp ) + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * 	(  xlen + 	(  2 * ovlp ) ) ) );
-}}}}}}}}
+	if (  	(  l < 3 )  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  (r_r_r)[l] * ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ));
+
+	}else{
+		0;
+
 	 }
-}}
+	if (  random_rate  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] * 	(  random_rate * 	rand01 ( 0 , 1 ) ) ) ));
+
+	}else{
+		0;
+
+	 }
+}}}}
+	}else{
+		0;
+
+	 }
+}}}}}}}}}}	GAPS_IO_DeleteDataInfo ( pgid );
+
 	}else{
 		{
 	long  i ;
@@ -914,11 +1102,14 @@ void  init_external_field3d_B (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -940,6 +1131,7 @@ void  init_external_field3d_B (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -978,7 +1170,7 @@ void  init_external_field3d_B (Field3D_MPI *  pthis ){
 }}}}}}}}}}}}
 	 }
 }
-void  init_external_field3d_E0 (Field3D_MPI *  pthis ){
+void  init_external_field3d_B_2d_extend (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -989,6 +1181,36 @@ void  init_external_field3d_E0 (Field3D_MPI *  pthis ){
 	One_Particle_Collection *  particles = 	( pthis )->particles ;
 	int  num_spec = 	( pthis )->num_spec ;
 	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_B_2d_extend_rand ( pthis , reduce_dim , r_x_rat , r_y_rat , r_z_rat , 0 ) ;}
+void  init_external_field3d_B (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_B_2d_extend ( pthis , 0 , 1 , 1 , 1 ) ;}
+void  init_external_field3d_E0_2d_extend_rand (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ,double  random_rate ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	int  reduce_x = 	(  reduce_dim == 1 ) ;
+	int  reduce_y = 	(  reduce_dim == 2 ) ;
+	int  reduce_z = 	(  reduce_dim == 3 ) ;
+	double   r_r_r  [3];((r_r_r)[0] = r_x_rat);
+((r_r_r)[1] = r_y_rat);
+((r_r_r)[2] = r_z_rat);
 	char *  nm = "E0_file" ;
 	FILE *  fp = 	fopen ( nm , "r" ) ;
 	if (  fp  ){  
@@ -1020,11 +1242,14 @@ void  init_external_field3d_E0 (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -1046,6 +1271,7 @@ void  init_external_field3d_E0 (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -1057,8 +1283,7 @@ void  init_external_field3d_E0 (Field3D_MPI *  pthis ){
 	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
 	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
 	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
-	if (  1  ){  
-		{
+{
 	long  j ;
 	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
 	{
@@ -1084,41 +1309,38 @@ void  init_external_field3d_E0 (Field3D_MPI *  pthis ){
 	long  imax = (	( pgid )->pdimarray)[1] ;
 	long  jmax = (	( pgid )->pdimarray)[2] ;
 	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * xlen ) );
-}}}}}}}}
-	}else{
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  ((reduce_x)?(0):(is)) + 	(  ((reduce_x)?(1):(imax)) * 	(  ((reduce_y)?(0):(js)) + 	(  ((reduce_y)?(1):(jmax)) * ((reduce_z)?(0):(ks)) ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * ((reduce_x)?(1):(xlen)) ) );
+	if (  reduce_dim  ){  
 		{
-	long  j ;
-	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	long  g ;
+	for ((g = 0) ; 	(  g < ((reduce_x)?(1):(xlen)) ) ; (g = 	(  g + 1 )))
 	{
 {
-	long  xyzz ;
-	for ((xyzz = 0) ; 	(  xyzz < 	(  zlen + 	(  2 * ovlp ) ) ) ; (xyzz = 	(  xyzz + 1 )))
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
 	{
-{
-	long  xyzy ;
-	for ((xyzy = 0) ; 	(  xyzy < 	(  ylen + 	(  2 * ovlp ) ) ) ; (xyzy = 	(  xyzy + 1 )))
-	{
-{
-	long  xyzx ;
-	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
-	{
-	long  is = 	(  (global_x_offset)[j] + 0 ) ;
-	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
-	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
-	assert ( 	(  	( pgid )->dim == 4 ) );
-	assert ( 	(  	( pgid )->version == 0 ) );
-	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
-	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
-	long  imax = (	( pgid )->pdimarray)[1] ;
-	long  jmax = (	( pgid )->pdimarray)[2] ;
-	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	- ( ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  	(  xyzy - ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  	(  xyzz - ovlp ) + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * 	(  xlen + 	(  2 * ovlp ) ) ) );
-}}}}}}}}
+	if (  	(  l < 3 )  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  (r_r_r)[l] * ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ));
+
+	}else{
+		0;
+
 	 }
-}}
+	if (  random_rate  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] * 	(  random_rate * 	rand01 ( 0 , 1 ) ) ) ));
+
+	}else{
+		0;
+
+	 }
+}}}}
+	}else{
+		0;
+
+	 }
+}}}}}}}}}}	GAPS_IO_DeleteDataInfo ( pgid );
+
 	}else{
 		{
 	long  i ;
@@ -1143,11 +1365,14 @@ void  init_external_field3d_E0 (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -1169,6 +1394,7 @@ void  init_external_field3d_E0 (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -1207,7 +1433,7 @@ void  init_external_field3d_E0 (Field3D_MPI *  pthis ){
 }}}}}}}}}}}}
 	 }
 }
-void  init_external_field3d_B0 (Field3D_MPI *  pthis ){
+void  init_external_field3d_E0_2d_extend (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -1218,6 +1444,36 @@ void  init_external_field3d_B0 (Field3D_MPI *  pthis ){
 	One_Particle_Collection *  particles = 	( pthis )->particles ;
 	int  num_spec = 	( pthis )->num_spec ;
 	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_E0_2d_extend_rand ( pthis , reduce_dim , r_x_rat , r_y_rat , r_z_rat , 0 ) ;}
+void  init_external_field3d_E0 (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_E0_2d_extend ( pthis , 0 , 1 , 1 , 1 ) ;}
+void  init_external_field3d_B0_2d_extend_rand (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ,double  random_rate ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	int  reduce_x = 	(  reduce_dim == 1 ) ;
+	int  reduce_y = 	(  reduce_dim == 2 ) ;
+	int  reduce_z = 	(  reduce_dim == 3 ) ;
+	double   r_r_r  [3];((r_r_r)[0] = r_x_rat);
+((r_r_r)[1] = r_y_rat);
+((r_r_r)[2] = r_z_rat);
 	char *  nm = "B0_file" ;
 	FILE *  fp = 	fopen ( nm , "r" ) ;
 	if (  fp  ){  
@@ -1249,11 +1505,14 @@ void  init_external_field3d_B0 (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -1275,6 +1534,7 @@ void  init_external_field3d_B0 (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -1286,8 +1546,7 @@ void  init_external_field3d_B0 (Field3D_MPI *  pthis ){
 	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
 	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
 	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
-	if (  1  ){  
-		{
+{
 	long  j ;
 	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
 	{
@@ -1313,41 +1572,38 @@ void  init_external_field3d_B0 (Field3D_MPI *  pthis ){
 	long  imax = (	( pgid )->pdimarray)[1] ;
 	long  jmax = (	( pgid )->pdimarray)[2] ;
 	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * xlen ) );
-}}}}}}}}
-	}else{
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  ((reduce_x)?(0):(is)) + 	(  ((reduce_x)?(1):(imax)) * 	(  ((reduce_y)?(0):(js)) + 	(  ((reduce_y)?(1):(jmax)) * ((reduce_z)?(0):(ks)) ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * ((reduce_x)?(1):(xlen)) ) );
+	if (  reduce_dim  ){  
 		{
-	long  j ;
-	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	long  g ;
+	for ((g = 0) ; 	(  g < ((reduce_x)?(1):(xlen)) ) ; (g = 	(  g + 1 )))
 	{
 {
-	long  xyzz ;
-	for ((xyzz = 0) ; 	(  xyzz < 	(  zlen + 	(  2 * ovlp ) ) ) ; (xyzz = 	(  xyzz + 1 )))
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
 	{
-{
-	long  xyzy ;
-	for ((xyzy = 0) ; 	(  xyzy < 	(  ylen + 	(  2 * ovlp ) ) ) ; (xyzy = 	(  xyzy + 1 )))
-	{
-{
-	long  xyzx ;
-	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
-	{
-	long  is = 	(  (global_x_offset)[j] + 0 ) ;
-	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
-	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
-	assert ( 	(  	( pgid )->dim == 4 ) );
-	assert ( 	(  	( pgid )->version == 0 ) );
-	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
-	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
-	long  imax = (	( pgid )->pdimarray)[1] ;
-	long  jmax = (	( pgid )->pdimarray)[2] ;
-	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	- ( ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  	(  xyzy - ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  	(  xyzz - ovlp ) + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * 	(  xlen + 	(  2 * ovlp ) ) ) );
-}}}}}}}}
+	if (  	(  l < 3 )  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  (r_r_r)[l] * ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ));
+
+	}else{
+		0;
+
 	 }
-}}
+	if (  random_rate  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] * 	(  random_rate * 	rand01 ( 0 , 1 ) ) ) ));
+
+	}else{
+		0;
+
+	 }
+}}}}
+	}else{
+		0;
+
+	 }
+}}}}}}}}}}	GAPS_IO_DeleteDataInfo ( pgid );
+
 	}else{
 		{
 	long  i ;
@@ -1372,11 +1628,14 @@ void  init_external_field3d_B0 (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -1398,6 +1657,7 @@ void  init_external_field3d_B0 (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -1436,7 +1696,7 @@ void  init_external_field3d_B0 (Field3D_MPI *  pthis ){
 }}}}}}}}}}}}
 	 }
 }
-void  init_external_field3d_FILTER_E (Field3D_MPI *  pthis ){
+void  init_external_field3d_B0_2d_extend (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -1447,6 +1707,36 @@ void  init_external_field3d_FILTER_E (Field3D_MPI *  pthis ){
 	One_Particle_Collection *  particles = 	( pthis )->particles ;
 	int  num_spec = 	( pthis )->num_spec ;
 	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_B0_2d_extend_rand ( pthis , reduce_dim , r_x_rat , r_y_rat , r_z_rat , 0 ) ;}
+void  init_external_field3d_B0 (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_B0_2d_extend ( pthis , 0 , 1 , 1 , 1 ) ;}
+void  init_external_field3d_FILTER_E_2d_extend_rand (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ,double  random_rate ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	int  reduce_x = 	(  reduce_dim == 1 ) ;
+	int  reduce_y = 	(  reduce_dim == 2 ) ;
+	int  reduce_z = 	(  reduce_dim == 3 ) ;
+	double   r_r_r  [3];((r_r_r)[0] = r_x_rat);
+((r_r_r)[1] = r_y_rat);
+((r_r_r)[2] = r_z_rat);
 	char *  nm = "FILTER_E_file" ;
 	FILE *  fp = 	fopen ( nm , "r" ) ;
 	if (  fp  ){  
@@ -1478,11 +1768,14 @@ void  init_external_field3d_FILTER_E (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -1504,6 +1797,7 @@ void  init_external_field3d_FILTER_E (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -1515,8 +1809,7 @@ void  init_external_field3d_FILTER_E (Field3D_MPI *  pthis ){
 	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
 	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
 	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
-	if (  1  ){  
-		{
+{
 	long  j ;
 	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
 	{
@@ -1542,41 +1835,38 @@ void  init_external_field3d_FILTER_E (Field3D_MPI *  pthis ){
 	long  imax = (	( pgid )->pdimarray)[1] ;
 	long  jmax = (	( pgid )->pdimarray)[2] ;
 	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * xlen ) );
-}}}}}}}}
-	}else{
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  ((reduce_x)?(0):(is)) + 	(  ((reduce_x)?(1):(imax)) * 	(  ((reduce_y)?(0):(js)) + 	(  ((reduce_y)?(1):(jmax)) * ((reduce_z)?(0):(ks)) ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * ((reduce_x)?(1):(xlen)) ) );
+	if (  reduce_dim  ){  
 		{
-	long  j ;
-	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	long  g ;
+	for ((g = 0) ; 	(  g < ((reduce_x)?(1):(xlen)) ) ; (g = 	(  g + 1 )))
 	{
 {
-	long  xyzz ;
-	for ((xyzz = 0) ; 	(  xyzz < 	(  zlen + 	(  2 * ovlp ) ) ) ; (xyzz = 	(  xyzz + 1 )))
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
 	{
-{
-	long  xyzy ;
-	for ((xyzy = 0) ; 	(  xyzy < 	(  ylen + 	(  2 * ovlp ) ) ) ; (xyzy = 	(  xyzy + 1 )))
-	{
-{
-	long  xyzx ;
-	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
-	{
-	long  is = 	(  (global_x_offset)[j] + 0 ) ;
-	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
-	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
-	assert ( 	(  	( pgid )->dim == 4 ) );
-	assert ( 	(  	( pgid )->version == 0 ) );
-	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
-	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
-	long  imax = (	( pgid )->pdimarray)[1] ;
-	long  jmax = (	( pgid )->pdimarray)[2] ;
-	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	- ( ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  	(  xyzy - ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  	(  xyzz - ovlp ) + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * 	(  xlen + 	(  2 * ovlp ) ) ) );
-}}}}}}}}
+	if (  	(  l < 3 )  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  (r_r_r)[l] * ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ));
+
+	}else{
+		0;
+
 	 }
-}}
+	if (  random_rate  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] * 	(  random_rate * 	rand01 ( 0 , 1 ) ) ) ));
+
+	}else{
+		0;
+
+	 }
+}}}}
+	}else{
+		0;
+
+	 }
+}}}}}}}}}}	GAPS_IO_DeleteDataInfo ( pgid );
+
 	}else{
 		{
 	long  i ;
@@ -1601,11 +1891,14 @@ void  init_external_field3d_FILTER_E (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -1627,6 +1920,7 @@ void  init_external_field3d_FILTER_E (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -1665,7 +1959,7 @@ void  init_external_field3d_FILTER_E (Field3D_MPI *  pthis ){
 }}}}}}}}}}}}
 	 }
 }
-void  init_external_field3d_FILTER_B (Field3D_MPI *  pthis ){
+void  init_external_field3d_FILTER_E_2d_extend (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -1676,6 +1970,36 @@ void  init_external_field3d_FILTER_B (Field3D_MPI *  pthis ){
 	One_Particle_Collection *  particles = 	( pthis )->particles ;
 	int  num_spec = 	( pthis )->num_spec ;
 	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_FILTER_E_2d_extend_rand ( pthis , reduce_dim , r_x_rat , r_y_rat , r_z_rat , 0 ) ;}
+void  init_external_field3d_FILTER_E (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_FILTER_E_2d_extend ( pthis , 0 , 1 , 1 , 1 ) ;}
+void  init_external_field3d_FILTER_B_2d_extend_rand (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ,double  random_rate ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	int  reduce_x = 	(  reduce_dim == 1 ) ;
+	int  reduce_y = 	(  reduce_dim == 2 ) ;
+	int  reduce_z = 	(  reduce_dim == 3 ) ;
+	double   r_r_r  [3];((r_r_r)[0] = r_x_rat);
+((r_r_r)[1] = r_y_rat);
+((r_r_r)[2] = r_z_rat);
 	char *  nm = "FILTER_B_file" ;
 	FILE *  fp = 	fopen ( nm , "r" ) ;
 	if (  fp  ){  
@@ -1707,11 +2031,14 @@ void  init_external_field3d_FILTER_B (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -1733,6 +2060,7 @@ void  init_external_field3d_FILTER_B (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -1744,8 +2072,7 @@ void  init_external_field3d_FILTER_B (Field3D_MPI *  pthis ){
 	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
 	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
 	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
-	if (  1  ){  
-		{
+{
 	long  j ;
 	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
 	{
@@ -1771,41 +2098,38 @@ void  init_external_field3d_FILTER_B (Field3D_MPI *  pthis ){
 	long  imax = (	( pgid )->pdimarray)[1] ;
 	long  jmax = (	( pgid )->pdimarray)[2] ;
 	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * xlen ) );
-}}}}}}}}
-	}else{
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  ((reduce_x)?(0):(is)) + 	(  ((reduce_x)?(1):(imax)) * 	(  ((reduce_y)?(0):(js)) + 	(  ((reduce_y)?(1):(jmax)) * ((reduce_z)?(0):(ks)) ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * ((reduce_x)?(1):(xlen)) ) );
+	if (  reduce_dim  ){  
 		{
-	long  j ;
-	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	long  g ;
+	for ((g = 0) ; 	(  g < ((reduce_x)?(1):(xlen)) ) ; (g = 	(  g + 1 )))
 	{
 {
-	long  xyzz ;
-	for ((xyzz = 0) ; 	(  xyzz < 	(  zlen + 	(  2 * ovlp ) ) ) ; (xyzz = 	(  xyzz + 1 )))
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
 	{
-{
-	long  xyzy ;
-	for ((xyzy = 0) ; 	(  xyzy < 	(  ylen + 	(  2 * ovlp ) ) ) ; (xyzy = 	(  xyzy + 1 )))
-	{
-{
-	long  xyzx ;
-	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
-	{
-	long  is = 	(  (global_x_offset)[j] + 0 ) ;
-	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
-	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
-	assert ( 	(  	( pgid )->dim == 4 ) );
-	assert ( 	(  	( pgid )->version == 0 ) );
-	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
-	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
-	long  imax = (	( pgid )->pdimarray)[1] ;
-	long  jmax = (	( pgid )->pdimarray)[2] ;
-	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	- ( ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  	(  xyzy - ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  	(  xyzz - ovlp ) + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * 	(  xlen + 	(  2 * ovlp ) ) ) );
-}}}}}}}}
+	if (  	(  l < 3 )  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  (r_r_r)[l] * ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ));
+
+	}else{
+		0;
+
 	 }
-}}
+	if (  random_rate  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] * 	(  random_rate * 	rand01 ( 0 , 1 ) ) ) ));
+
+	}else{
+		0;
+
+	 }
+}}}}
+	}else{
+		0;
+
+	 }
+}}}}}}}}}}	GAPS_IO_DeleteDataInfo ( pgid );
+
 	}else{
 		{
 	long  i ;
@@ -1830,11 +2154,14 @@ void  init_external_field3d_FILTER_B (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -1856,6 +2183,7 @@ void  init_external_field3d_FILTER_B (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -1894,7 +2222,7 @@ void  init_external_field3d_FILTER_B (Field3D_MPI *  pthis ){
 }}}}}}}}}}}}
 	 }
 }
-void  init_external_field3d_FILTER_KROOK (Field3D_MPI *  pthis ){
+void  init_external_field3d_FILTER_B_2d_extend (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -1905,6 +2233,36 @@ void  init_external_field3d_FILTER_KROOK (Field3D_MPI *  pthis ){
 	One_Particle_Collection *  particles = 	( pthis )->particles ;
 	int  num_spec = 	( pthis )->num_spec ;
 	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_FILTER_B_2d_extend_rand ( pthis , reduce_dim , r_x_rat , r_y_rat , r_z_rat , 0 ) ;}
+void  init_external_field3d_FILTER_B (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_FILTER_B_2d_extend ( pthis , 0 , 1 , 1 , 1 ) ;}
+void  init_external_field3d_FILTER_KROOK_2d_extend_rand (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ,double  random_rate ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	int  reduce_x = 	(  reduce_dim == 1 ) ;
+	int  reduce_y = 	(  reduce_dim == 2 ) ;
+	int  reduce_z = 	(  reduce_dim == 3 ) ;
+	double   r_r_r  [3];((r_r_r)[0] = r_x_rat);
+((r_r_r)[1] = r_y_rat);
+((r_r_r)[2] = r_z_rat);
 	char *  nm = "FILTER_KROOK_file" ;
 	FILE *  fp = 	fopen ( nm , "r" ) ;
 	if (  fp  ){  
@@ -1936,11 +2294,14 @@ void  init_external_field3d_FILTER_KROOK (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -1962,6 +2323,7 @@ void  init_external_field3d_FILTER_KROOK (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -1973,8 +2335,7 @@ void  init_external_field3d_FILTER_KROOK (Field3D_MPI *  pthis ){
 	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
 	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
 	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
-	if (  1  ){  
-		{
+{
 	long  j ;
 	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
 	{
@@ -2000,41 +2361,38 @@ void  init_external_field3d_FILTER_KROOK (Field3D_MPI *  pthis ){
 	long  imax = (	( pgid )->pdimarray)[1] ;
 	long  jmax = (	( pgid )->pdimarray)[2] ;
 	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * xlen ) );
-}}}}}}}}
-	}else{
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  ((reduce_x)?(0):(is)) + 	(  ((reduce_x)?(1):(imax)) * 	(  ((reduce_y)?(0):(js)) + 	(  ((reduce_y)?(1):(jmax)) * ((reduce_z)?(0):(ks)) ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * ((reduce_x)?(1):(xlen)) ) );
+	if (  reduce_dim  ){  
 		{
-	long  j ;
-	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	long  g ;
+	for ((g = 0) ; 	(  g < ((reduce_x)?(1):(xlen)) ) ; (g = 	(  g + 1 )))
 	{
 {
-	long  xyzz ;
-	for ((xyzz = 0) ; 	(  xyzz < 	(  zlen + 	(  2 * ovlp ) ) ) ; (xyzz = 	(  xyzz + 1 )))
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
 	{
-{
-	long  xyzy ;
-	for ((xyzy = 0) ; 	(  xyzy < 	(  ylen + 	(  2 * ovlp ) ) ) ; (xyzy = 	(  xyzy + 1 )))
-	{
-{
-	long  xyzx ;
-	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
-	{
-	long  is = 	(  (global_x_offset)[j] + 0 ) ;
-	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
-	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
-	assert ( 	(  	( pgid )->dim == 4 ) );
-	assert ( 	(  	( pgid )->version == 0 ) );
-	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
-	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
-	long  imax = (	( pgid )->pdimarray)[1] ;
-	long  jmax = (	( pgid )->pdimarray)[2] ;
-	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	- ( ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  	(  xyzy - ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  	(  xyzz - ovlp ) + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * 	(  xlen + 	(  2 * ovlp ) ) ) );
-}}}}}}}}
+	if (  	(  l < 3 )  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  (r_r_r)[l] * ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ));
+
+	}else{
+		0;
+
 	 }
-}}
+	if (  random_rate  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] * 	(  random_rate * 	rand01 ( 0 , 1 ) ) ) ));
+
+	}else{
+		0;
+
+	 }
+}}}}
+	}else{
+		0;
+
+	 }
+}}}}}}}}}}	GAPS_IO_DeleteDataInfo ( pgid );
+
 	}else{
 		{
 	long  i ;
@@ -2059,11 +2417,14 @@ void  init_external_field3d_FILTER_KROOK (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -2085,6 +2446,7 @@ void  init_external_field3d_FILTER_KROOK (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -2123,7 +2485,7 @@ void  init_external_field3d_FILTER_KROOK (Field3D_MPI *  pthis ){
 }}}}}}}}}}}}
 	 }
 }
-void  init_external_field3d_without_ss_KGM (Field3D_MPI *  pthis ){
+void  init_external_field3d_FILTER_KROOK_2d_extend (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -2134,6 +2496,299 @@ void  init_external_field3d_without_ss_KGM (Field3D_MPI *  pthis ){
 	One_Particle_Collection *  particles = 	( pthis )->particles ;
 	int  num_spec = 	( pthis )->num_spec ;
 	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_FILTER_KROOK_2d_extend_rand ( pthis , reduce_dim , r_x_rat , r_y_rat , r_z_rat , 0 ) ;}
+void  init_external_field3d_FILTER_KROOK (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_FILTER_KROOK_2d_extend ( pthis , 0 , 1 , 1 , 1 ) ;}
+void  init_external_field3d_DENSITY_DIST_2d_extend_rand (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ,double  random_rate ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	int  reduce_x = 	(  reduce_dim == 1 ) ;
+	int  reduce_y = 	(  reduce_dim == 2 ) ;
+	int  reduce_z = 	(  reduce_dim == 3 ) ;
+	double   r_r_r  [3];((r_r_r)[0] = r_x_rat);
+((r_r_r)[1] = r_y_rat);
+((r_r_r)[2] = r_z_rat);
+	char *  nm = "DENSITY_DIST_file" ;
+	FILE *  fp = 	fopen ( nm , "r" ) ;
+	if (  fp  ){  
+			fclose ( fp );
+	fprintf ( stderr , "found %s for input\n" , nm );
+	Gaps_IO_DataFile  gid ;
+	Gaps_IO_DataFile *  pgid = 	& ( gid ) ;
+	GAPS_IO_InitIFile ( pgid , nm );
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < zlen ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < ylen ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  is = 	(  (global_x_offset)[j] + 0 ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
+	assert ( 	(  	( pgid )->dim == 4 ) );
+	assert ( 	(  	( pgid )->version == 0 ) );
+	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
+	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
+	long  imax = (	( pgid )->pdimarray)[1] ;
+	long  jmax = (	( pgid )->pdimarray)[2] ;
+	long  kmax = (	( pgid )->pdimarray)[3] ;
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  ((reduce_x)?(0):(is)) + 	(  ((reduce_x)?(1):(imax)) * 	(  ((reduce_y)?(0):(js)) + 	(  ((reduce_y)?(1):(jmax)) * ((reduce_z)?(0):(ks)) ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * ((reduce_x)?(1):(xlen)) ) );
+	if (  reduce_dim  ){  
+		{
+	long  g ;
+	for ((g = 0) ; 	(  g < ((reduce_x)?(1):(xlen)) ) ; (g = 	(  g + 1 )))
+	{
+{
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
+	{
+	if (  	(  l < 3 )  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  (r_r_r)[l] * ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ));
+
+	}else{
+		0;
+
+	 }
+	if (  random_rate  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] * 	(  random_rate * 	rand01 ( 0 , 1 ) ) ) ));
+
+	}else{
+		0;
+
+	 }
+}}}}
+	}else{
+		0;
+
+	 }
+}}}}}}}}}}	GAPS_IO_DeleteDataInfo ( pgid );
+
+	}else{
+		{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 	- ( ovlp )) ; 	(  xyzz < 	(  zlen + ovlp ) ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 	- ( ovlp )) ; 	(  xyzy < 	(  ylen + ovlp ) ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 	- ( ovlp )) ; 	(  xyzx < 	(  xlen + ovlp ) ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  is = 	(  (global_x_offset)[j] + xyzx ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
+{
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
+	{
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	call_GET_INIT_DENSITY_DIST ( l , ks , js , is ));
+}}}}}}}}}}}}
+	 }
+}
+void  init_external_field3d_DENSITY_DIST_2d_extend (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_DENSITY_DIST_2d_extend_rand ( pthis , reduce_dim , r_x_rat , r_y_rat , r_z_rat , 0 ) ;}
+void  init_external_field3d_DENSITY_DIST (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_DENSITY_DIST_2d_extend ( pthis , 0 , 1 , 1 , 1 ) ;}
+void  init_external_field3d_without_ss_KGM_2d_extend_rand (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ,double  random_rate ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	int  reduce_x = 	(  reduce_dim == 1 ) ;
+	int  reduce_y = 	(  reduce_dim == 2 ) ;
+	int  reduce_z = 	(  reduce_dim == 3 ) ;
+	double   r_r_r  [3];((r_r_r)[0] = r_x_rat);
+((r_r_r)[1] = r_y_rat);
+((r_r_r)[2] = r_z_rat);
 	char *  nm = "KGM_file" ;
 	FILE *  fp = 	fopen ( nm , "r" ) ;
 	if (  fp  ){  
@@ -2165,11 +2820,14 @@ void  init_external_field3d_without_ss_KGM (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -2191,6 +2849,7 @@ void  init_external_field3d_without_ss_KGM (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -2202,8 +2861,7 @@ void  init_external_field3d_without_ss_KGM (Field3D_MPI *  pthis ){
 	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
 	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
 	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
-	if (  1  ){  
-		{
+{
 	long  j ;
 	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
 	{
@@ -2229,41 +2887,38 @@ void  init_external_field3d_without_ss_KGM (Field3D_MPI *  pthis ){
 	long  imax = (	( pgid )->pdimarray)[1] ;
 	long  jmax = (	( pgid )->pdimarray)[2] ;
 	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * xlen ) );
-}}}}}}}}
-	}else{
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  ((reduce_x)?(0):(is)) + 	(  ((reduce_x)?(1):(imax)) * 	(  ((reduce_y)?(0):(js)) + 	(  ((reduce_y)?(1):(jmax)) * ((reduce_z)?(0):(ks)) ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * ((reduce_x)?(1):(xlen)) ) );
+	if (  reduce_dim  ){  
 		{
-	long  j ;
-	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	long  g ;
+	for ((g = 0) ; 	(  g < ((reduce_x)?(1):(xlen)) ) ; (g = 	(  g + 1 )))
 	{
 {
-	long  xyzz ;
-	for ((xyzz = 0) ; 	(  xyzz < 	(  zlen + 	(  2 * ovlp ) ) ) ; (xyzz = 	(  xyzz + 1 )))
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
 	{
-{
-	long  xyzy ;
-	for ((xyzy = 0) ; 	(  xyzy < 	(  ylen + 	(  2 * ovlp ) ) ) ; (xyzy = 	(  xyzy + 1 )))
-	{
-{
-	long  xyzx ;
-	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
-	{
-	long  is = 	(  (global_x_offset)[j] + 0 ) ;
-	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
-	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
-	assert ( 	(  	( pgid )->dim == 4 ) );
-	assert ( 	(  	( pgid )->version == 0 ) );
-	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
-	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
-	long  imax = (	( pgid )->pdimarray)[1] ;
-	long  jmax = (	( pgid )->pdimarray)[2] ;
-	long  kmax = (	( pgid )->pdimarray)[3] ;
-	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  is + 	(  imax * 	(  js + 	(  jmax * ks ) ) ) ) ) );
-	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	- ( ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  	(  xyzy - ovlp ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  	(  xyzz - ovlp ) + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * 	(  xlen + 	(  2 * ovlp ) ) ) );
-}}}}}}}}
+	if (  	(  l < 3 )  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  (r_r_r)[l] * ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ));
+
+	}else{
+		0;
+
 	 }
-}}
+	if (  random_rate  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] * 	(  random_rate * 	rand01 ( 0 , 1 ) ) ) ));
+
+	}else{
+		0;
+
+	 }
+}}}}
+	}else{
+		0;
+
+	 }
+}}}}}}}}}}	GAPS_IO_DeleteDataInfo ( pgid );
+
 	}else{
 		{
 	long  i ;
@@ -2288,11 +2943,14 @@ void  init_external_field3d_without_ss_KGM (Field3D_MPI *  pthis ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -2314,6 +2972,7 @@ void  init_external_field3d_without_ss_KGM (Field3D_MPI *  pthis ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -2352,7 +3011,1106 @@ void  init_external_field3d_without_ss_KGM (Field3D_MPI *  pthis ){
 }}}}}}}}}}}}
 	 }
 }
-void  init_dm_phi_global (Field3D_MPI *  pthis ,double  phi_r1 ,double  phi_r2 ,double  phi_r3 ,double  phi_r4 ,double  phi_i1 ,double  phi_i2 ,double  phi_i3 ,double  phi_i4 ,double  sgm ,double  frq ){
+void  init_external_field3d_without_ss_KGM_2d_extend (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_without_ss_KGM_2d_extend_rand ( pthis , reduce_dim , r_x_rat , r_y_rat , r_z_rat , 0 ) ;}
+void  init_external_field3d_without_ss_KGM (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_without_ss_KGM_2d_extend ( pthis , 0 , 1 , 1 , 1 ) ;}
+void  init_external_field3d_without_ss_DM_2d_extend_rand (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ,double  random_rate ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	int  reduce_x = 	(  reduce_dim == 1 ) ;
+	int  reduce_y = 	(  reduce_dim == 2 ) ;
+	int  reduce_z = 	(  reduce_dim == 3 ) ;
+	double   r_r_r  [3];((r_r_r)[0] = r_x_rat);
+((r_r_r)[1] = r_y_rat);
+((r_r_r)[2] = r_z_rat);
+	char *  nm = "DM_file" ;
+	FILE *  fp = 	fopen ( nm , "r" ) ;
+	if (  fp  ){  
+			fclose ( fp );
+	fprintf ( stderr , "found %s for input\n" , nm );
+	Gaps_IO_DataFile  gid ;
+	Gaps_IO_DataFile *  pgid = 	& ( gid ) ;
+	GAPS_IO_InitIFile ( pgid , nm );
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < zlen ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < ylen ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  is = 	(  (global_x_offset)[j] + 0 ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
+	assert ( 	(  	( pgid )->dim == 4 ) );
+	assert ( 	(  	( pgid )->version == 0 ) );
+	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
+	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
+	long  imax = (	( pgid )->pdimarray)[1] ;
+	long  jmax = (	( pgid )->pdimarray)[2] ;
+	long  kmax = (	( pgid )->pdimarray)[3] ;
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  ((reduce_x)?(0):(is)) + 	(  ((reduce_x)?(1):(imax)) * 	(  ((reduce_y)?(0):(js)) + 	(  ((reduce_y)?(1):(jmax)) * ((reduce_z)?(0):(ks)) ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * ((reduce_x)?(1):(xlen)) ) );
+	if (  reduce_dim  ){  
+		{
+	long  g ;
+	for ((g = 0) ; 	(  g < ((reduce_x)?(1):(xlen)) ) ; (g = 	(  g + 1 )))
+	{
+{
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
+	{
+	if (  	(  l < 3 )  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  (r_r_r)[l] * ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ));
+
+	}else{
+		0;
+
+	 }
+	if (  random_rate  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] * 	(  random_rate * 	rand01 ( 0 , 1 ) ) ) ));
+
+	}else{
+		0;
+
+	 }
+}}}}
+	}else{
+		0;
+
+	 }
+}}}}}}}}}}	GAPS_IO_DeleteDataInfo ( pgid );
+
+	}else{
+		{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 	- ( ovlp )) ; 	(  xyzz < 	(  zlen + ovlp ) ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 	- ( ovlp )) ; 	(  xyzy < 	(  ylen + ovlp ) ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 	- ( ovlp )) ; 	(  xyzx < 	(  xlen + ovlp ) ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  is = 	(  (global_x_offset)[j] + xyzx ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
+{
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
+	{
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )]);
+}}}}}}}}}}}}
+	 }
+}
+void  init_external_field3d_without_ss_DM_2d_extend (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_without_ss_DM_2d_extend_rand ( pthis , reduce_dim , r_x_rat , r_y_rat , r_z_rat , 0 ) ;}
+void  init_external_field3d_without_ss_DM (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_without_ss_DM_2d_extend ( pthis , 0 , 1 , 1 , 1 ) ;}
+void  init_external_field3d_without_ss_DMf_2d_extend_rand (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ,double  random_rate ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	int  reduce_x = 	(  reduce_dim == 1 ) ;
+	int  reduce_y = 	(  reduce_dim == 2 ) ;
+	int  reduce_z = 	(  reduce_dim == 3 ) ;
+	double   r_r_r  [3];((r_r_r)[0] = r_x_rat);
+((r_r_r)[1] = r_y_rat);
+((r_r_r)[2] = r_z_rat);
+	char *  nm = "DMf_file" ;
+	FILE *  fp = 	fopen ( nm , "r" ) ;
+	if (  fp  ){  
+			fclose ( fp );
+	fprintf ( stderr , "found %s for input\n" , nm );
+	Gaps_IO_DataFile  gid ;
+	Gaps_IO_DataFile *  pgid = 	& ( gid ) ;
+	GAPS_IO_InitIFile ( pgid , nm );
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < zlen ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < ylen ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  is = 	(  (global_x_offset)[j] + 0 ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
+	assert ( 	(  	( pgid )->dim == 4 ) );
+	assert ( 	(  	( pgid )->version == 0 ) );
+	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
+	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
+	long  imax = (	( pgid )->pdimarray)[1] ;
+	long  jmax = (	( pgid )->pdimarray)[2] ;
+	long  kmax = (	( pgid )->pdimarray)[3] ;
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  ((reduce_x)?(0):(is)) + 	(  ((reduce_x)?(1):(imax)) * 	(  ((reduce_y)?(0):(js)) + 	(  ((reduce_y)?(1):(jmax)) * ((reduce_z)?(0):(ks)) ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * ((reduce_x)?(1):(xlen)) ) );
+	if (  reduce_dim  ){  
+		{
+	long  g ;
+	for ((g = 0) ; 	(  g < ((reduce_x)?(1):(xlen)) ) ; (g = 	(  g + 1 )))
+	{
+{
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
+	{
+	if (  	(  l < 3 )  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  (r_r_r)[l] * ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ));
+
+	}else{
+		0;
+
+	 }
+	if (  random_rate  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] * 	(  random_rate * 	rand01 ( 0 , 1 ) ) ) ));
+
+	}else{
+		0;
+
+	 }
+}}}}
+	}else{
+		0;
+
+	 }
+}}}}}}}}}}	GAPS_IO_DeleteDataInfo ( pgid );
+
+	}else{
+		{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 	- ( ovlp )) ; 	(  xyzz < 	(  zlen + ovlp ) ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 	- ( ovlp )) ; 	(  xyzy < 	(  ylen + ovlp ) ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 	- ( ovlp )) ; 	(  xyzx < 	(  xlen + ovlp ) ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  is = 	(  (global_x_offset)[j] + xyzx ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
+{
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
+	{
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )]);
+}}}}}}}}}}}}
+	 }
+}
+void  init_external_field3d_without_ss_DMf_2d_extend (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_without_ss_DMf_2d_extend_rand ( pthis , reduce_dim , r_x_rat , r_y_rat , r_z_rat , 0 ) ;}
+void  init_external_field3d_without_ss_DMf (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_without_ss_DMf_2d_extend ( pthis , 0 , 1 , 1 , 1 ) ;}
+void  init_external_field3d_without_ss_EXT_FLUID_RHO_S_VX0_2d_extend_rand (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ,double  random_rate ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	int  reduce_x = 	(  reduce_dim == 1 ) ;
+	int  reduce_y = 	(  reduce_dim == 2 ) ;
+	int  reduce_z = 	(  reduce_dim == 3 ) ;
+	double   r_r_r  [3];((r_r_r)[0] = r_x_rat);
+((r_r_r)[1] = r_y_rat);
+((r_r_r)[2] = r_z_rat);
+	char *  nm = "EXT_FLUID_RHO_S_VX0_file" ;
+	FILE *  fp = 	fopen ( nm , "r" ) ;
+	if (  fp  ){  
+			fclose ( fp );
+	fprintf ( stderr , "found %s for input\n" , nm );
+	Gaps_IO_DataFile  gid ;
+	Gaps_IO_DataFile *  pgid = 	& ( gid ) ;
+	GAPS_IO_InitIFile ( pgid , nm );
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < zlen ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < ylen ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < 1 ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  is = 	(  (global_x_offset)[j] + 0 ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
+	assert ( 	(  	( pgid )->dim == 4 ) );
+	assert ( 	(  	( pgid )->version == 0 ) );
+	assert ( 	(  	( pgid )->type == GAPS_IO_FLOAT64 ) );
+	assert ( 	(  (	( pgid )->pdimarray)[0] == num_ele ) );
+	long  imax = (	( pgid )->pdimarray)[1] ;
+	long  jmax = (	( pgid )->pdimarray)[2] ;
+	long  kmax = (	( pgid )->pdimarray)[3] ;
+	GAPS_IO_DataSeek ( pgid , 0 , 	(  num_ele * 	(  ((reduce_x)?(0):(is)) + 	(  ((reduce_x)?(1):(imax)) * 	(  ((reduce_y)?(0):(js)) + 	(  ((reduce_y)?(1):(jmax)) * ((reduce_z)?(0):(ks)) ) ) ) ) ) );
+	GAPS_IO_FRead ( pgid , 	& ( ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  0 + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ) , 	(  num_ele * ((reduce_x)?(1):(xlen)) ) );
+	if (  reduce_dim  ){  
+		{
+	long  g ;
+	for ((g = 0) ; 	(  g < ((reduce_x)?(1):(xlen)) ) ; (g = 	(  g + 1 )))
+	{
+{
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
+	{
+	if (  	(  l < 3 )  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  (r_r_r)[l] * ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] ));
+
+	}else{
+		0;
+
+	 }
+	if (  random_rate  ){  
+		(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  g + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] * 	(  random_rate * 	rand01 ( 0 , 1 ) ) ) ));
+
+	}else{
+		0;
+
+	 }
+}}}}
+	}else{
+		0;
+
+	 }
+}}}}}}}}}}	GAPS_IO_DeleteDataInfo ( pgid );
+
+	}else{
+		{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 	- ( ovlp )) ; 	(  xyzz < 	(  zlen + ovlp ) ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 	- ( ovlp )) ; 	(  xyzy < 	(  ylen + ovlp ) ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 	- ( ovlp )) ; 	(  xyzx < 	(  xlen + ovlp ) ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  is = 	(  (global_x_offset)[j] + xyzx ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  ks = 	(  (global_z_offset)[j] + xyzz ) ;
+{
+	long  l ;
+	for ((l = 0) ; 	(  l < num_ele ) ; (l = 	(  l + 1 )))
+	{
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  l + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )]);
+}}}}}}}}}}}}
+	 }
+}
+void  init_external_field3d_without_ss_EXT_FLUID_RHO_S_VX0_2d_extend (Field3D_MPI *  pthis ,int  reduce_dim ,double  r_x_rat ,double  r_y_rat ,double  r_z_rat ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_without_ss_EXT_FLUID_RHO_S_VX0_2d_extend_rand ( pthis , reduce_dim , r_x_rat , r_y_rat , r_z_rat , 0 ) ;}
+void  init_external_field3d_without_ss_EXT_FLUID_RHO_S_VX0 (Field3D_MPI *  pthis ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	return  	init_external_field3d_without_ss_EXT_FLUID_RHO_S_VX0_2d_extend ( pthis , 0 , 1 , 1 , 1 ) ;}
+void  init_dm_dual_phi_global (Field3D_MPI *  psi1 ,Field3D_MPI *  psi2 ,double  amp_ext ,double  sgm_pz ,int  num_p ,double  dm_m ,double  dz ,double  zmax ){
+	double *  pf = 	malloc ( 	(  sizeof(double ) * num_p ) ) ;
+	double *  pm = 	malloc ( 	(  sizeof(double ) * num_p ) ) ;
+	double *  as = 	malloc ( 	(  sizeof(double ) * num_p ) ) ;
+	fprintf ( stderr , "num_p=%d\n" , num_p );
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_p ) ; (i = 	(  i + 1 )))
+	{
+	befrand:
+((pf)[i] = 	(  	(  2 * 	(  M_PI * 	floor ( 	(  	maxwell_dist ( 0 , sgm_pz ) + 5.00000000000000000e-01 ) ) ) ) / zmax ));
+((pm)[i] = 	(  	(  2 * 	(  M_PI * 	floor ( 	(  	maxwell_dist ( 0 , sgm_pz ) + 5.00000000000000000e-01 ) ) ) ) / zmax ));
+	if (  	(  	(  (pf)[i] * (pm)[i] ) == 0 )  ){  
+			goto befrand;
+	}else{
+		0;
+
+	 }
+((as)[i] = 	cos ( 	rand01 ( 0 , M_PI ) ));
+	fprintf ( stderr , "pf[%d]=%e, pm[%d]=%e as[%d]=%e\n" , i , (pf)[i] , i , (pm)[i] , i , (as)[i] );
+}}	double *   pfm  [2];((pfm)[0] = pf);
+((pfm)[1] = pm);
+{
+	Field3D_Seq *  data = 	( psi1 )->data ;
+	long  num_runtime = 	( psi1 )->num_runtime ;
+	PS_MPI_Comm  comm = 	( psi1 )->comm ;
+	long  cur_rank = 	( psi1 )->cur_rank ;
+	long  num_mpi_process = 	( psi1 )->num_mpi_process ;
+	long *  sync_layer_len = 	( psi1 )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( psi1 )->rqst ;
+	One_Particle_Collection *  particles = 	( psi1 )->particles ;
+	int  num_spec = 	( psi1 )->num_spec ;
+	double  damp_vars = 	( psi1 )->damp_vars ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < zlen ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < ylen ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < xlen ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  ks = 	(  (global_x_offset)[j] + xyzx ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  is = 	(  (global_z_offset)[j] + xyzz ) ;
+	double complex   vphi  [4];{
+	long  i ;
+	for ((i = 0) ; 	(  i < 4 ) ; (i = 	(  i + 1 )))
+	{
+((vphi)[i] = 0);
+}}{
+	long  s ;
+	for ((s = 0) ; 	(  s < 2 ) ; (s = 	(  s + 1 )))
+	{
+	double  t0 = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_p ) ; (i = 	(  i + 1 )))
+	{
+	double complex   phi_p  [4];	double  pz = ((pfm)[s])[i] ;
+	double  a = (as)[i] ;
+	double  b = 	sqrt ( 	(  1 - 	(  a * a ) ) ) ;
+	double  Ene = 	sqrt ( 	(  	(  pz * pz ) + 	(  dm_m * dm_m ) ) ) ;
+	double  lmd = 1 ;
+	double  amp = 	(  	(  	sqrt ( 	(  	(  dm_m + 	(  lmd * Ene ) ) / 	(  	(  2 * lmd ) * Ene ) ) ) / 	pow ( 	(  2 * M_PI ) , 1.50000000000000000e+00 ) ) * amp_ext ) ;
+((phi_p)[0] = a);
+((phi_p)[1] = b);
+((phi_p)[2] = 	(  	(  pz * a ) / 	(  dm_m + 	(  lmd * Ene ) ) ));
+((phi_p)[3] = 	(  	(  -1 * 	(  pz * b ) ) / 	(  dm_m + 	(  lmd * Ene ) ) ));
+	double complex  exp_i_pz_xz = 	cexp ( 	(  _Complex_I * 	(  	(  	(  pz * is ) * dz ) - 	(  	(  lmd * Ene ) * t0 ) ) ) ) ;
+{
+	long  g ;
+	for ((g = 0) ; 	(  g < 4 ) ; (g = 	(  g + 1 )))
+	{
+((phi_p)[g] = 	(  (phi_p)[g] * 	(  exp_i_pz_xz * amp ) ));
+((vphi)[g] = 	(  (vphi)[g] + 	(  (phi_p)[g] * ((	(  	(  s == 1 ) && 	(  0 == 1 ) ))?(-1):(1)) ) ));
+}}}}}}{
+	long  ls ;
+	for ((ls = 0) ; 	(  ls < num_ele ) ; (ls = 	(  ls + 1 )))
+	{
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  ls & 1 ))?(	cimag ( (vphi)[	(  ls / 2 )] )):(	creal ( (vphi)[	(  ls / 2 )] ))));
+}}}}}}}}}}}}}{
+	Field3D_Seq *  data = 	( psi2 )->data ;
+	long  num_runtime = 	( psi2 )->num_runtime ;
+	PS_MPI_Comm  comm = 	( psi2 )->comm ;
+	long  cur_rank = 	( psi2 )->cur_rank ;
+	long  num_mpi_process = 	( psi2 )->num_mpi_process ;
+	long *  sync_layer_len = 	( psi2 )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( psi2 )->rqst ;
+	One_Particle_Collection *  particles = 	( psi2 )->particles ;
+	int  num_spec = 	( psi2 )->num_spec ;
+	double  damp_vars = 	( psi2 )->damp_vars ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < zlen ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < ylen ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < xlen ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  ks = 	(  (global_x_offset)[j] + xyzx ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  is = 	(  (global_z_offset)[j] + xyzz ) ;
+	double complex   vphi  [4];{
+	long  i ;
+	for ((i = 0) ; 	(  i < 4 ) ; (i = 	(  i + 1 )))
+	{
+((vphi)[i] = 0);
+}}{
+	long  s ;
+	for ((s = 0) ; 	(  s < 2 ) ; (s = 	(  s + 1 )))
+	{
+	double  t0 = 0 ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_p ) ; (i = 	(  i + 1 )))
+	{
+	double complex   phi_p  [4];	double  pz = ((pfm)[s])[i] ;
+	double  a = (as)[i] ;
+	double  b = 	sqrt ( 	(  1 - 	(  a * a ) ) ) ;
+	double  Ene = 	sqrt ( 	(  	(  pz * pz ) + 	(  dm_m * dm_m ) ) ) ;
+	double  lmd = -1 ;
+	double  amp = 	(  	(  	sqrt ( 	(  	(  dm_m + 	(  lmd * Ene ) ) / 	(  	(  2 * lmd ) * Ene ) ) ) / 	pow ( 	(  2 * M_PI ) , 1.50000000000000000e+00 ) ) * amp_ext ) ;
+((phi_p)[0] = a);
+((phi_p)[1] = b);
+((phi_p)[2] = 	(  	(  pz * a ) / 	(  dm_m + 	(  lmd * Ene ) ) ));
+((phi_p)[3] = 	(  	(  -1 * 	(  pz * b ) ) / 	(  dm_m + 	(  lmd * Ene ) ) ));
+	double complex  exp_i_pz_xz = 	cexp ( 	(  _Complex_I * 	(  	(  	(  pz * is ) * dz ) - 	(  	(  lmd * Ene ) * t0 ) ) ) ) ;
+{
+	long  g ;
+	for ((g = 0) ; 	(  g < 4 ) ; (g = 	(  g + 1 )))
+	{
+((phi_p)[g] = 	(  (phi_p)[g] * 	(  exp_i_pz_xz * amp ) ));
+((vphi)[g] = 	(  (vphi)[g] + 	(  (phi_p)[g] * ((	(  	(  s == 1 ) && 	(  1 == 1 ) ))?(-1):(1)) ) ));
+}}}}}}{
+	long  ls ;
+	for ((ls = 0) ; 	(  ls < num_ele ) ; (ls = 	(  ls + 1 )))
+	{
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  ls & 1 ))?(	cimag ( (vphi)[	(  ls / 2 )] )):(	creal ( (vphi)[	(  ls / 2 )] ))));
+}}}}}}}}}}}}}	free ( pf );
+	free ( pm );
+	free ( as );
+}
+void  init_hydro_alpha_beta (Field3D_MPI *  pthis ,double  alp ,double  bet ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -2386,11 +4144,14 @@ void  init_dm_phi_global (Field3D_MPI *  pthis ,double  phi_r1 ,double  phi_r2 ,
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -2412,6 +4173,7 @@ void  init_dm_phi_global (Field3D_MPI *  pthis ,double  phi_r1 ,double  phi_r2 ,
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -2446,7 +4208,315 @@ void  init_dm_phi_global (Field3D_MPI *  pthis ,double  phi_r1 ,double  phi_r2 ,
 	long  ls ;
 	for ((ls = 0) ; 	(  ls < num_ele ) ; (ls = 	(  ls + 1 )))
 	{
-(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  ls == 0 ))?(	(  phi_r1 + 	rand01 ( 	- ( sgm ) , sgm ) )):(0)));
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  ls == 0 ))?(alp):(((	(  ls == 1 ))?(bet):(0)))));
+}}}}}}}}}}}}}
+void  init_hydro_rho_s_vx (Field3D_MPI *  pthis ,double  rho0 ,double  drho0 ,double  s ,double  vx ,double  vy ,double  vz ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < zlen ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < ylen ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < xlen ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  ks = 	(  (global_x_offset)[j] + xyzx ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  is = 	(  (global_z_offset)[j] + xyzz ) ;
+{
+	long  ls ;
+	for ((ls = 0) ; 	(  ls < num_ele ) ; (ls = 	(  ls + 1 )))
+	{
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  ls == 0 ))?(	(  rho0 + 	(  drho0 * 	rand01 ( -5.00000000000000000e-01 , 5.00000000000000000e-01 ) ) )):(((	(  ls == 1 ))?(s):(((	(  ls == 2 ))?(vx):(((	(  ls == 3 ))?(vy):(((	(  ls == 4 ))?(vz):(0)))))))))));
+}}}}}}}}}}}}}
+void  init_dm_phi_global_rand (Field3D_MPI *  pthis ,double  phi_r1 ,double  sgm ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < zlen ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < ylen ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < xlen ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  ks = 	(  (global_x_offset)[j] + xyzx ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  is = 	(  (global_z_offset)[j] + xyzz ) ;
+{
+	long  ls ;
+	for ((ls = 0) ; 	(  ls < num_ele ) ; (ls = 	(  ls + 1 )))
+	{
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  phi_r1 + 	rand01 ( 	- ( sgm ) , sgm ) ));
+}}}}}}}}}}}}}
+void  init_dm_phi_global (Field3D_MPI *  pthis ,double  dm_m ,double  pz_r ,double  pz_i ,double  dm_z_offset ,double  lmd ,double  a ,double  b ,double  sgm_p ,double  dz ,double  t0 ,double  phi34v ,double  phi ,double  amp_ext ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 0) ; 	(  xyzz < zlen ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 0) ; 	(  xyzy < ylen ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 0) ; 	(  xyzx < xlen ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  ks = 	(  (global_x_offset)[j] + xyzx ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  is = 	(  (global_z_offset)[j] + xyzz ) ;
+	double complex  pz = 	(  pz_r + 	(  _Complex_I * pz_i ) ) ;
+	double  Ene = 	sqrt ( 	(  	(  pz * pz ) + 	(  dm_m * dm_m ) ) ) ;
+	double  amp = 	(  	(  	sqrt ( 	(  	(  dm_m + 	(  lmd * Ene ) ) / 	(  	(  2 * lmd ) * Ene ) ) ) / 	pow ( 	(  2 * M_PI ) , 1.50000000000000000e+00 ) ) * amp_ext ) ;
+	double complex  phi1 = a ;
+	double complex  phi2 = b ;
+	double complex  phi3 = 	(  	(  phi34v * 	(  pz * a ) ) / 	(  dm_m + 	(  lmd * Ene ) ) ) ;
+	double complex  phi4 = 	(  	(  phi34v * 	(  -1 * 	(  pz * b ) ) ) / 	(  dm_m + 	(  lmd * Ene ) ) ) ;
+	double complex  exp_i_pz_xz = 	cexp ( 	(  _Complex_I * 	(  	(  	(  pz * 	(  is - dm_z_offset ) ) * dz ) - 	(  	(  lmd * Ene ) * t0 ) ) ) ) ;
+{
+	long  ls ;
+	for ((ls = 0) ; 	(  ls < num_ele ) ; (ls = 	(  ls + 1 )))
+	{
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  ls == 0 ))?(	creal ( 	(  phi1 * 	(  amp * exp_i_pz_xz ) ) )):(((	(  ls == 1 ))?(	(  ((phi)?(1):(-1)) * 	cimag ( 	(  phi1 * 	(  amp * exp_i_pz_xz ) ) ) )):(((	(  ls == 2 ))?(	creal ( 	(  phi2 * 	(  amp * exp_i_pz_xz ) ) )):(((	(  ls == 3 ))?(	(  ((phi)?(1):(-1)) * 	cimag ( 	(  phi2 * 	(  amp * exp_i_pz_xz ) ) ) )):(((	(  ls == 4 ))?(	creal ( 	(  phi3 * 	(  amp * exp_i_pz_xz ) ) )):(((	(  ls == 5 ))?(	(  ((phi)?(1):(-1)) * 	cimag ( 	(  phi3 * 	(  amp * exp_i_pz_xz ) ) ) )):(((	(  ls == 6 ))?(	creal ( 	(  phi4 * 	(  amp * exp_i_pz_xz ) ) )):(((	(  ls == 7 ))?(	(  ((phi)?(1):(-1)) * 	cimag ( 	(  phi4 * 	(  amp * exp_i_pz_xz ) ) ) )):(0)))))))))))))))));
 }}}}}}}}}}}}}
 void  init_dm_A0_global (Field3D_MPI *  pthis ,double  ampEy ,double  dt ){
 	Field3D_Seq *  data = 	( pthis )->data ;
@@ -2482,11 +4552,14 @@ void  init_dm_A0_global (Field3D_MPI *  pthis ,double  ampEy ,double  dt ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -2508,6 +4581,7 @@ void  init_dm_A0_global (Field3D_MPI *  pthis ,double  ampEy ,double  dt ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -2544,7 +4618,7 @@ void  init_dm_A0_global (Field3D_MPI *  pthis ,double  ampEy ,double  dt ){
 	{
 (((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 0);
 }}}}}}}}}}}}}
-void  init_dm_A1_global (Field3D_MPI *  pthis ,double  ampx ,double  ampEy ,double  dt ){
+void  init_dm_A1_global (Field3D_MPI *  pthis ,double  ampx ,double  ampEz ,double  dt ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -2578,11 +4652,14 @@ void  init_dm_A1_global (Field3D_MPI *  pthis ,double  ampx ,double  ampEy ,doub
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -2604,6 +4681,7 @@ void  init_dm_A1_global (Field3D_MPI *  pthis ,double  ampx ,double  ampEy ,doub
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -2638,7 +4716,207 @@ void  init_dm_A1_global (Field3D_MPI *  pthis ,double  ampx ,double  ampEy ,doub
 	long  ls ;
 	for ((ls = 0) ; 	(  ls < num_ele ) ; (ls = 	(  ls + 1 )))
 	{
-(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  ls == 0 ))?(	(  	rand01 ( 	- ( ampx ) , ampx ) * dt )):(0)));
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  ls == 2 ))?(ampEz):(0)));
+}}}}}}}}}}}}}
+void  init_hydro_ext_s0 (Field3D_MPI *  pthis ,double  dsdx ,int  dir ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 	- ( ovlp )) ; 	(  xyzz < 	(  zlen + ovlp ) ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 	- ( ovlp )) ; 	(  xyzy < 	(  ylen + ovlp ) ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 	- ( ovlp )) ; 	(  xyzx < 	(  xlen + ovlp ) ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  ks = 	(  (global_x_offset)[j] + xyzx ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  is = 	(  (global_z_offset)[j] + xyzz ) ;
+{
+	long  ls ;
+	for ((ls = 0) ; 	(  ls < num_ele ) ; (ls = 	(  ls + 1 )))
+	{
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  ls == 1 ))?(	(  dsdx * ((	(  dir == 0 ))?(xyzx):(((	(  dir == 1 ))?(xyzy):(xyzz)))) )):(0)));
+}}}}}}}}}}}}}
+void  init_hydro_ext_A0y (Field3D_MPI *  pthis ,double  B0 ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < num_runtime ) ; (i = 	(  i + 1 )))
+	{
+	void *  pe = 	( 	(  data + i ) )->pe ;
+	long  xlen = 	( 	(  data + i ) )->xlen ;
+	long  ylen = 	( 	(  data + i ) )->ylen ;
+	long  zlen = 	( 	(  data + i ) )->zlen ;
+	long  xblock = 	( 	(  data + i ) )->xblock ;
+	long  yblock = 	( 	(  data + i ) )->yblock ;
+	long  zblock = 	( 	(  data + i ) )->zblock ;
+	long  numvec = 	( 	(  data + i ) )->numvec ;
+	long  x_num_thread_block = 	( 	(  data + i ) )->x_num_thread_block ;
+	long  y_num_thread_block = 	( 	(  data + i ) )->y_num_thread_block ;
+	long  z_num_thread_block = 	( 	(  data + i ) )->z_num_thread_block ;
+	int  ovlp = 	( 	(  data + i ) )->ovlp ;
+	int  num_ele = 	( 	(  data + i ) )->num_ele ;
+	int  CD_type = 	( 	(  data + i ) )->CD_type ;
+	void * *  sync_layer_pscmc = 	( 	(  data + i ) )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( 	(  data + i ) )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
+	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
+	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
+	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
+	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( 	(  data + i ) )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( 	(  data + i ) )->cur_rankz_pscmc ;
+	void *  xoffset = 	( 	(  data + i ) )->xoffset ;
+	void *  yoffset = 	( 	(  data + i ) )->yoffset ;
+	void *  zoffset = 	( 	(  data + i ) )->zoffset ;
+	long *  global_x_offset = 	( 	(  data + i ) )->global_x_offset ;
+	long *  global_y_offset = 	( 	(  data + i ) )->global_y_offset ;
+	long *  global_z_offset = 	( 	(  data + i ) )->global_z_offset ;
+	long *  global_id = 	( 	(  data + i ) )->global_id ;
+	long  global_pid = 	( 	(  data + i ) )->global_pid ;
+	long *  adj_ids = 	( 	(  data + i ) )->adj_ids ;
+	long *  adj_processes = 	( 	(  data + i ) )->adj_processes ;
+	long *  adj_local_tid = 	( 	(  data + i ) )->adj_local_tid ;
+	void *  main_data = 	( 	(  data + i ) )->main_data ;
+	double  delta_x = 	( 	(  data + i ) )->delta_x ;
+	double  delta_y = 	( 	(  data + i ) )->delta_y ;
+	double  delta_z = 	( 	(  data + i ) )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( 	(  data + i ) )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( 	(  data + i ) )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( 	(  data + i ) )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( 	(  data + i ) )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( 	(  data + i ) )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( 	(  data + i ) )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( 	(  data + i ) )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( 	(  data + i ) )->blas_sum_kernel ;
+{
+	long  j ;
+	for ((j = 0) ; 	(  j < numvec ) ; (j = 	(  j + 1 )))
+	{
+{
+	long  xyzz ;
+	for ((xyzz = 	- ( ovlp )) ; 	(  xyzz < 	(  zlen + ovlp ) ) ; (xyzz = 	(  xyzz + 1 )))
+	{
+{
+	long  xyzy ;
+	for ((xyzy = 	- ( ovlp )) ; 	(  xyzy < 	(  ylen + ovlp ) ) ; (xyzy = 	(  xyzy + 1 )))
+	{
+{
+	long  xyzx ;
+	for ((xyzx = 	- ( ovlp )) ; 	(  xyzx < 	(  xlen + ovlp ) ) ; (xyzx = 	(  xyzx + 1 )))
+	{
+	long  ks = 	(  (global_x_offset)[j] + xyzx ) ;
+	long  js = 	(  (global_y_offset)[j] + xyzy ) ;
+	long  is = 	(  (global_z_offset)[j] + xyzz ) ;
+{
+	long  ls ;
+	for ((ls = 0) ; 	(  ls < num_ele ) ; (ls = 	(  ls + 1 )))
+	{
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  ls == 1 ))?(	(  xyzx * B0 )):(0)));
 }}}}}}}}}}}}}
 void  init_kgm_assemble (Field3D_MPI *  pthis ,double  ampx ,double  ampEy ,double  dt ,double  sgm ,double  frq ,double  kgm_ass_e_loc0 ){
 	Field3D_Seq *  data = 	( pthis )->data ;
@@ -2674,11 +4952,14 @@ void  init_kgm_assemble (Field3D_MPI *  pthis ,double  ampx ,double  ampEy ,doub
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -2700,6 +4981,7 @@ void  init_kgm_assemble (Field3D_MPI *  pthis ,double  ampx ,double  ampEy ,doub
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -2773,11 +5055,14 @@ void  init_kgm_global (Field3D_MPI *  pthis ,double  phi_r0 ,double  m0 ,double 
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -2799,6 +5084,7 @@ void  init_kgm_global (Field3D_MPI *  pthis ,double  phi_r0 ,double  m0 ,double 
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -2858,9 +5144,9 @@ void  init_kgm_global (Field3D_MPI *  pthis ,double  phi_r0 ,double  m0 ,double 
 	long  ls ;
 	for ((ls = 0) ; 	(  ls < num_ele ) ; (ls = 	(  ls + 1 )))
 	{
-(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  use_sper == 0 ))?(((	(  ls == 0 ))?(	(  E0 * dt )):(((	(  ls == 1 ))?(	(  E1 * dt )):(((	(  ls == 3 ))?(p0):(((	(  ls == 4 ))?(	(  p0 * 	(  m0 * dt ) )):(((	(  ls == 5 ))?(0):(((	(  ls == 8 ))?(p0):(((	(  ls == 9 ))?(0):(0))))))))))))))):(((	(  use_sper == 1 ))?(((	(  ls == 3 ))?(p0):(((	(  ls == 4 ))?(	(  p0 * 	(  m0 * dt ) )):(((	(  ls == 4 ))?(0):(((	(  ls == 8 ))?(p0):(0))))))))):(0)))));
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  ls + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  xyzx + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  xyzy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  xyzz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = ((	(  use_sper == 0 ))?(((	(  ls == 0 ))?(	(  E0 * dt )):(((	(  ls == 1 ))?(	(  E1 * dt )):(((	(  ls == 3 ))?(p0):(((	(  ls == 4 ))?(	(  p0 * 	(  m0 * dt ) )):(((	(  ls == 5 ))?(0):(((	(  ls == 8 ))?(p0):(((	(  ls == 9 ))?(0):(0))))))))))))))):(((	(  use_sper == 1 ))?(((	(  ls == 3 ))?(p0):(((	(  ls == 4 ))?(	(  p0 * 	(  m0 * dt ) )):(((	(  ls == 8 ))?(p0):(0))))))):(0)))));
 }}}}}}}}}}}}}
-int  set_ecrh_fields (Field3D_MPI *  pthis ,double  tomega ,double  ampx ,double  ampy ,double  ampz ,double  ky ,double  kz ,double  ikt ,long  x0 ,double  y0 ,double  y1 ,double  z0 ,double  z1 ){
+int  set_ecrh_fields (Field3D_MPI *  pthis ,double  tomega ,double  ampx ,double  ampy ,double  ampz ,double  ky ,double  kz ,double  ikt ,long  x0 ,double  y0 ,double  y1 ,double  z0 ,double  z1 ,double  ecrh_square_num ,double  phi0 ){
 	Field3D_Seq *  data = 	( pthis )->data ;
 	long  num_runtime = 	( pthis )->num_runtime ;
 	PS_MPI_Comm  comm = 	( pthis )->comm ;
@@ -2894,11 +5180,14 @@ int  set_ecrh_fields (Field3D_MPI *  pthis ,double  tomega ,double  ampx ,double
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -2920,6 +5209,7 @@ int  set_ecrh_fields (Field3D_MPI *  pthis ,double  tomega ,double  ampx ,double
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -2953,11 +5243,13 @@ int  set_ecrh_fields (Field3D_MPI *  pthis ,double  tomega ,double  ampx ,double
 			double  kyy = 	(  	(  ky * 	(  oy - y0 ) ) / 	(  y1 - y0 ) ) ;
 	double  kyz = 	(  	(  kz * 	(  oz - z0 ) ) / 	(  z1 - z0 ) ) ;
 	double  kall = 	(  kyy + kyz ) ;
-	double  phs = 	(  tomega - 	(  2 * 	(  M_PI * kall ) ) ) ;
+	double  phs = 	(  tomega - 	(  2 * 	(  M_PI * ((ecrh_square_num)?(	(  	floor ( 	(  kall / 	(  	(  ky + kz ) / ecrh_square_num ) ) ) * 	(  	(  ky + kz ) / ecrh_square_num ) )):(kall)) ) ) ) ;
 	double  coef = 	(  1 - 	exp ( 	(  -1 * 	(  tomega * ikt ) ) ) ) ;
-(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	(  x0 - ofx ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  idy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  idz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	(  x0 - ofx ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  idy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  idz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ampx * 	(  	sin ( phs ) * coef ) ) ));
-(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  1 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	(  x0 - ofx ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  idy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  idz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  1 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	(  x0 - ofx ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  idy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  idz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ampy * 	(  	sin ( phs ) * coef ) ) ));
-(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  2 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	(  x0 - ofx ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  idy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  idz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  2 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	(  x0 - ofx ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  idy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  idz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ampz * 	(  	sin ( phs ) * coef ) ) ));
+	double  sinphs = 	sin ( phs ) ;
+	double  finvar = sinphs ;
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	(  x0 - ofx ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  idy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  idz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  0 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	(  x0 - ofx ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  idy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  idz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ampx * 	(  finvar * coef ) ) ));
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  1 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	(  x0 - ofx ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  idy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  idz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  1 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	(  x0 - ofx ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  idy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  idz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ampy * 	(  finvar * coef ) ) ));
+(((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  2 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	(  x0 - ofx ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  idy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  idz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] = 	(  ((((double * * )	( 	(  data + i ) )->main_data))[0])[	(  	(  j * 	(  	( 	(  data + i ) )->xblock * 	(  	( 	(  data + i ) )->yblock * 	(  	( 	(  data + i ) )->zblock * 	( 	(  data + i ) )->num_ele ) ) ) ) + 	(  2 + 	(  	( 	(  data + i ) )->num_ele * 	(  	(  	(  x0 - ofx ) + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->xblock * 	(  	(  idy + 	( 	(  data + i ) )->ovlp ) + 	(  	( 	(  data + i ) )->yblock * 	(  idz + 	( 	(  data + i ) )->ovlp ) ) ) ) ) ) ) )] + 	(  ampz * 	(  finvar * coef ) ) ));
 
 	}else{
 		0;
@@ -3003,11 +5295,14 @@ int  set_lhcd_fields (Field3D_MPI *  pthis ,double  tomega ,double  k ,long  loc
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -3029,6 +5324,7 @@ int  set_lhcd_fields (Field3D_MPI *  pthis ,double  tomega ,double  k ,long  loc
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;
@@ -3093,11 +5389,14 @@ int  test_set_mainland (Field3D_MPI *  pthis ,double  val ){
 	void * *  sync_kernels = 	( 	(  data + i ) )->sync_kernels ;
 	void * *  fdtd_kernels = 	( 	(  data + i ) )->fdtd_kernels ;
 	void * *  dm_kernels = 	( 	(  data + i ) )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( 	(  data + i ) )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( 	(  data + i ) )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( 	(  data + i ) )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( 	(  data + i ) )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( 	(  data + i ) )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( 	(  data + i ) )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( 	(  data + i ) )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( 	(  data + i ) )->yee_setfix_kernels ;
 	void *  rdcd = 	( 	(  data + i ) )->rdcd ;
 	double *  rdcd_host = 	( 	(  data + i ) )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( 	(  data + i ) )->cur_rankx_pscmc ;
@@ -3119,6 +5418,7 @@ int  test_set_mainland (Field3D_MPI *  pthis ,double  val ){
 	double  delta_y = 	( 	(  data + i ) )->delta_y ;
 	double  delta_z = 	( 	(  data + i ) )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( 	(  data + i ) )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( 	(  data + i ) )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( 	(  data + i ) )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( 	(  data + i ) )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( 	(  data + i ) )->blas_get_ITG_Potential_kernel ;

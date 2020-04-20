@@ -1,3 +1,10 @@
+List of Changes in SymPIC 0.3.0
+
+* Add New explicit 2nd-order charge conservative symplectic non-relativistic PIC scheme in the cylindrical mesh (can be used by setting USE_TORI in the configuration file to 1, R_0 is specified by the TORI_X0 variable)
+* Add New Multi-step sort Feature for explicit 2nd-order charge conservative symplectic PIC scheme in the cylindrical mesh (can be used by setting NUM_MULTI_STEP_SORT in the configuration file)
+* Add New locally implicit charge conservative symplectic relativistic PIC scheme in slab and cylindrical meshes (can be used by setting USE_REL in the configuration file to 1)
+* Now particles can be initialized by using the user_defined_particle_distribution function in user_defined_particle_distribution.c (USE_USER_DEFINED_PARTICLE_DISTRIBUTION in the configuration file should be set to 1 in this case)
+
 List of Changes in SymPIC 0.1.3
 
 * Add support on all unix-like systems

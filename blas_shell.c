@@ -5,6 +5,8 @@
 	#ifndef   NCSPIC_SEQ_FIELD    
 		#include <mpi.h>
 
+#define PS_MPI_CHAR MPI_CHAR
+
 #define PS_MPI_INT MPI_INT
 
 #define PS_MPI_DOUBLE MPI_DOUBLE
@@ -49,7 +51,7 @@ typedef struct { 	void *  pe ;
 	int  ovlp ;
 	int  num_ele ;
 	int  CD_type ;
-	void *   sync_layer_pscmc  [NUM_SYNC_LAYER];	void *   swap_layer_pscmc  [NUM_SYNC_LAYER];	void *   sync_kernels  [NUM_SYNC_KERNEL];	void *   fdtd_kernels  [NUM_FDTD_KERNEL];	void *   dm_kernels  [1];	void *   geo_yeefdtd_kernels  [1];	void *   geo_yeefdtd_rect_kernels  [1];	void *   yee_abc_kernels  [8];	void *   yee_pec_kernels  [8];	void *   yee_damp_kernels  [8];	void *  rdcd ;
+	void *   sync_layer_pscmc  [NUM_SYNC_LAYER];	void *   swap_layer_pscmc  [NUM_SYNC_LAYER];	void *   sync_kernels  [NUM_SYNC_KERNEL];	void *   fdtd_kernels  [NUM_FDTD_KERNEL];	void *   dm_kernels  [3];	void *   dmbihamt_kernels  [7];	void *   geo_yeefdtd_kernels  [2];	void *   geo_yeefdtd_rect_kernels  [1];	void *   hydroA_kernels  [8];	void *   yee_abc_kernels  [8];	void *   yee_pec_kernels  [8];	void *   yee_damp_kernels  [8];	void *   yee_setfix_kernels  [8];	void *  rdcd ;
 	double *  rdcd_host ;
 	void *  cur_rankx_pscmc ;
 	void *  cur_ranky_pscmc ;
@@ -70,6 +72,7 @@ typedef struct { 	void *  pe ;
 	double  delta_y ;
 	double  delta_z ;
 	void *  blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel ;
@@ -88,7 +91,7 @@ typedef struct { 	void *  pe ;
 	Field3D_Seq *  pFoutJ ;
 	Field3D_Seq *  pLFoutJ ;
 	Field3D_Seq *  pFoutEN ;
-	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [8];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
+	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [9];	void *   implicit_kernel  [2];	void *   rel_1st_kernel  [2];	void *   krook_collision_test_kernel  [2];	void *   nonrel_test_kernel  [18];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel ;
 	void *  move_back_kernel_kernel ;
 	double  Mass ;
@@ -99,6 +102,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_kernel ;
 	void *  split_pass_y_kernel ;
 	void *  split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel ;
@@ -109,12 +115,18 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel ;
 	void *  calculate_rho_kernel ;
@@ -141,6 +153,7 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp ;
 	Field3D_MPI  MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldEtmp2 ;
 	Field3D_MPI  MPI_fieldBtmp1 ;
 	Field3D_MPI  MPI_fieldPMLB ;
 	Field3D_MPI  MPI_fieldPMLE ;
@@ -160,6 +173,11 @@ typedef struct { 	void *  pe ;
 	long  allzmax ;
 	double  use_pml_sigma_max ;
 	double  dt ;
+	int  o_N_l ;
+	int  o_N_M ;
+	double *  o_pmass ;
+	double *  o_pcharge ;
+	int *  o_particle_type ;
 } Particle_in_Cell_MPI;
 	#ifndef   LINEAR_OPERATOR_PICUS_001    
 		
@@ -183,12 +201,30 @@ typedef struct { 	Field3D_MPI *  r1 ;
 	void *  fv ;
 	int  zmax ;
 	double  solve_err ;
-} bicg_space;
+} bicg_space;typedef struct { 	bicg_space  bs ;
+	linear_operator_mpi  oscc ;
+	Field3D_MPI *  x0 ;
+	Field3D_MPI *  oscc_x0 ;
+	Field3D_MPI *  res_tmp ;
+	void *  fv ;
+	void *   p_vfv  [5];	int  newton_zmax ;
+	int  zmax ;
+	double  solve_err ;
+	double  newton_solve_err ;
+	double  epsl ;
+} jfnk_newton_space;
 	#else
 		
 	 #endif
 #include "c_/c_pscmc_inc.h"
 #include "openmp_/openmp_pscmc_inc.h"
+#include "c_/hydro_A.kernel_inc.h"
+#include "c_/implicit_particle_mover.kernel_inc.h"
+#include "c_/type3_georel.kernel_inc.h"
+#include "c_/inner_split_pass.kernel_inc.h"
+#include "c_/geo_particle_iter_mass.kernel_inc.h"
+#include "c_/geo_particle_iter.kernel_inc.h"
+#include "c_/rel_particle_iter.kernel_inc.h"
 #include "c_/yeefdtd.kernel_inc.h"
 #include "c_/mergefields.kernel_inc.h"
 #include "c_/miniblas.kernel_inc.h"
@@ -196,13 +232,18 @@ typedef struct { 	Field3D_MPI *  r1 ;
 #include "c_/move_back.kernel_inc.h"
 #include "c_/particle_iter.kernel_inc.h"
 #include "c_/mur_abc.kernel_inc.h"
+#include "c_/dmbihamt.kernel_inc.h"
 #include "c_/dm.kernel_inc.h"
 #include "c_/geo_yeefdtd_rect.kernel_inc.h"
 #include "c_/geo_yeefdtd.kernel_inc.h"
-#include "c_/geo_particle_iter_mass.kernel_inc.h"
-#include "c_/geo_particle_iter.kernel_inc.h"
-#include "c_/rel_particle_iter.kernel_inc.h"
 #include "c_yeefdtd.h"
+#include "openmp_/hydro_A.kernel_inc.h"
+#include "openmp_/implicit_particle_mover.kernel_inc.h"
+#include "openmp_/type3_georel.kernel_inc.h"
+#include "openmp_/inner_split_pass.kernel_inc.h"
+#include "openmp_/geo_particle_iter_mass.kernel_inc.h"
+#include "openmp_/geo_particle_iter.kernel_inc.h"
+#include "openmp_/rel_particle_iter.kernel_inc.h"
 #include "openmp_/yeefdtd.kernel_inc.h"
 #include "openmp_/mergefields.kernel_inc.h"
 #include "openmp_/miniblas.kernel_inc.h"
@@ -210,12 +251,10 @@ typedef struct { 	Field3D_MPI *  r1 ;
 #include "openmp_/move_back.kernel_inc.h"
 #include "openmp_/particle_iter.kernel_inc.h"
 #include "openmp_/mur_abc.kernel_inc.h"
+#include "openmp_/dmbihamt.kernel_inc.h"
 #include "openmp_/dm.kernel_inc.h"
 #include "openmp_/geo_yeefdtd_rect.kernel_inc.h"
 #include "openmp_/geo_yeefdtd.kernel_inc.h"
-#include "openmp_/geo_particle_iter_mass.kernel_inc.h"
-#include "openmp_/geo_particle_iter.kernel_inc.h"
-#include "openmp_/rel_particle_iter.kernel_inc.h"
 #include "openmp_yeefdtd.h"
 #include "space_filling_curve.h"
 #include "mpifields.h"
@@ -239,11 +278,14 @@ int  c_blas_sum_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -265,6 +307,7 @@ int  c_blas_sum_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -361,11 +404,14 @@ int  openmp_blas_sum_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -387,6 +433,7 @@ int  openmp_blas_sum_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -483,11 +530,14 @@ int  blas_sum_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -509,6 +559,7 @@ int  blas_sum_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -565,11 +616,14 @@ int  c_blas_dot_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_Seq
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -591,6 +645,7 @@ int  c_blas_dot_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_Seq
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -688,11 +743,14 @@ int  openmp_blas_dot_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -714,6 +772,7 @@ int  openmp_blas_dot_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -811,11 +870,14 @@ int  blas_dot_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_Seq *
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -837,6 +899,7 @@ int  blas_dot_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_Seq *
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -893,11 +956,14 @@ int  c_blas_findmax_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -919,6 +985,7 @@ int  c_blas_findmax_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -1015,11 +1082,14 @@ int  openmp_blas_findmax_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -1041,6 +1111,7 @@ int  openmp_blas_findmax_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -1137,11 +1208,14 @@ int  blas_findmax_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -1163,6 +1237,7 @@ int  blas_findmax_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -1219,11 +1294,14 @@ int  c_blas_mulxy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_S
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -1245,6 +1323,7 @@ int  c_blas_mulxy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_S
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -1334,11 +1413,14 @@ int  openmp_blas_mulxy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Fiel
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -1360,6 +1442,7 @@ int  openmp_blas_mulxy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Fiel
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -1449,11 +1532,14 @@ int  blas_mulxy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_Seq
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -1475,6 +1561,7 @@ int  blas_mulxy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_Seq
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -1523,11 +1610,14 @@ int  c_blas_axpby_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  a
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -1549,6 +1639,7 @@ int  c_blas_axpby_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  a
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -1648,11 +1739,14 @@ int  openmp_blas_axpby_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,doub
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -1674,6 +1768,7 @@ int  openmp_blas_axpby_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,doub
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -1773,11 +1868,14 @@ int  blas_axpby_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  a ,
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -1799,6 +1897,7 @@ int  blas_axpby_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  a ,
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -1847,11 +1946,14 @@ int  c_blas_axpy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  a 
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -1873,6 +1975,7 @@ int  c_blas_axpy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  a 
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -1967,11 +2070,14 @@ int  openmp_blas_axpy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,doubl
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -1993,6 +2099,7 @@ int  openmp_blas_axpy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,doubl
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -2087,11 +2194,14 @@ int  blas_axpy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  a ,F
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -2113,6 +2223,7 @@ int  blas_axpy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  a ,F
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -2161,11 +2272,14 @@ int  c_blas_yisax_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  a
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -2187,6 +2301,7 @@ int  c_blas_yisax_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  a
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -2281,11 +2396,14 @@ int  openmp_blas_yisax_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,doub
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -2307,6 +2425,7 @@ int  openmp_blas_yisax_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,doub
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -2401,11 +2520,14 @@ int  blas_yisax_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  a ,
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -2427,6 +2549,7 @@ int  blas_yisax_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  a ,
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -2475,11 +2598,14 @@ int  c_blas_invy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -2501,6 +2627,7 @@ int  c_blas_invy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -2589,11 +2716,14 @@ int  openmp_blas_invy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -2615,6 +2745,7 @@ int  openmp_blas_invy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -2703,11 +2834,14 @@ int  blas_invy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -2729,6 +2863,7 @@ int  blas_invy_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -2777,11 +2912,14 @@ int  c_blas_get_ITG_Potential_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -2803,6 +2941,7 @@ int  c_blas_get_ITG_Potential_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -2898,11 +3037,14 @@ int  openmp_blas_get_ITG_Potential_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Se
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -2924,6 +3066,7 @@ int  openmp_blas_get_ITG_Potential_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Se
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -3019,11 +3162,14 @@ int  blas_get_ITG_Potential_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y 
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -3045,6 +3191,7 @@ int  blas_get_ITG_Potential_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y 
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -3093,11 +3240,14 @@ int  c_blas_yisconst_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -3119,6 +3269,7 @@ int  c_blas_yisconst_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -3212,11 +3363,14 @@ int  openmp_blas_yisconst_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,d
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -3238,6 +3392,7 @@ int  openmp_blas_yisconst_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,d
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -3331,11 +3486,14 @@ int  blas_yisconst_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -3357,6 +3515,7 @@ int  blas_yisconst_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,double  
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -3405,11 +3564,14 @@ int  c_blas_yiszero_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -3431,6 +3593,7 @@ int  c_blas_yiszero_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -3519,11 +3682,14 @@ int  openmp_blas_yiszero_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -3545,6 +3711,7 @@ int  openmp_blas_yiszero_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -3633,11 +3800,14 @@ int  blas_yiszero_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -3659,6 +3829,7 @@ int  blas_yiszero_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -3687,7 +3858,7 @@ int  blas_yiszero_Field3D_MPI (Field3D_MPI *  pthis ,Field3D_MPI *  y ){
 	{
 	blas_yiszero_Field3D_Seq ( 	(  data + i ) , 	(  	( y )->data + i ) );
 }	return  0 ;}
-int  c_blas_yiszero_synced_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
+int  c_blas_mulxy_numele3_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_Seq *  x ){
 	void *  pe = 	( pthis )->pe ;
 	long  xlen = 	( pthis )->xlen ;
 	long  ylen = 	( pthis )->ylen ;
@@ -3707,11 +3878,14 @@ int  c_blas_yiszero_synced_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y )
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -3733,6 +3907,323 @@ int  c_blas_yiszero_synced_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y )
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( pthis )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( pthis )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( pthis )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( pthis )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( pthis )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( pthis )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( pthis )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( pthis )->blas_sum_kernel ;
+	long  XLEN = xlen ;
+	long  YLEN = ylen ;
+	long  ZLEN = zlen ;
+	long  y_cpu_core = numvec ;
+	c_blas_mulxy_numele3_scmc_set_parameter_x ( blas_mulxy_numele3_kernel , 	( x )->main_data );
+	c_blas_mulxy_numele3_scmc_set_parameter_y ( blas_mulxy_numele3_kernel , 	( y )->main_data );
+	c_pscmc_mem  c_alloc_prefix_num_ele ;
+	c_pscmc_mem_init ( pe , 	& ( c_alloc_prefix_num_ele ) , PS_INT_NUM , 0 );
+((((int * )	( c_alloc_prefix_num_ele ).h_data))[0] = num_ele);
+	c_blas_mulxy_numele3_scmc_set_parameter_num_ele ( blas_mulxy_numele3_kernel , 	& ( c_alloc_prefix_num_ele ) );
+	c_pscmc_mem  c_alloc_prefix_zblock ;
+	c_pscmc_mem_init ( pe , 	& ( c_alloc_prefix_zblock ) , PS_LONG_NUM , 0 );
+((((long * )	( c_alloc_prefix_zblock ).h_data))[0] = zblock);
+	c_blas_mulxy_numele3_scmc_set_parameter_zblock ( blas_mulxy_numele3_kernel , 	& ( c_alloc_prefix_zblock ) );
+	c_pscmc_mem  c_alloc_prefix_yblock ;
+	c_pscmc_mem_init ( pe , 	& ( c_alloc_prefix_yblock ) , PS_LONG_NUM , 0 );
+((((long * )	( c_alloc_prefix_yblock ).h_data))[0] = yblock);
+	c_blas_mulxy_numele3_scmc_set_parameter_yblock ( blas_mulxy_numele3_kernel , 	& ( c_alloc_prefix_yblock ) );
+	c_pscmc_mem  c_alloc_prefix_xblock ;
+	c_pscmc_mem_init ( pe , 	& ( c_alloc_prefix_xblock ) , PS_LONG_NUM , 0 );
+((((long * )	( c_alloc_prefix_xblock ).h_data))[0] = xblock);
+	c_blas_mulxy_numele3_scmc_set_parameter_xblock ( blas_mulxy_numele3_kernel , 	& ( c_alloc_prefix_xblock ) );
+	c_pscmc_mem  c_alloc_prefix_ovlp ;
+	c_pscmc_mem_init ( pe , 	& ( c_alloc_prefix_ovlp ) , PS_INT_NUM , 0 );
+((((int * )	( c_alloc_prefix_ovlp ).h_data))[0] = ovlp);
+	c_blas_mulxy_numele3_scmc_set_parameter_ovlp ( blas_mulxy_numele3_kernel , 	& ( c_alloc_prefix_ovlp ) );
+	c_pscmc_mem  c_alloc_prefix_ZLEN ;
+	c_pscmc_mem_init ( pe , 	& ( c_alloc_prefix_ZLEN ) , PS_LONG_NUM , 0 );
+((((long * )	( c_alloc_prefix_ZLEN ).h_data))[0] = ZLEN);
+	c_blas_mulxy_numele3_scmc_set_parameter_ZLEN ( blas_mulxy_numele3_kernel , 	& ( c_alloc_prefix_ZLEN ) );
+	c_pscmc_mem  c_alloc_prefix_YLEN ;
+	c_pscmc_mem_init ( pe , 	& ( c_alloc_prefix_YLEN ) , PS_LONG_NUM , 0 );
+((((long * )	( c_alloc_prefix_YLEN ).h_data))[0] = YLEN);
+	c_blas_mulxy_numele3_scmc_set_parameter_YLEN ( blas_mulxy_numele3_kernel , 	& ( c_alloc_prefix_YLEN ) );
+	c_pscmc_mem  c_alloc_prefix_XLEN ;
+	c_pscmc_mem_init ( pe , 	& ( c_alloc_prefix_XLEN ) , PS_LONG_NUM , 0 );
+((((long * )	( c_alloc_prefix_XLEN ).h_data))[0] = XLEN);
+	c_blas_mulxy_numele3_scmc_set_parameter_XLEN ( blas_mulxy_numele3_kernel , 	& ( c_alloc_prefix_XLEN ) );
+	c_pscmc_mem  c_alloc_prefix_numvec ;
+	c_pscmc_mem_init ( pe , 	& ( c_alloc_prefix_numvec ) , PS_LONG_NUM , 0 );
+((((long * )	( c_alloc_prefix_numvec ).h_data))[0] = numvec);
+	c_blas_mulxy_numele3_scmc_set_parameter_numvec ( blas_mulxy_numele3_kernel , 	& ( c_alloc_prefix_numvec ) );
+	c_pscmc_mem  c_alloc_prefix_y_cpu_core ;
+	c_pscmc_mem_init ( pe , 	& ( c_alloc_prefix_y_cpu_core ) , PS_LONG_NUM , 0 );
+((((long * )	( c_alloc_prefix_y_cpu_core ).h_data))[0] = y_cpu_core);
+	c_blas_mulxy_numele3_scmc_set_parameter_y_cpu_core ( blas_mulxy_numele3_kernel , 	& ( c_alloc_prefix_y_cpu_core ) );
+	c_blas_mulxy_numele3_exec ( blas_mulxy_numele3_kernel , 1 , numvec );
+	c_pscmc_mem_destroy ( 	& ( c_alloc_prefix_num_ele ) );
+	c_pscmc_mem_destroy ( 	& ( c_alloc_prefix_zblock ) );
+	c_pscmc_mem_destroy ( 	& ( c_alloc_prefix_yblock ) );
+	c_pscmc_mem_destroy ( 	& ( c_alloc_prefix_xblock ) );
+	c_pscmc_mem_destroy ( 	& ( c_alloc_prefix_ovlp ) );
+	c_pscmc_mem_destroy ( 	& ( c_alloc_prefix_ZLEN ) );
+	c_pscmc_mem_destroy ( 	& ( c_alloc_prefix_YLEN ) );
+	c_pscmc_mem_destroy ( 	& ( c_alloc_prefix_XLEN ) );
+	c_pscmc_mem_destroy ( 	& ( c_alloc_prefix_numvec ) );
+	c_pscmc_mem_destroy ( 	& ( c_alloc_prefix_y_cpu_core ) );
+	return  0 ;}
+int  openmp_blas_mulxy_numele3_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_Seq *  x ){
+	void *  pe = 	( pthis )->pe ;
+	long  xlen = 	( pthis )->xlen ;
+	long  ylen = 	( pthis )->ylen ;
+	long  zlen = 	( pthis )->zlen ;
+	long  xblock = 	( pthis )->xblock ;
+	long  yblock = 	( pthis )->yblock ;
+	long  zblock = 	( pthis )->zblock ;
+	long  numvec = 	( pthis )->numvec ;
+	long  x_num_thread_block = 	( pthis )->x_num_thread_block ;
+	long  y_num_thread_block = 	( pthis )->y_num_thread_block ;
+	long  z_num_thread_block = 	( pthis )->z_num_thread_block ;
+	int  ovlp = 	( pthis )->ovlp ;
+	int  num_ele = 	( pthis )->num_ele ;
+	int  CD_type = 	( pthis )->CD_type ;
+	void * *  sync_layer_pscmc = 	( pthis )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( pthis )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( pthis )->sync_kernels ;
+	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
+	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
+	void *  rdcd = 	( pthis )->rdcd ;
+	double *  rdcd_host = 	( pthis )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( pthis )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( pthis )->cur_rankz_pscmc ;
+	void *  xoffset = 	( pthis )->xoffset ;
+	void *  yoffset = 	( pthis )->yoffset ;
+	void *  zoffset = 	( pthis )->zoffset ;
+	long *  global_x_offset = 	( pthis )->global_x_offset ;
+	long *  global_y_offset = 	( pthis )->global_y_offset ;
+	long *  global_z_offset = 	( pthis )->global_z_offset ;
+	long *  global_id = 	( pthis )->global_id ;
+	long  global_pid = 	( pthis )->global_pid ;
+	long *  adj_ids = 	( pthis )->adj_ids ;
+	long *  adj_processes = 	( pthis )->adj_processes ;
+	long *  adj_local_tid = 	( pthis )->adj_local_tid ;
+	void *  main_data = 	( pthis )->main_data ;
+	double  delta_x = 	( pthis )->delta_x ;
+	double  delta_y = 	( pthis )->delta_y ;
+	double  delta_z = 	( pthis )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( pthis )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( pthis )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( pthis )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( pthis )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( pthis )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( pthis )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( pthis )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( pthis )->blas_sum_kernel ;
+	long  XLEN = xlen ;
+	long  YLEN = ylen ;
+	long  ZLEN = zlen ;
+	long  y_cpu_core = numvec ;
+	openmp_blas_mulxy_numele3_scmc_set_parameter_x ( blas_mulxy_numele3_kernel , 	( x )->main_data );
+	openmp_blas_mulxy_numele3_scmc_set_parameter_y ( blas_mulxy_numele3_kernel , 	( y )->main_data );
+	openmp_pscmc_mem  openmp_alloc_prefix_num_ele ;
+	openmp_pscmc_mem_init ( pe , 	& ( openmp_alloc_prefix_num_ele ) , PS_INT_NUM , 0 );
+((((int * )	( openmp_alloc_prefix_num_ele ).h_data))[0] = num_ele);
+	openmp_blas_mulxy_numele3_scmc_set_parameter_num_ele ( blas_mulxy_numele3_kernel , 	& ( openmp_alloc_prefix_num_ele ) );
+	openmp_pscmc_mem  openmp_alloc_prefix_zblock ;
+	openmp_pscmc_mem_init ( pe , 	& ( openmp_alloc_prefix_zblock ) , PS_LONG_NUM , 0 );
+((((long * )	( openmp_alloc_prefix_zblock ).h_data))[0] = zblock);
+	openmp_blas_mulxy_numele3_scmc_set_parameter_zblock ( blas_mulxy_numele3_kernel , 	& ( openmp_alloc_prefix_zblock ) );
+	openmp_pscmc_mem  openmp_alloc_prefix_yblock ;
+	openmp_pscmc_mem_init ( pe , 	& ( openmp_alloc_prefix_yblock ) , PS_LONG_NUM , 0 );
+((((long * )	( openmp_alloc_prefix_yblock ).h_data))[0] = yblock);
+	openmp_blas_mulxy_numele3_scmc_set_parameter_yblock ( blas_mulxy_numele3_kernel , 	& ( openmp_alloc_prefix_yblock ) );
+	openmp_pscmc_mem  openmp_alloc_prefix_xblock ;
+	openmp_pscmc_mem_init ( pe , 	& ( openmp_alloc_prefix_xblock ) , PS_LONG_NUM , 0 );
+((((long * )	( openmp_alloc_prefix_xblock ).h_data))[0] = xblock);
+	openmp_blas_mulxy_numele3_scmc_set_parameter_xblock ( blas_mulxy_numele3_kernel , 	& ( openmp_alloc_prefix_xblock ) );
+	openmp_pscmc_mem  openmp_alloc_prefix_ovlp ;
+	openmp_pscmc_mem_init ( pe , 	& ( openmp_alloc_prefix_ovlp ) , PS_INT_NUM , 0 );
+((((int * )	( openmp_alloc_prefix_ovlp ).h_data))[0] = ovlp);
+	openmp_blas_mulxy_numele3_scmc_set_parameter_ovlp ( blas_mulxy_numele3_kernel , 	& ( openmp_alloc_prefix_ovlp ) );
+	openmp_pscmc_mem  openmp_alloc_prefix_ZLEN ;
+	openmp_pscmc_mem_init ( pe , 	& ( openmp_alloc_prefix_ZLEN ) , PS_LONG_NUM , 0 );
+((((long * )	( openmp_alloc_prefix_ZLEN ).h_data))[0] = ZLEN);
+	openmp_blas_mulxy_numele3_scmc_set_parameter_ZLEN ( blas_mulxy_numele3_kernel , 	& ( openmp_alloc_prefix_ZLEN ) );
+	openmp_pscmc_mem  openmp_alloc_prefix_YLEN ;
+	openmp_pscmc_mem_init ( pe , 	& ( openmp_alloc_prefix_YLEN ) , PS_LONG_NUM , 0 );
+((((long * )	( openmp_alloc_prefix_YLEN ).h_data))[0] = YLEN);
+	openmp_blas_mulxy_numele3_scmc_set_parameter_YLEN ( blas_mulxy_numele3_kernel , 	& ( openmp_alloc_prefix_YLEN ) );
+	openmp_pscmc_mem  openmp_alloc_prefix_XLEN ;
+	openmp_pscmc_mem_init ( pe , 	& ( openmp_alloc_prefix_XLEN ) , PS_LONG_NUM , 0 );
+((((long * )	( openmp_alloc_prefix_XLEN ).h_data))[0] = XLEN);
+	openmp_blas_mulxy_numele3_scmc_set_parameter_XLEN ( blas_mulxy_numele3_kernel , 	& ( openmp_alloc_prefix_XLEN ) );
+	openmp_pscmc_mem  openmp_alloc_prefix_numvec ;
+	openmp_pscmc_mem_init ( pe , 	& ( openmp_alloc_prefix_numvec ) , PS_LONG_NUM , 0 );
+((((long * )	( openmp_alloc_prefix_numvec ).h_data))[0] = numvec);
+	openmp_blas_mulxy_numele3_scmc_set_parameter_numvec ( blas_mulxy_numele3_kernel , 	& ( openmp_alloc_prefix_numvec ) );
+	openmp_pscmc_mem  openmp_alloc_prefix_y_cpu_core ;
+	openmp_pscmc_mem_init ( pe , 	& ( openmp_alloc_prefix_y_cpu_core ) , PS_LONG_NUM , 0 );
+((((long * )	( openmp_alloc_prefix_y_cpu_core ).h_data))[0] = y_cpu_core);
+	openmp_blas_mulxy_numele3_scmc_set_parameter_y_cpu_core ( blas_mulxy_numele3_kernel , 	& ( openmp_alloc_prefix_y_cpu_core ) );
+	openmp_blas_mulxy_numele3_exec ( blas_mulxy_numele3_kernel , 1 , numvec );
+	openmp_pscmc_mem_destroy ( 	& ( openmp_alloc_prefix_num_ele ) );
+	openmp_pscmc_mem_destroy ( 	& ( openmp_alloc_prefix_zblock ) );
+	openmp_pscmc_mem_destroy ( 	& ( openmp_alloc_prefix_yblock ) );
+	openmp_pscmc_mem_destroy ( 	& ( openmp_alloc_prefix_xblock ) );
+	openmp_pscmc_mem_destroy ( 	& ( openmp_alloc_prefix_ovlp ) );
+	openmp_pscmc_mem_destroy ( 	& ( openmp_alloc_prefix_ZLEN ) );
+	openmp_pscmc_mem_destroy ( 	& ( openmp_alloc_prefix_YLEN ) );
+	openmp_pscmc_mem_destroy ( 	& ( openmp_alloc_prefix_XLEN ) );
+	openmp_pscmc_mem_destroy ( 	& ( openmp_alloc_prefix_numvec ) );
+	openmp_pscmc_mem_destroy ( 	& ( openmp_alloc_prefix_y_cpu_core ) );
+	return  0 ;}
+int  blas_mulxy_numele3_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_Seq *  x ){
+	void *  pe = 	( pthis )->pe ;
+	long  xlen = 	( pthis )->xlen ;
+	long  ylen = 	( pthis )->ylen ;
+	long  zlen = 	( pthis )->zlen ;
+	long  xblock = 	( pthis )->xblock ;
+	long  yblock = 	( pthis )->yblock ;
+	long  zblock = 	( pthis )->zblock ;
+	long  numvec = 	( pthis )->numvec ;
+	long  x_num_thread_block = 	( pthis )->x_num_thread_block ;
+	long  y_num_thread_block = 	( pthis )->y_num_thread_block ;
+	long  z_num_thread_block = 	( pthis )->z_num_thread_block ;
+	int  ovlp = 	( pthis )->ovlp ;
+	int  num_ele = 	( pthis )->num_ele ;
+	int  CD_type = 	( pthis )->CD_type ;
+	void * *  sync_layer_pscmc = 	( pthis )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( pthis )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( pthis )->sync_kernels ;
+	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
+	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
+	void *  rdcd = 	( pthis )->rdcd ;
+	double *  rdcd_host = 	( pthis )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( pthis )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( pthis )->cur_rankz_pscmc ;
+	void *  xoffset = 	( pthis )->xoffset ;
+	void *  yoffset = 	( pthis )->yoffset ;
+	void *  zoffset = 	( pthis )->zoffset ;
+	long *  global_x_offset = 	( pthis )->global_x_offset ;
+	long *  global_y_offset = 	( pthis )->global_y_offset ;
+	long *  global_z_offset = 	( pthis )->global_z_offset ;
+	long *  global_id = 	( pthis )->global_id ;
+	long  global_pid = 	( pthis )->global_pid ;
+	long *  adj_ids = 	( pthis )->adj_ids ;
+	long *  adj_processes = 	( pthis )->adj_processes ;
+	long *  adj_local_tid = 	( pthis )->adj_local_tid ;
+	void *  main_data = 	( pthis )->main_data ;
+	double  delta_x = 	( pthis )->delta_x ;
+	double  delta_y = 	( pthis )->delta_y ;
+	double  delta_z = 	( pthis )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( pthis )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( pthis )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( pthis )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( pthis )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( pthis )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( pthis )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( pthis )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( pthis )->blas_sum_kernel ;
+	return  ((	(  0 == CD_type ))?(	c_blas_mulxy_numele3_Field3D_Seq ( pthis , y , x )):(((	(  1 == CD_type ))?(	openmp_blas_mulxy_numele3_Field3D_Seq ( pthis , y , x )):(0)))) ;}
+int  blas_mulxy_numele3_Field3D_MPI (Field3D_MPI *  pthis ,Field3D_MPI *  y ,Field3D_MPI *  x ){
+	Field3D_Seq *  data = 	( pthis )->data ;
+	long  num_runtime = 	( pthis )->num_runtime ;
+	PS_MPI_Comm  comm = 	( pthis )->comm ;
+	long  cur_rank = 	( pthis )->cur_rank ;
+	long  num_mpi_process = 	( pthis )->num_mpi_process ;
+	long *  sync_layer_len = 	( pthis )->sync_layer_len ;
+	PS_MPI_Request * *  rqst = 	( pthis )->rqst ;
+	One_Particle_Collection *  particles = 	( pthis )->particles ;
+	int  num_spec = 	( pthis )->num_spec ;
+	double  damp_vars = 	( pthis )->damp_vars ;
+	int  i ;
+	for (i=0 ; 	(  i < num_runtime ) ; i++)
+	{
+	blas_mulxy_numele3_Field3D_Seq ( 	(  data + i ) , 	(  	( y )->data + i ) , 	(  	( x )->data + i ) );
+}	return  0 ;}
+int  c_blas_yiszero_synced_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
+	void *  pe = 	( pthis )->pe ;
+	long  xlen = 	( pthis )->xlen ;
+	long  ylen = 	( pthis )->ylen ;
+	long  zlen = 	( pthis )->zlen ;
+	long  xblock = 	( pthis )->xblock ;
+	long  yblock = 	( pthis )->yblock ;
+	long  zblock = 	( pthis )->zblock ;
+	long  numvec = 	( pthis )->numvec ;
+	long  x_num_thread_block = 	( pthis )->x_num_thread_block ;
+	long  y_num_thread_block = 	( pthis )->y_num_thread_block ;
+	long  z_num_thread_block = 	( pthis )->z_num_thread_block ;
+	int  ovlp = 	( pthis )->ovlp ;
+	int  num_ele = 	( pthis )->num_ele ;
+	int  CD_type = 	( pthis )->CD_type ;
+	void * *  sync_layer_pscmc = 	( pthis )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( pthis )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( pthis )->sync_kernels ;
+	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
+	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
+	void *  rdcd = 	( pthis )->rdcd ;
+	double *  rdcd_host = 	( pthis )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( pthis )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( pthis )->cur_rankz_pscmc ;
+	void *  xoffset = 	( pthis )->xoffset ;
+	void *  yoffset = 	( pthis )->yoffset ;
+	void *  zoffset = 	( pthis )->zoffset ;
+	long *  global_x_offset = 	( pthis )->global_x_offset ;
+	long *  global_y_offset = 	( pthis )->global_y_offset ;
+	long *  global_z_offset = 	( pthis )->global_z_offset ;
+	long *  global_id = 	( pthis )->global_id ;
+	long  global_pid = 	( pthis )->global_pid ;
+	long *  adj_ids = 	( pthis )->adj_ids ;
+	long *  adj_processes = 	( pthis )->adj_processes ;
+	long *  adj_local_tid = 	( pthis )->adj_local_tid ;
+	void *  main_data = 	( pthis )->main_data ;
+	double  delta_x = 	( pthis )->delta_x ;
+	double  delta_y = 	( pthis )->delta_y ;
+	double  delta_z = 	( pthis )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -3821,11 +4312,14 @@ int  openmp_blas_yiszero_synced_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -3847,6 +4341,7 @@ int  openmp_blas_yiszero_synced_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -3935,11 +4430,14 @@ int  blas_yiszero_synced_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	void * *  sync_kernels = 	( pthis )->sync_kernels ;
 	void * *  fdtd_kernels = 	( pthis )->fdtd_kernels ;
 	void * *  dm_kernels = 	( pthis )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( pthis )->dmbihamt_kernels ;
 	void * *  geo_yeefdtd_kernels = 	( pthis )->geo_yeefdtd_kernels ;
 	void * *  geo_yeefdtd_rect_kernels = 	( pthis )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( pthis )->hydroA_kernels ;
 	void * *  yee_abc_kernels = 	( pthis )->yee_abc_kernels ;
 	void * *  yee_pec_kernels = 	( pthis )->yee_pec_kernels ;
 	void * *  yee_damp_kernels = 	( pthis )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( pthis )->yee_setfix_kernels ;
 	void *  rdcd = 	( pthis )->rdcd ;
 	double *  rdcd_host = 	( pthis )->rdcd_host ;
 	void *  cur_rankx_pscmc = 	( pthis )->cur_rankx_pscmc ;
@@ -3961,6 +4459,7 @@ int  blas_yiszero_synced_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ){
 	double  delta_y = 	( pthis )->delta_y ;
 	double  delta_z = 	( pthis )->delta_z ;
 	void *  blas_yiszero_synced_kernel = 	( pthis )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( pthis )->blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel = 	( pthis )->blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel = 	( pthis )->blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel = 	( pthis )->blas_get_ITG_Potential_kernel ;
@@ -4041,13 +4540,6 @@ int  mpi_simple_bicgstab (bicg_space *  pthis ,Field3D_MPI *  x ,Field3D_MPI *  
 	double  omgi1 = 1.00000000000000000e+00 ;
 	double  alpha = 1.00000000000000000e+00 ;
 	long  cur_rank = 	( x )->cur_rank ;
-	if (  	(  cur_rank == 0 )  ){  
-			fprintf ( stderr , "Info: bicgstab: maxb=%e\n" , maxr );
-
-	}else{
-		0;
-
-	 }
 	int  z = 1 ;
 	double  maxv = 	blas_findmax_Field3D_MPI ( ri1 , ri1 ) ;
 	for (0 ; 	(  maxv > solve_err ) ; 0)
@@ -4061,18 +4553,171 @@ int  mpi_simple_bicgstab (bicg_space *  pthis ,Field3D_MPI *  x ,Field3D_MPI *  
 	 }
 	double  rhoi = 	blas_dot_Field3D_MPI ( ri1 , r0h , ri1 ) ;
 	double  beta = 	(  	(  	(  rhoi / rhoi1 ) * alpha ) / omgi1 ) ;
-	blas_axpby_Field3D_MPI ( pi1 , pi1 , 	- ( 	(  beta * omgi1 ) ) , ri1 , 1 );
-	blas_axpby_Field3D_MPI ( pi1 , pi1 , 1 , ri , 1 );
+	if (  0  ){  
+		{
+	void *  pe = 	( ri1->data )->pe ;
+	long  xlen = 	( ri1->data )->xlen ;
+	long  ylen = 	( ri1->data )->ylen ;
+	long  zlen = 	( ri1->data )->zlen ;
+	long  xblock = 	( ri1->data )->xblock ;
+	long  yblock = 	( ri1->data )->yblock ;
+	long  zblock = 	( ri1->data )->zblock ;
+	long  numvec = 	( ri1->data )->numvec ;
+	long  x_num_thread_block = 	( ri1->data )->x_num_thread_block ;
+	long  y_num_thread_block = 	( ri1->data )->y_num_thread_block ;
+	long  z_num_thread_block = 	( ri1->data )->z_num_thread_block ;
+	int  ovlp = 	( ri1->data )->ovlp ;
+	int  num_ele = 	( ri1->data )->num_ele ;
+	int  CD_type = 	( ri1->data )->CD_type ;
+	void * *  sync_layer_pscmc = 	( ri1->data )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( ri1->data )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( ri1->data )->sync_kernels ;
+	void * *  fdtd_kernels = 	( ri1->data )->fdtd_kernels ;
+	void * *  dm_kernels = 	( ri1->data )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( ri1->data )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( ri1->data )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( ri1->data )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( ri1->data )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( ri1->data )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( ri1->data )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( ri1->data )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( ri1->data )->yee_setfix_kernels ;
+	void *  rdcd = 	( ri1->data )->rdcd ;
+	double *  rdcd_host = 	( ri1->data )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( ri1->data )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( ri1->data )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( ri1->data )->cur_rankz_pscmc ;
+	void *  xoffset = 	( ri1->data )->xoffset ;
+	void *  yoffset = 	( ri1->data )->yoffset ;
+	void *  zoffset = 	( ri1->data )->zoffset ;
+	long *  global_x_offset = 	( ri1->data )->global_x_offset ;
+	long *  global_y_offset = 	( ri1->data )->global_y_offset ;
+	long *  global_z_offset = 	( ri1->data )->global_z_offset ;
+	long *  global_id = 	( ri1->data )->global_id ;
+	long  global_pid = 	( ri1->data )->global_pid ;
+	long *  adj_ids = 	( ri1->data )->adj_ids ;
+	long *  adj_processes = 	( ri1->data )->adj_processes ;
+	long *  adj_local_tid = 	( ri1->data )->adj_local_tid ;
+	void *  main_data = 	( ri1->data )->main_data ;
+	double  delta_x = 	( ri1->data )->delta_x ;
+	double  delta_y = 	( ri1->data )->delta_y ;
+	double  delta_z = 	( ri1->data )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( ri1->data )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( ri1->data )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( ri1->data )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( ri1->data )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( ri1->data )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( ri1->data )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( ri1->data )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( ri1->data )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( ri1->data )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( ri1->data )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( ri1->data )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( ri1->data )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( ri1->data )->blas_sum_kernel ;
+	fprintf ( stderr , "b=%e r=%e o=%e\n" , beta , rhoi , omgi1 );
+	fprintf ( stderr , "xdata=%e\n" , ((((double * * )	( ri1->data )->main_data))[0])[	(  	(  0 * 	(  	( ri1->data )->xblock * 	(  	( ri1->data )->yblock * 	(  	( ri1->data )->zblock * 	( ri1->data )->num_ele ) ) ) ) + 	(  0 + 	(  	( ri1->data )->num_ele * 	(  	(  0 + 	( ri1->data )->ovlp ) + 	(  	( ri1->data )->xblock * 	(  	(  0 + 	( ri1->data )->ovlp ) + 	(  	( ri1->data )->yblock * 	(  0 + 	( ri1->data )->ovlp ) ) ) ) ) ) ) )] );
+	fprintf ( stderr , "xdata=%e\n" , ((((double * * )	( ri1->data )->main_data))[0])[	(  	(  1 * 	(  	( ri1->data )->xblock * 	(  	( ri1->data )->yblock * 	(  	( ri1->data )->zblock * 	( ri1->data )->num_ele ) ) ) ) + 	(  0 + 	(  	( ri1->data )->num_ele * 	(  	(  0 + 	( ri1->data )->ovlp ) + 	(  	( ri1->data )->xblock * 	(  	(  0 + 	( ri1->data )->ovlp ) + 	(  	( ri1->data )->yblock * 	(  0 + 	( ri1->data )->ovlp ) ) ) ) ) ) ) )] );
+}
+	}else{
+		0;
+
+	 }
+	blas_axpby_Field3D_MPI ( pi1 , pi1 , 	- ( 	(  beta * omgi1 ) ) , vi1 , beta );
+	if (  0  ){  
+		{
+	void *  pe = 	( vi1->data )->pe ;
+	long  xlen = 	( vi1->data )->xlen ;
+	long  ylen = 	( vi1->data )->ylen ;
+	long  zlen = 	( vi1->data )->zlen ;
+	long  xblock = 	( vi1->data )->xblock ;
+	long  yblock = 	( vi1->data )->yblock ;
+	long  zblock = 	( vi1->data )->zblock ;
+	long  numvec = 	( vi1->data )->numvec ;
+	long  x_num_thread_block = 	( vi1->data )->x_num_thread_block ;
+	long  y_num_thread_block = 	( vi1->data )->y_num_thread_block ;
+	long  z_num_thread_block = 	( vi1->data )->z_num_thread_block ;
+	int  ovlp = 	( vi1->data )->ovlp ;
+	int  num_ele = 	( vi1->data )->num_ele ;
+	int  CD_type = 	( vi1->data )->CD_type ;
+	void * *  sync_layer_pscmc = 	( vi1->data )->sync_layer_pscmc ;
+	void * *  swap_layer_pscmc = 	( vi1->data )->swap_layer_pscmc ;
+	void * *  sync_kernels = 	( vi1->data )->sync_kernels ;
+	void * *  fdtd_kernels = 	( vi1->data )->fdtd_kernels ;
+	void * *  dm_kernels = 	( vi1->data )->dm_kernels ;
+	void * *  dmbihamt_kernels = 	( vi1->data )->dmbihamt_kernels ;
+	void * *  geo_yeefdtd_kernels = 	( vi1->data )->geo_yeefdtd_kernels ;
+	void * *  geo_yeefdtd_rect_kernels = 	( vi1->data )->geo_yeefdtd_rect_kernels ;
+	void * *  hydroA_kernels = 	( vi1->data )->hydroA_kernels ;
+	void * *  yee_abc_kernels = 	( vi1->data )->yee_abc_kernels ;
+	void * *  yee_pec_kernels = 	( vi1->data )->yee_pec_kernels ;
+	void * *  yee_damp_kernels = 	( vi1->data )->yee_damp_kernels ;
+	void * *  yee_setfix_kernels = 	( vi1->data )->yee_setfix_kernels ;
+	void *  rdcd = 	( vi1->data )->rdcd ;
+	double *  rdcd_host = 	( vi1->data )->rdcd_host ;
+	void *  cur_rankx_pscmc = 	( vi1->data )->cur_rankx_pscmc ;
+	void *  cur_ranky_pscmc = 	( vi1->data )->cur_ranky_pscmc ;
+	void *  cur_rankz_pscmc = 	( vi1->data )->cur_rankz_pscmc ;
+	void *  xoffset = 	( vi1->data )->xoffset ;
+	void *  yoffset = 	( vi1->data )->yoffset ;
+	void *  zoffset = 	( vi1->data )->zoffset ;
+	long *  global_x_offset = 	( vi1->data )->global_x_offset ;
+	long *  global_y_offset = 	( vi1->data )->global_y_offset ;
+	long *  global_z_offset = 	( vi1->data )->global_z_offset ;
+	long *  global_id = 	( vi1->data )->global_id ;
+	long  global_pid = 	( vi1->data )->global_pid ;
+	long *  adj_ids = 	( vi1->data )->adj_ids ;
+	long *  adj_processes = 	( vi1->data )->adj_processes ;
+	long *  adj_local_tid = 	( vi1->data )->adj_local_tid ;
+	void *  main_data = 	( vi1->data )->main_data ;
+	double  delta_x = 	( vi1->data )->delta_x ;
+	double  delta_y = 	( vi1->data )->delta_y ;
+	double  delta_z = 	( vi1->data )->delta_z ;
+	void *  blas_yiszero_synced_kernel = 	( vi1->data )->blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel = 	( vi1->data )->blas_mulxy_numele3_kernel ;
+	void *  blas_yiszero_kernel = 	( vi1->data )->blas_yiszero_kernel ;
+	void *  blas_yisconst_kernel = 	( vi1->data )->blas_yisconst_kernel ;
+	void *  blas_get_ITG_Potential_kernel = 	( vi1->data )->blas_get_ITG_Potential_kernel ;
+	void *  blas_invy_kernel = 	( vi1->data )->blas_invy_kernel ;
+	void *  blas_axpby_kernel = 	( vi1->data )->blas_axpby_kernel ;
+	void *  blas_axpy_kernel = 	( vi1->data )->blas_axpy_kernel ;
+	void *  blas_yisax_kernel = 	( vi1->data )->blas_yisax_kernel ;
+	void *  blas_mulxy_kernel = 	( vi1->data )->blas_mulxy_kernel ;
+	void *  blas_findmax_kernel = 	( vi1->data )->blas_findmax_kernel ;
+	void *  blas_dot_kernel = 	( vi1->data )->blas_dot_kernel ;
+	void *  blas_sum_kernel = 	( vi1->data )->blas_sum_kernel ;
+{
+	long  i ;
+	for ((i = 0) ; 	(  i < 8 ) ; (i = 	(  i + 1 )))
+	{
+	fprintf ( stderr , "pi0%d=%e\n" , i , ((((double * * )	( pi1->data )->main_data))[0])[	(  	(  0 * 	(  	( pi1->data )->xblock * 	(  	( pi1->data )->yblock * 	(  	( pi1->data )->zblock * 	( pi1->data )->num_ele ) ) ) ) + 	(  0 + 	(  	( pi1->data )->num_ele * 	(  	(  i + 	( pi1->data )->ovlp ) + 	(  	( pi1->data )->xblock * 	(  	(  0 + 	( pi1->data )->ovlp ) + 	(  	( pi1->data )->yblock * 	(  0 + 	( pi1->data )->ovlp ) ) ) ) ) ) ) )] );
+	fprintf ( stderr , "pi1%d=%e\n" , i , ((((double * * )	( pi1->data )->main_data))[0])[	(  	(  0 * 	(  	( pi1->data )->xblock * 	(  	( pi1->data )->yblock * 	(  	( pi1->data )->zblock * 	( pi1->data )->num_ele ) ) ) ) + 	(  1 + 	(  	( pi1->data )->num_ele * 	(  	(  i + 	( pi1->data )->ovlp ) + 	(  	( pi1->data )->xblock * 	(  	(  0 + 	( pi1->data )->ovlp ) + 	(  	( pi1->data )->yblock * 	(  0 + 	( pi1->data )->ovlp ) ) ) ) ) ) ) )] );
+	fprintf ( stderr , "vi10%d=%e\n" , i , ((((double * * )	( ri1->data )->main_data))[0])[	(  	(  0 * 	(  	( ri1->data )->xblock * 	(  	( ri1->data )->yblock * 	(  	( ri1->data )->zblock * 	( ri1->data )->num_ele ) ) ) ) + 	(  0 + 	(  	( ri1->data )->num_ele * 	(  	(  i + 	( ri1->data )->ovlp ) + 	(  	( ri1->data )->xblock * 	(  	(  0 + 	( ri1->data )->ovlp ) + 	(  	( ri1->data )->yblock * 	(  0 + 	( ri1->data )->ovlp ) ) ) ) ) ) ) )] );
+	fprintf ( stderr , "vi11%d=%e\n" , i , ((((double * * )	( ri1->data )->main_data))[0])[	(  	(  0 * 	(  	( ri1->data )->xblock * 	(  	( ri1->data )->yblock * 	(  	( ri1->data )->zblock * 	( ri1->data )->num_ele ) ) ) ) + 	(  1 + 	(  	( ri1->data )->num_ele * 	(  	(  i + 	( ri1->data )->ovlp ) + 	(  	( ri1->data )->xblock * 	(  	(  0 + 	( ri1->data )->ovlp ) + 	(  	( ri1->data )->yblock * 	(  0 + 	( ri1->data )->ovlp ) ) ) ) ) ) ) )] );
+}}}
+	}else{
+		0;
+
+	 }
+	blas_axpby_Field3D_MPI ( pi1 , pi1 , 1 , ri1 , 1 );
 	A ( vi1 , pi1 , fv );
-(alpha = 	(  rhoi / 	blas_dot_Field3D_MPI ( vi1 , r0h , vi1 ) ));
+	double  cgl = 	blas_dot_Field3D_MPI ( vi1 , r0h , vi1 ) ;
+	if (  	(  cgl == 0 )  ){  
+		(cgl = 	(  cgl + 1 ));
+
+	}else{
+		0;
+
+	 }
+(alpha = 	(  rhoi / cgl ));
 	blas_yisax_Field3D_MPI ( si , si , 1 , ri1 );
 	blas_axpby_Field3D_MPI ( si , si , 	(  -1 * alpha ) , vi1 , 1 );
 	A ( ti , si , fv );
 (omgi1 = 	(  	blas_dot_Field3D_MPI ( si , ti , si ) / 	blas_dot_Field3D_MPI ( ti , ti , ti ) ));
 	blas_axpby_Field3D_MPI ( x , x , alpha , pi1 , 1 );
+	blas_axpby_Field3D_MPI ( x , x , omgi1 , si , 1 );
 	blas_yisax_Field3D_MPI ( pi , pi , alpha , pi1 );
 	blas_axpby_Field3D_MPI ( pi , pi , omgi1 , si , 1 );
-	blas_axpby_Field3D_MPI ( x , x , omgi1 , si , 1 );
 	blas_yisax_Field3D_MPI ( ri1 , ri1 , 1 , si );
 	blas_axpby_Field3D_MPI ( ri1 , ri1 , 	(  -1 * omgi1 ) , ti , 1 );
 (maxv = 	blas_findmax_Field3D_MPI ( pi , pi ));
@@ -4081,11 +4726,4 @@ int  mpi_simple_bicgstab (bicg_space *  pthis ,Field3D_MPI *  x ,Field3D_MPI *  
 }	A ( pi , x , fv );
 	blas_axpy_Field3D_MPI ( pi , pi , -1 , b );
 (maxr = 	blas_findmax_Field3D_MPI ( pi , pi ));
-	if (  	(  cur_rank == 0 )  ){  
-			fprintf ( stderr , "z=%d, maxv=%e\n" , z , maxr );
-
-	}else{
-		0;
-
-	 }
 	return  z==zmax ;}

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <mpi.h>
 
+#define PS_MPI_CHAR MPI_CHAR
+
 #define PS_MPI_INT MPI_INT
 
 #define PS_MPI_DOUBLE MPI_DOUBLE
@@ -38,6 +40,8 @@ int  PS_MPI_Get_processor_name (char *  name ,int *  resultlen ){
 	return  	MPI_Get_processor_name ( name , resultlen ) ;}
 int  PS_MPI_Init (int *  argc ,char * * *  argv ){
 	return  	MPI_Init ( argc , argv ) ;}
+int  PS_MPI_Send (void *  buf ,int  count ,MPI_Datatype  datatype ,int  dest ,int  tag ,MPI_Comm  comm ){
+	return  	MPI_Send ( buf , count , datatype , dest , tag , comm ) ;}
 int  PS_MPI_Isend (void *  buf ,int  count ,MPI_Datatype  datatype ,int  dest ,int  tag ,MPI_Comm  comm ,MPI_Request *  request ){
 	return  	MPI_Isend ( buf , count , datatype , dest , tag , comm , request ) ;}
 int  PS_MPI_Recv (void *  buf ,int  count ,MPI_Datatype  datatype ,int  source ,int  tag ,MPI_Comm  comm ,MPI_Status *  status ){

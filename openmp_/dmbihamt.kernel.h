@@ -1,0 +1,14 @@
+void  openmp_dm_bihamt_dual_psi_eqn_J_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  openmp_dm_bihamt_eqn_dydt_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  openmp_dm_cayley_eqn_J_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  openmp_dm_calc_hamt_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  openmp_dm_exact_eqn_m_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  openmp_dm_cayley_eqn_core_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;
+void  openmp_dm_calc_hamt_dual_scmc_kernel (double *  dphi_dt_out ,double *  phi_in ,double *  A1 ,double *  Y1 ,long  y_cpu_core ,long  numvec ,long  XLEN ,long  YLEN ,long  ZLEN ,int  ovlp ,long  xblock ,long  yblock ,long  zblock ,int  num_ele ,int  num_ele_A1 ,double  M ,double  Q ,double  DM_A ,double  DX ,double  DY ,double  DZ ,double  DT ,long  scmc_internal_g_idy ,long  scmc_internal_g_ylen )
+;

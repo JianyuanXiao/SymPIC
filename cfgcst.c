@@ -851,8 +851,11 @@ double call_CAL_FUN_ONE_PARA ( char* arg0, double arg1) {
 	}
 	
 	element * arglst= cons( makestring(arg0) , cons( makefloat(arg1) , empty_list_process)) ;
-	element * final_arg = cons (cons (quote_symbol, cons (CAL_FUN_ONE_PARA, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("CAL_FUN_ONE_PARA"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -873,8 +876,11 @@ long call_GET_DEV_TYPE ( long arg0, long arg1) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , cons( makeint(arg1) , empty_list_process)) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_DEV_TYPE, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_DEV_TYPE"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	long ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -895,8 +901,11 @@ long call_GET_DEV_ID ( long arg0, long arg1) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , cons( makeint(arg1) , empty_list_process)) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_DEV_ID, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_DEV_ID"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	long ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -917,8 +926,11 @@ long call_GET_NUM_LOCAL_THREAD_FROM_GLOBAL_TID ( long arg0) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , empty_list_process) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_NUM_LOCAL_THREAD_FROM_GLOBAL_TID, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_NUM_LOCAL_THREAD_FROM_GLOBAL_TID"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	long ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -939,8 +951,11 @@ double call_GET_MASS ( long arg0) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , empty_list_process) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_MASS, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_MASS"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -961,8 +976,11 @@ double call_GET_NPM ( long arg0) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , empty_list_process) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_NPM, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_NPM"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -983,8 +1001,11 @@ double call_GET_CHARGE ( long arg0) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , empty_list_process) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_CHARGE, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_CHARGE"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1005,8 +1026,11 @@ long call_GET_GRID_CACHE_LEN ( long arg0) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , empty_list_process) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_GRID_CACHE_LEN, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_GRID_CACHE_LEN"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	long ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1027,8 +1051,11 @@ long call_GET_CU_CACHE_LEN ( long arg0) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , empty_list_process) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_CU_CACHE_LEN, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_CU_CACHE_LEN"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	long ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1049,8 +1076,11 @@ long call_GET_INIT_LOAD ( long arg0) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , empty_list_process) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_LOAD, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_LOAD"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	long ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1071,8 +1101,11 @@ double call_GET_NON_UNI_CACHE_DIST ( long arg0, long arg1) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , cons( makeint(arg1) , empty_list_process)) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_NON_UNI_CACHE_DIST, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_NON_UNI_CACHE_DIST"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1093,8 +1126,11 @@ double call_GET_INIT_DENSITY_DIST ( long arg0, double arg1, double arg2, double 
 	}
 	
 	element * arglst= cons( makeint(arg0) , cons( makefloat(arg1) , cons( makefloat(arg2) , cons( makefloat(arg3) , empty_list_process)))) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_DENSITY_DIST, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_DENSITY_DIST"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1115,8 +1151,11 @@ double call_GET_INIT_TEMPERATURE_DIST ( long arg0, double arg1, double arg2, dou
 	}
 	
 	element * arglst= cons( makeint(arg0) , cons( makefloat(arg1) , cons( makefloat(arg2) , cons( makefloat(arg3) , cons( makeint(arg4) , empty_list_process))))) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_TEMPERATURE_DIST, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_TEMPERATURE_DIST"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1137,8 +1176,11 @@ double call_GET_INIT_E ( double arg0, double arg1, double arg2, long arg3) {
 	}
 	
 	element * arglst= cons( makefloat(arg0) , cons( makefloat(arg1) , cons( makefloat(arg2) , cons( makeint(arg3) , empty_list_process)))) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_E, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_E"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1159,8 +1201,11 @@ double call_GET_INIT_B ( double arg0, double arg1, double arg2, long arg3) {
 	}
 	
 	element * arglst= cons( makefloat(arg0) , cons( makefloat(arg1) , cons( makefloat(arg2) , cons( makeint(arg3) , empty_list_process)))) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_B, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_B"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1181,8 +1226,11 @@ double call_GET_INIT_E0 ( double arg0, double arg1, double arg2, long arg3) {
 	}
 	
 	element * arglst= cons( makefloat(arg0) , cons( makefloat(arg1) , cons( makefloat(arg2) , cons( makeint(arg3) , empty_list_process)))) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_E0, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_E0"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1203,8 +1251,11 @@ double call_GET_INIT_B0 ( double arg0, double arg1, double arg2, long arg3) {
 	}
 	
 	element * arglst= cons( makefloat(arg0) , cons( makefloat(arg1) , cons( makefloat(arg2) , cons( makeint(arg3) , empty_list_process)))) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_B0, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_B0"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1225,8 +1276,11 @@ double call_GET_INIT_VT ( long arg0) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , empty_list_process) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_VT, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_VT"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1247,8 +1301,11 @@ double call_GET_INIT_V0_x ( long arg0, double arg1, double arg2, double arg3) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , cons( makefloat(arg1) , cons( makefloat(arg2) , cons( makefloat(arg3) , empty_list_process)))) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_V0_x, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_V0_x"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1269,8 +1326,11 @@ double call_GET_INIT_V0_y ( long arg0, double arg1, double arg2, double arg3) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , cons( makefloat(arg1) , cons( makefloat(arg2) , cons( makefloat(arg3) , empty_list_process)))) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_V0_y, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_V0_y"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1291,8 +1351,11 @@ double call_GET_INIT_V0_z ( long arg0, double arg1, double arg2, double arg3) {
 	}
 	
 	element * arglst= cons( makeint(arg0) , cons( makefloat(arg1) , cons( makefloat(arg2) , cons( makefloat(arg3) , empty_list_process)))) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_V0_z, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_V0_z"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1313,8 +1376,11 @@ double call_GET_INIT_FILTER_E ( double arg0, double arg1, double arg2, long arg3
 	}
 	
 	element * arglst= cons( makefloat(arg0) , cons( makefloat(arg1) , cons( makefloat(arg2) , cons( makeint(arg3) , empty_list_process)))) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_FILTER_E, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_FILTER_E"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1335,8 +1401,11 @@ double call_GET_INIT_FILTER_KROOK ( double arg0, double arg1, double arg2, long 
 	}
 	
 	element * arglst= cons( makefloat(arg0) , cons( makefloat(arg1) , cons( makefloat(arg2) , cons( makeint(arg3) , empty_list_process)))) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_FILTER_KROOK, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_FILTER_KROOK"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1357,8 +1426,11 @@ double call_GET_INIT_FILTER_B ( double arg0, double arg1, double arg2, long arg3
 	}
 	
 	element * arglst= cons( makefloat(arg0) , cons( makefloat(arg1) , cons( makefloat(arg2) , cons( makeint(arg3) , empty_list_process)))) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_INIT_FILTER_B, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_INIT_FILTER_B"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;
@@ -1379,8 +1451,11 @@ double call_GET_VAR ( char* arg0) {
 	}
 	
 	element * arglst= cons( makestring(arg0) , empty_list_process) ;
-	element * final_arg = cons (cons (quote_symbol, cons (GET_VAR, empty_list_process)), arglst);
+	element * fun_var = find_var_in_env (makesymbol ("GET_VAR"), global_environment, 0);
+	element * final_arg = cons (cons (quote_symbol, cons (fun_var, empty_list_process)), arglst);
+	push_gc_stack (& final_arg);
 	element * ret=eval(final_arg, global_environment);
+	pop_gc_stack();
 	double ans ;
 	 if ( ret -> type== INTNUM) {
   ans = ret->data.intnum;

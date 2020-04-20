@@ -14,6 +14,10 @@ int  c_kgm_eqn_core_scmc_set_parameter_outEB (c_kgm_eqn_core_struct *  kerstr ,c
 ;
 int  c_kgm_eqn_core_scmc_set_parameter_inEB (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
+int  c_kgm_eqn_core_scmc_set_parameter_extA0 (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_kgm_eqn_core_scmc_set_parameter_extA1 (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
 int  c_kgm_eqn_core_scmc_set_parameter_xoffset (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_kgm_eqn_core_scmc_set_parameter_yoffset (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
@@ -51,6 +55,8 @@ int  c_kgm_eqn_core_scmc_set_parameter_DX (c_kgm_eqn_core_struct *  kerstr ,c_ps
 int  c_kgm_eqn_core_scmc_set_parameter_GEXT (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_kgm_eqn_core_scmc_set_parameter_rfz0 (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
+;
+int  c_kgm_eqn_core_scmc_set_parameter_g_beg (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
 ;
 int  c_kgm_eqn_core_scmc_set_parameter_swap_input (c_kgm_eqn_core_struct *  kerstr ,c_pscmc_mem *  pm )
 ;

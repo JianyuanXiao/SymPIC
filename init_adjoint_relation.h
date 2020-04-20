@@ -1,6 +1,6 @@
 
 #include "pubdefs.h"
-int  init_complexity_tid (unsigned long  num_proc ,unsigned long  num_thread ,size_t *  ori_vec ,long *  num_thread_array ,long *  local_tid_array )
+int  init_complexity_tid (unsigned long  num_proc ,unsigned long  num_thread ,size_t *  ori_vec ,long *  num_thread_array ,int64_t *  local_tid_array )
 ;
 int  init_uniform_tid (unsigned long  num_proc ,unsigned long  num_thread ,long *  num_thread_array ,long *  local_tid_array )
 ;

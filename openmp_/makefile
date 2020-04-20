@@ -5,19 +5,19 @@ SCC=scc
 NVCC=nvcc
 BRCC=
 CXX=mpicc
-CFLAG= -O3 -ffast-math -fopenmp
+CFLAG= -O3 -ffast-math -march=skylake -fopenmp
 CPPFLAG=
 NVCCF=
 CXXFLAG= -lm -O2 -fopenmp -I../common/
 SWMSCC=sw5cc
-SWMSCCFLAG=-slave -ffast-math -O3
+SWMSCCFLAG=-ffast-math -O3
 SWMHCC=sw5cc
-SWMHCCFLAG=-host
+SWMHCCFLAG=
 LOCALPROG=comp
-sources= yeefdtd.kernel.o yeefdtd.kernel_runtime.o mergefields.kernel.o mergefields.kernel_runtime.o miniblas.kernel.o miniblas.kernel_runtime.o general_partial_sort.kernel.o general_partial_sort.kernel_runtime.o move_back.kernel.o move_back.kernel_runtime.o particle_iter.kernel.o particle_iter.kernel_runtime.o mur_abc.kernel.o mur_abc.kernel_runtime.o dm.kernel.o dm.kernel_runtime.o geo_yeefdtd_rect.kernel.o geo_yeefdtd_rect.kernel_runtime.o geo_yeefdtd.kernel.o geo_yeefdtd.kernel_runtime.o geo_particle_iter_mass.kernel.o geo_particle_iter_mass.kernel_runtime.o geo_particle_iter.kernel.o geo_particle_iter.kernel_runtime.o rel_particle_iter.kernel.o rel_particle_iter.kernel_runtime.o openmp_pscmc.o main.o
+sources= hydro_A.kernel.o hydro_A.kernel_runtime.o implicit_particle_mover.kernel.o implicit_particle_mover.kernel_runtime.o type3_georel.kernel.o type3_georel.kernel_runtime.o inner_split_pass.kernel.o inner_split_pass.kernel_runtime.o geo_particle_iter_mass.kernel.o geo_particle_iter_mass.kernel_runtime.o geo_particle_iter.kernel.o geo_particle_iter.kernel_runtime.o rel_particle_iter.kernel.o rel_particle_iter.kernel_runtime.o yeefdtd.kernel.o yeefdtd.kernel_runtime.o mergefields.kernel.o mergefields.kernel_runtime.o miniblas.kernel.o miniblas.kernel_runtime.o general_partial_sort.kernel.o general_partial_sort.kernel_runtime.o move_back.kernel.o move_back.kernel_runtime.o particle_iter.kernel.o particle_iter.kernel_runtime.o mur_abc.kernel.o mur_abc.kernel_runtime.o dmbihamt.kernel.o dmbihamt.kernel_runtime.o dm.kernel.o dm.kernel_runtime.o geo_yeefdtd_rect.kernel.o geo_yeefdtd_rect.kernel_runtime.o geo_yeefdtd.kernel.o geo_yeefdtd.kernel_runtime.o openmp_pscmc.o main.o
 ASLIB=../openmp_yeefdtd.a
 SHAREDLIB=
-sources_a=yeefdtd.kernel.o yeefdtd.kernel_runtime.o mergefields.kernel.o mergefields.kernel_runtime.o miniblas.kernel.o miniblas.kernel_runtime.o general_partial_sort.kernel.o general_partial_sort.kernel_runtime.o move_back.kernel.o move_back.kernel_runtime.o particle_iter.kernel.o particle_iter.kernel_runtime.o mur_abc.kernel.o mur_abc.kernel_runtime.o dm.kernel.o dm.kernel_runtime.o geo_yeefdtd_rect.kernel.o geo_yeefdtd_rect.kernel_runtime.o geo_yeefdtd.kernel.o geo_yeefdtd.kernel_runtime.o geo_particle_iter_mass.kernel.o geo_particle_iter_mass.kernel_runtime.o geo_particle_iter.kernel.o geo_particle_iter.kernel_runtime.o rel_particle_iter.kernel.o rel_particle_iter.kernel_runtime.o openmp_pscmc.o
+sources_a=hydro_A.kernel.o hydro_A.kernel_runtime.o implicit_particle_mover.kernel.o implicit_particle_mover.kernel_runtime.o type3_georel.kernel.o type3_georel.kernel_runtime.o inner_split_pass.kernel.o inner_split_pass.kernel_runtime.o geo_particle_iter_mass.kernel.o geo_particle_iter_mass.kernel_runtime.o geo_particle_iter.kernel.o geo_particle_iter.kernel_runtime.o rel_particle_iter.kernel.o rel_particle_iter.kernel_runtime.o yeefdtd.kernel.o yeefdtd.kernel_runtime.o mergefields.kernel.o mergefields.kernel_runtime.o miniblas.kernel.o miniblas.kernel_runtime.o general_partial_sort.kernel.o general_partial_sort.kernel_runtime.o move_back.kernel.o move_back.kernel_runtime.o particle_iter.kernel.o particle_iter.kernel_runtime.o mur_abc.kernel.o mur_abc.kernel_runtime.o dmbihamt.kernel.o dmbihamt.kernel_runtime.o dm.kernel.o dm.kernel_runtime.o geo_yeefdtd_rect.kernel.o geo_yeefdtd_rect.kernel_runtime.o geo_yeefdtd.kernel.o geo_yeefdtd.kernel_runtime.o openmp_pscmc.o
 sources_h=$(sources_a:.o=.h)
 ARFLAG=rcs
 ASHEADER=$(ASLIB:.a=.h)
@@ -30,6 +30,97 @@ $(ASHEADER)	:$(sources_h)
 	cat $(sources_h) > $(ASHEADER)
 $(LOCALPROG)	:$(sources)
 	$(CXX)   $(sources) -o $(LOCALPROG) $(CXXFLAG)
+
+
+
+
+hydro_A.kernel_inc.h:	hydro_A.kernel.c
+	touch hydro_A.kernel_inc.h
+hydro_A.kernel.o: hydro_A.kernel.c 
+	$(CC) -c hydro_A.kernel.c $(CFLAG) -g -o hydro_A.kernel.o
+
+
+hydro_A.kernel_runtime.o: hydro_A.kernel_runtime.c local_header.h openmp_pscmc_inc.h hydro_A.kernel_inc.h 
+	$(CC) $(CPPFLAG) -E hydro_A.kernel_runtime.c |sed '/^\# /d' |sed '/^\ \{0,\}$$/d'>hydro_A.kernel_runtimemid.c
+	$(CC) -c hydro_A.kernel_runtimemid.c $(CFLAG) -g -o hydro_A.kernel_runtime.o
+
+
+
+
+implicit_particle_mover.kernel_inc.h:	implicit_particle_mover.kernel.c
+	touch implicit_particle_mover.kernel_inc.h
+implicit_particle_mover.kernel.o: implicit_particle_mover.kernel.c 
+	$(CC) -c implicit_particle_mover.kernel.c $(CFLAG) -g -o implicit_particle_mover.kernel.o
+
+
+implicit_particle_mover.kernel_runtime.o: implicit_particle_mover.kernel_runtime.c local_header.h openmp_pscmc_inc.h implicit_particle_mover.kernel_inc.h 
+	$(CC) $(CPPFLAG) -E implicit_particle_mover.kernel_runtime.c |sed '/^\# /d' |sed '/^\ \{0,\}$$/d'>implicit_particle_mover.kernel_runtimemid.c
+	$(CC) -c implicit_particle_mover.kernel_runtimemid.c $(CFLAG) -g -o implicit_particle_mover.kernel_runtime.o
+
+
+
+
+type3_georel.kernel_inc.h:	type3_georel.kernel.c
+	touch type3_georel.kernel_inc.h
+type3_georel.kernel.o: type3_georel.kernel.c 
+	$(CC) -c type3_georel.kernel.c $(CFLAG) -g -o type3_georel.kernel.o
+
+
+type3_georel.kernel_runtime.o: type3_georel.kernel_runtime.c local_header.h openmp_pscmc_inc.h type3_georel.kernel_inc.h 
+	$(CC) $(CPPFLAG) -E type3_georel.kernel_runtime.c |sed '/^\# /d' |sed '/^\ \{0,\}$$/d'>type3_georel.kernel_runtimemid.c
+	$(CC) -c type3_georel.kernel_runtimemid.c $(CFLAG) -g -o type3_georel.kernel_runtime.o
+
+
+
+
+inner_split_pass.kernel_inc.h:	inner_split_pass.kernel.c
+	touch inner_split_pass.kernel_inc.h
+inner_split_pass.kernel.o: inner_split_pass.kernel.c 
+	$(CC) -c inner_split_pass.kernel.c $(CFLAG) -g -o inner_split_pass.kernel.o
+
+
+inner_split_pass.kernel_runtime.o: inner_split_pass.kernel_runtime.c local_header.h openmp_pscmc_inc.h inner_split_pass.kernel_inc.h 
+	$(CC) $(CPPFLAG) -E inner_split_pass.kernel_runtime.c |sed '/^\# /d' |sed '/^\ \{0,\}$$/d'>inner_split_pass.kernel_runtimemid.c
+	$(CC) -c inner_split_pass.kernel_runtimemid.c $(CFLAG) -g -o inner_split_pass.kernel_runtime.o
+
+
+
+
+geo_particle_iter_mass.kernel_inc.h:	geo_particle_iter_mass.kernel.c
+	touch geo_particle_iter_mass.kernel_inc.h
+geo_particle_iter_mass.kernel.o: geo_particle_iter_mass.kernel.c 
+	$(CC) -c geo_particle_iter_mass.kernel.c $(CFLAG) -g -o geo_particle_iter_mass.kernel.o
+
+
+geo_particle_iter_mass.kernel_runtime.o: geo_particle_iter_mass.kernel_runtime.c local_header.h openmp_pscmc_inc.h geo_particle_iter_mass.kernel_inc.h 
+	$(CC) $(CPPFLAG) -E geo_particle_iter_mass.kernel_runtime.c |sed '/^\# /d' |sed '/^\ \{0,\}$$/d'>geo_particle_iter_mass.kernel_runtimemid.c
+	$(CC) -c geo_particle_iter_mass.kernel_runtimemid.c $(CFLAG) -g -o geo_particle_iter_mass.kernel_runtime.o
+
+
+
+
+geo_particle_iter.kernel_inc.h:	geo_particle_iter.kernel.c
+	touch geo_particle_iter.kernel_inc.h
+geo_particle_iter.kernel.o: geo_particle_iter.kernel.c 
+	$(CC) -c geo_particle_iter.kernel.c $(CFLAG) -g -o geo_particle_iter.kernel.o
+
+
+geo_particle_iter.kernel_runtime.o: geo_particle_iter.kernel_runtime.c local_header.h openmp_pscmc_inc.h geo_particle_iter.kernel_inc.h 
+	$(CC) $(CPPFLAG) -E geo_particle_iter.kernel_runtime.c |sed '/^\# /d' |sed '/^\ \{0,\}$$/d'>geo_particle_iter.kernel_runtimemid.c
+	$(CC) -c geo_particle_iter.kernel_runtimemid.c $(CFLAG) -g -o geo_particle_iter.kernel_runtime.o
+
+
+
+
+rel_particle_iter.kernel_inc.h:	rel_particle_iter.kernel.c
+	touch rel_particle_iter.kernel_inc.h
+rel_particle_iter.kernel.o: rel_particle_iter.kernel.c 
+	$(CC) -c rel_particle_iter.kernel.c $(CFLAG) -g -o rel_particle_iter.kernel.o
+
+
+rel_particle_iter.kernel_runtime.o: rel_particle_iter.kernel_runtime.c local_header.h openmp_pscmc_inc.h rel_particle_iter.kernel_inc.h 
+	$(CC) $(CPPFLAG) -E rel_particle_iter.kernel_runtime.c |sed '/^\# /d' |sed '/^\ \{0,\}$$/d'>rel_particle_iter.kernel_runtimemid.c
+	$(CC) -c rel_particle_iter.kernel_runtimemid.c $(CFLAG) -g -o rel_particle_iter.kernel_runtime.o
 
 
 
@@ -125,6 +216,19 @@ mur_abc.kernel_runtime.o: mur_abc.kernel_runtime.c local_header.h openmp_pscmc_i
 
 
 
+dmbihamt.kernel_inc.h:	dmbihamt.kernel.c
+	touch dmbihamt.kernel_inc.h
+dmbihamt.kernel.o: dmbihamt.kernel.c 
+	$(CC) -c dmbihamt.kernel.c $(CFLAG) -g -o dmbihamt.kernel.o
+
+
+dmbihamt.kernel_runtime.o: dmbihamt.kernel_runtime.c local_header.h openmp_pscmc_inc.h dmbihamt.kernel_inc.h 
+	$(CC) $(CPPFLAG) -E dmbihamt.kernel_runtime.c |sed '/^\# /d' |sed '/^\ \{0,\}$$/d'>dmbihamt.kernel_runtimemid.c
+	$(CC) -c dmbihamt.kernel_runtimemid.c $(CFLAG) -g -o dmbihamt.kernel_runtime.o
+
+
+
+
 dm.kernel_inc.h:	dm.kernel.c
 	touch dm.kernel_inc.h
 dm.kernel.o: dm.kernel.c 
@@ -160,45 +264,6 @@ geo_yeefdtd.kernel.o: geo_yeefdtd.kernel.c
 geo_yeefdtd.kernel_runtime.o: geo_yeefdtd.kernel_runtime.c local_header.h openmp_pscmc_inc.h geo_yeefdtd.kernel_inc.h 
 	$(CC) $(CPPFLAG) -E geo_yeefdtd.kernel_runtime.c |sed '/^\# /d' |sed '/^\ \{0,\}$$/d'>geo_yeefdtd.kernel_runtimemid.c
 	$(CC) -c geo_yeefdtd.kernel_runtimemid.c $(CFLAG) -g -o geo_yeefdtd.kernel_runtime.o
-
-
-
-
-geo_particle_iter_mass.kernel_inc.h:	geo_particle_iter_mass.kernel.c
-	touch geo_particle_iter_mass.kernel_inc.h
-geo_particle_iter_mass.kernel.o: geo_particle_iter_mass.kernel.c 
-	$(CC) -c geo_particle_iter_mass.kernel.c $(CFLAG) -g -o geo_particle_iter_mass.kernel.o
-
-
-geo_particle_iter_mass.kernel_runtime.o: geo_particle_iter_mass.kernel_runtime.c local_header.h openmp_pscmc_inc.h geo_particle_iter_mass.kernel_inc.h 
-	$(CC) $(CPPFLAG) -E geo_particle_iter_mass.kernel_runtime.c |sed '/^\# /d' |sed '/^\ \{0,\}$$/d'>geo_particle_iter_mass.kernel_runtimemid.c
-	$(CC) -c geo_particle_iter_mass.kernel_runtimemid.c $(CFLAG) -g -o geo_particle_iter_mass.kernel_runtime.o
-
-
-
-
-geo_particle_iter.kernel_inc.h:	geo_particle_iter.kernel.c
-	touch geo_particle_iter.kernel_inc.h
-geo_particle_iter.kernel.o: geo_particle_iter.kernel.c 
-	$(CC) -c geo_particle_iter.kernel.c $(CFLAG) -g -o geo_particle_iter.kernel.o
-
-
-geo_particle_iter.kernel_runtime.o: geo_particle_iter.kernel_runtime.c local_header.h openmp_pscmc_inc.h geo_particle_iter.kernel_inc.h 
-	$(CC) $(CPPFLAG) -E geo_particle_iter.kernel_runtime.c |sed '/^\# /d' |sed '/^\ \{0,\}$$/d'>geo_particle_iter.kernel_runtimemid.c
-	$(CC) -c geo_particle_iter.kernel_runtimemid.c $(CFLAG) -g -o geo_particle_iter.kernel_runtime.o
-
-
-
-
-rel_particle_iter.kernel_inc.h:	rel_particle_iter.kernel.c
-	touch rel_particle_iter.kernel_inc.h
-rel_particle_iter.kernel.o: rel_particle_iter.kernel.c 
-	$(CC) -c rel_particle_iter.kernel.c $(CFLAG) -g -o rel_particle_iter.kernel.o
-
-
-rel_particle_iter.kernel_runtime.o: rel_particle_iter.kernel_runtime.c local_header.h openmp_pscmc_inc.h rel_particle_iter.kernel_inc.h 
-	$(CC) $(CPPFLAG) -E rel_particle_iter.kernel_runtime.c |sed '/^\# /d' |sed '/^\ \{0,\}$$/d'>rel_particle_iter.kernel_runtimemid.c
-	$(CC) -c rel_particle_iter.kernel_runtimemid.c $(CFLAG) -g -o rel_particle_iter.kernel_runtime.o
 openmp_pscmc.o: openmp_pscmc.c local_header.h 
 	$(CC) $(CPPFLAG) -E openmp_pscmc.c |sed '/^\# /d' |sed '/^\ \{0,\}$$/d'>openmp_pscmcmid.c
 	$(CC) -c openmp_pscmcmid.c $(CFLAG) -g -o openmp_pscmc.o
@@ -207,4 +272,4 @@ main.o: main.c
 	$(CC) -c mainmid.c $(CFLAG) -g -o main.o
 .PHONY:clean
 clean	:
-	-rm $(LOCALPROG) $(sources)  yeefdtd.kernel.c yeefdtd.kernel.c.def.ss yeefdtd.kernel_runtime.scmc yeefdtd.kernel_runtime.c yeefdtd.kernel_runtime.c.def.ss yeefdtd.kernel_runtimemid.c mergefields.kernel.c mergefields.kernel.c.def.ss mergefields.kernel_runtime.scmc mergefields.kernel_runtime.c mergefields.kernel_runtime.c.def.ss mergefields.kernel_runtimemid.c miniblas.kernel.c miniblas.kernel.c.def.ss miniblas.kernel_runtime.scmc miniblas.kernel_runtime.c miniblas.kernel_runtime.c.def.ss miniblas.kernel_runtimemid.c general_partial_sort.kernel.c general_partial_sort.kernel.c.def.ss general_partial_sort.kernel_runtime.scmc general_partial_sort.kernel_runtime.c general_partial_sort.kernel_runtime.c.def.ss general_partial_sort.kernel_runtimemid.c move_back.kernel.c move_back.kernel.c.def.ss move_back.kernel_runtime.scmc move_back.kernel_runtime.c move_back.kernel_runtime.c.def.ss move_back.kernel_runtimemid.c particle_iter.kernel.c particle_iter.kernel.c.def.ss particle_iter.kernel_runtime.scmc particle_iter.kernel_runtime.c particle_iter.kernel_runtime.c.def.ss particle_iter.kernel_runtimemid.c mur_abc.kernel.c mur_abc.kernel.c.def.ss mur_abc.kernel_runtime.scmc mur_abc.kernel_runtime.c mur_abc.kernel_runtime.c.def.ss mur_abc.kernel_runtimemid.c dm.kernel.c dm.kernel.c.def.ss dm.kernel_runtime.scmc dm.kernel_runtime.c dm.kernel_runtime.c.def.ss dm.kernel_runtimemid.c geo_yeefdtd_rect.kernel.c geo_yeefdtd_rect.kernel.c.def.ss geo_yeefdtd_rect.kernel_runtime.scmc geo_yeefdtd_rect.kernel_runtime.c geo_yeefdtd_rect.kernel_runtime.c.def.ss geo_yeefdtd_rect.kernel_runtimemid.c geo_yeefdtd.kernel.c geo_yeefdtd.kernel.c.def.ss geo_yeefdtd.kernel_runtime.scmc geo_yeefdtd.kernel_runtime.c geo_yeefdtd.kernel_runtime.c.def.ss geo_yeefdtd.kernel_runtimemid.c geo_particle_iter_mass.kernel.c geo_particle_iter_mass.kernel.c.def.ss geo_particle_iter_mass.kernel_runtime.scmc geo_particle_iter_mass.kernel_runtime.c geo_particle_iter_mass.kernel_runtime.c.def.ss geo_particle_iter_mass.kernel_runtimemid.c geo_particle_iter.kernel.c geo_particle_iter.kernel.c.def.ss geo_particle_iter.kernel_runtime.scmc geo_particle_iter.kernel_runtime.c geo_particle_iter.kernel_runtime.c.def.ss geo_particle_iter.kernel_runtimemid.c rel_particle_iter.kernel.c rel_particle_iter.kernel.c.def.ss rel_particle_iter.kernel_runtime.scmc rel_particle_iter.kernel_runtime.c rel_particle_iter.kernel_runtime.c.def.ss rel_particle_iter.kernel_runtimemid.c openmp_pscmcmid.c mainmid.c
+	-rm $(LOCALPROG) $(sources)  hydro_A.kernel.c hydro_A.kernel.c.def.ss hydro_A.kernel_runtime.scmc hydro_A.kernel_runtime.c hydro_A.kernel_runtime.c.def.ss hydro_A.kernel_runtimemid.c implicit_particle_mover.kernel.c implicit_particle_mover.kernel.c.def.ss implicit_particle_mover.kernel_runtime.scmc implicit_particle_mover.kernel_runtime.c implicit_particle_mover.kernel_runtime.c.def.ss implicit_particle_mover.kernel_runtimemid.c type3_georel.kernel.c type3_georel.kernel.c.def.ss type3_georel.kernel_runtime.scmc type3_georel.kernel_runtime.c type3_georel.kernel_runtime.c.def.ss type3_georel.kernel_runtimemid.c inner_split_pass.kernel.c inner_split_pass.kernel.c.def.ss inner_split_pass.kernel_runtime.scmc inner_split_pass.kernel_runtime.c inner_split_pass.kernel_runtime.c.def.ss inner_split_pass.kernel_runtimemid.c geo_particle_iter_mass.kernel.c geo_particle_iter_mass.kernel.c.def.ss geo_particle_iter_mass.kernel_runtime.scmc geo_particle_iter_mass.kernel_runtime.c geo_particle_iter_mass.kernel_runtime.c.def.ss geo_particle_iter_mass.kernel_runtimemid.c geo_particle_iter.kernel.c geo_particle_iter.kernel.c.def.ss geo_particle_iter.kernel_runtime.scmc geo_particle_iter.kernel_runtime.c geo_particle_iter.kernel_runtime.c.def.ss geo_particle_iter.kernel_runtimemid.c rel_particle_iter.kernel.c rel_particle_iter.kernel.c.def.ss rel_particle_iter.kernel_runtime.scmc rel_particle_iter.kernel_runtime.c rel_particle_iter.kernel_runtime.c.def.ss rel_particle_iter.kernel_runtimemid.c yeefdtd.kernel.c yeefdtd.kernel.c.def.ss yeefdtd.kernel_runtime.scmc yeefdtd.kernel_runtime.c yeefdtd.kernel_runtime.c.def.ss yeefdtd.kernel_runtimemid.c mergefields.kernel.c mergefields.kernel.c.def.ss mergefields.kernel_runtime.scmc mergefields.kernel_runtime.c mergefields.kernel_runtime.c.def.ss mergefields.kernel_runtimemid.c miniblas.kernel.c miniblas.kernel.c.def.ss miniblas.kernel_runtime.scmc miniblas.kernel_runtime.c miniblas.kernel_runtime.c.def.ss miniblas.kernel_runtimemid.c general_partial_sort.kernel.c general_partial_sort.kernel.c.def.ss general_partial_sort.kernel_runtime.scmc general_partial_sort.kernel_runtime.c general_partial_sort.kernel_runtime.c.def.ss general_partial_sort.kernel_runtimemid.c move_back.kernel.c move_back.kernel.c.def.ss move_back.kernel_runtime.scmc move_back.kernel_runtime.c move_back.kernel_runtime.c.def.ss move_back.kernel_runtimemid.c particle_iter.kernel.c particle_iter.kernel.c.def.ss particle_iter.kernel_runtime.scmc particle_iter.kernel_runtime.c particle_iter.kernel_runtime.c.def.ss particle_iter.kernel_runtimemid.c mur_abc.kernel.c mur_abc.kernel.c.def.ss mur_abc.kernel_runtime.scmc mur_abc.kernel_runtime.c mur_abc.kernel_runtime.c.def.ss mur_abc.kernel_runtimemid.c dmbihamt.kernel.c dmbihamt.kernel.c.def.ss dmbihamt.kernel_runtime.scmc dmbihamt.kernel_runtime.c dmbihamt.kernel_runtime.c.def.ss dmbihamt.kernel_runtimemid.c dm.kernel.c dm.kernel.c.def.ss dm.kernel_runtime.scmc dm.kernel_runtime.c dm.kernel_runtime.c.def.ss dm.kernel_runtimemid.c geo_yeefdtd_rect.kernel.c geo_yeefdtd_rect.kernel.c.def.ss geo_yeefdtd_rect.kernel_runtime.scmc geo_yeefdtd_rect.kernel_runtime.c geo_yeefdtd_rect.kernel_runtime.c.def.ss geo_yeefdtd_rect.kernel_runtimemid.c geo_yeefdtd.kernel.c geo_yeefdtd.kernel.c.def.ss geo_yeefdtd.kernel_runtime.scmc geo_yeefdtd.kernel_runtime.c geo_yeefdtd.kernel_runtime.c.def.ss geo_yeefdtd.kernel_runtimemid.c openmp_pscmcmid.c mainmid.c

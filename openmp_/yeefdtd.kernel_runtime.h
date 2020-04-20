@@ -14,6 +14,10 @@ int  openmp_kgm_eqn_core_scmc_set_parameter_outEB (openmp_kgm_eqn_core_struct * 
 ;
 int  openmp_kgm_eqn_core_scmc_set_parameter_inEB (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
+int  openmp_kgm_eqn_core_scmc_set_parameter_extA0 (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_kgm_eqn_core_scmc_set_parameter_extA1 (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
 int  openmp_kgm_eqn_core_scmc_set_parameter_xoffset (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
 int  openmp_kgm_eqn_core_scmc_set_parameter_yoffset (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm )
@@ -51,6 +55,8 @@ int  openmp_kgm_eqn_core_scmc_set_parameter_DX (openmp_kgm_eqn_core_struct *  ke
 int  openmp_kgm_eqn_core_scmc_set_parameter_GEXT (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
 int  openmp_kgm_eqn_core_scmc_set_parameter_rfz0 (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm )
+;
+int  openmp_kgm_eqn_core_scmc_set_parameter_g_beg (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;
 int  openmp_kgm_eqn_core_scmc_set_parameter_swap_input (openmp_kgm_eqn_core_struct *  kerstr ,openmp_pscmc_mem *  pm )
 ;

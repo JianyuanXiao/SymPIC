@@ -4,6 +4,8 @@
 	#ifndef   NCSPIC_SEQ_FIELD    
 		#include <mpi.h>
 
+#define PS_MPI_CHAR MPI_CHAR
+
 #define PS_MPI_INT MPI_INT
 
 #define PS_MPI_DOUBLE MPI_DOUBLE
@@ -48,7 +50,7 @@ typedef struct { 	void *  pe ;
 	int  ovlp ;
 	int  num_ele ;
 	int  CD_type ;
-	void *   sync_layer_pscmc  [NUM_SYNC_LAYER];	void *   swap_layer_pscmc  [NUM_SYNC_LAYER];	void *   sync_kernels  [NUM_SYNC_KERNEL];	void *   fdtd_kernels  [NUM_FDTD_KERNEL];	void *   dm_kernels  [1];	void *   geo_yeefdtd_kernels  [1];	void *   geo_yeefdtd_rect_kernels  [1];	void *   yee_abc_kernels  [8];	void *   yee_pec_kernels  [8];	void *   yee_damp_kernels  [8];	void *  rdcd ;
+	void *   sync_layer_pscmc  [NUM_SYNC_LAYER];	void *   swap_layer_pscmc  [NUM_SYNC_LAYER];	void *   sync_kernels  [NUM_SYNC_KERNEL];	void *   fdtd_kernels  [NUM_FDTD_KERNEL];	void *   dm_kernels  [3];	void *   dmbihamt_kernels  [7];	void *   geo_yeefdtd_kernels  [2];	void *   geo_yeefdtd_rect_kernels  [1];	void *   hydroA_kernels  [8];	void *   yee_abc_kernels  [8];	void *   yee_pec_kernels  [8];	void *   yee_damp_kernels  [8];	void *   yee_setfix_kernels  [8];	void *  rdcd ;
 	double *  rdcd_host ;
 	void *  cur_rankx_pscmc ;
 	void *  cur_ranky_pscmc ;
@@ -69,6 +71,7 @@ typedef struct { 	void *  pe ;
 	double  delta_y ;
 	double  delta_z ;
 	void *  blas_yiszero_synced_kernel ;
+	void *  blas_mulxy_numele3_kernel ;
 	void *  blas_yiszero_kernel ;
 	void *  blas_yisconst_kernel ;
 	void *  blas_get_ITG_Potential_kernel ;
@@ -87,7 +90,7 @@ typedef struct { 	void *  pe ;
 	Field3D_Seq *  pFoutJ ;
 	Field3D_Seq *  pLFoutJ ;
 	Field3D_Seq *  pFoutEN ;
-	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [8];	void *   rel_1st_kernel  [1];	void *   krook_collision_test_kernel  [2];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
+	void *   sort_kernel  [6];	void *   geo_rel_1st_kernel  [9];	void *   implicit_kernel  [2];	void *   rel_1st_kernel  [2];	void *   krook_collision_test_kernel  [2];	void *   nonrel_test_kernel  [18];	void *   boris_yee_kernel  [1];	void *  cu_swap_l_kernel ;
 	void *  cu_swap_r_kernel ;
 	void *  move_back_kernel_kernel ;
 	double  Mass ;
@@ -98,6 +101,9 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_kernel ;
 	void *  split_pass_y_kernel ;
 	void *  split_pass_z_kernel ;
+	void *  split_pass_x_nopush_kernel ;
+	void *  split_pass_y_nopush_kernel ;
+	void *  split_pass_z_nopush_kernel ;
 	void *  split_pass_x_small_grids_kernel ;
 	void *  split_pass_y_small_grids_kernel ;
 	void *  split_pass_z_small_grids_kernel ;
@@ -108,12 +114,18 @@ typedef struct { 	void *  pe ;
 	void *  split_pass_x_vlo_kernel ;
 	void *  split_pass_y_vlo_kernel ;
 	void *  split_pass_z_vlo_kernel ;
+	void *  split_pass_x_vlo_nopush_kernel ;
+	void *  split_pass_y_vlo_nopush_kernel ;
+	void *  split_pass_z_vlo_nopush_kernel ;
 	void *  split_pass_x_vlo_small_grids_kernel ;
 	void *  split_pass_y_vlo_small_grids_kernel ;
 	void *  split_pass_z_vlo_small_grids_kernel ;
 	void *  split_pass_x_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_y_vlo_sg2_small_grids_kernel ;
 	void *  split_pass_z_vlo_sg2_small_grids_kernel ;
+	void *  split_pass_x_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_y_vlo_sg2_nopush_small_grids_kernel ;
+	void *  split_pass_z_vlo_sg2_nopush_small_grids_kernel ;
 	void *  split_pass_E_particle_vlo_kernel ;
 	void *  dump_ene_num_kernel ;
 	void *  calculate_rho_kernel ;
@@ -140,6 +152,7 @@ typedef struct { 	void *  pe ;
 	Field3D_MPI  MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp ;
 	Field3D_MPI  MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldEtmp2 ;
 	Field3D_MPI  MPI_fieldBtmp1 ;
 	Field3D_MPI  MPI_fieldPMLB ;
 	Field3D_MPI  MPI_fieldPMLE ;
@@ -159,6 +172,11 @@ typedef struct { 	void *  pe ;
 	long  allzmax ;
 	double  use_pml_sigma_max ;
 	double  dt ;
+	int  o_N_l ;
+	int  o_N_M ;
+	double *  o_pmass ;
+	double *  o_pcharge ;
+	int *  o_particle_type ;
 } Particle_in_Cell_MPI;
 	#ifndef   LINEAR_OPERATOR_PICUS_001    
 		
@@ -182,7 +200,18 @@ typedef struct { 	Field3D_MPI *  r1 ;
 	void *  fv ;
 	int  zmax ;
 	double  solve_err ;
-} bicg_space;
+} bicg_space;typedef struct { 	bicg_space  bs ;
+	linear_operator_mpi  oscc ;
+	Field3D_MPI *  x0 ;
+	Field3D_MPI *  oscc_x0 ;
+	Field3D_MPI *  res_tmp ;
+	void *  fv ;
+	void *   p_vfv  [5];	int  newton_zmax ;
+	int  zmax ;
+	double  solve_err ;
+	double  newton_solve_err ;
+	double  epsl ;
+} jfnk_newton_space;
 	#else
 		
 	 #endif
@@ -203,6 +232,7 @@ int  split_pass_xyz_zyx_mpi_shell (Particle_in_Cell_MPI *  pthis ,double  dt0 ,i
 	Field3D_MPI  MPI_LFoutJ = 	( pthis )->MPI_LFoutJ ;
 	Field3D_MPI  MPI_fieldEtmp = 	( pthis )->MPI_fieldEtmp ;
 	Field3D_MPI  MPI_fieldEtmp1 = 	( pthis )->MPI_fieldEtmp1 ;
+	Field3D_MPI  MPI_fieldEtmp2 = 	( pthis )->MPI_fieldEtmp2 ;
 	Field3D_MPI  MPI_fieldBtmp1 = 	( pthis )->MPI_fieldBtmp1 ;
 	Field3D_MPI  MPI_fieldPMLB = 	( pthis )->MPI_fieldPMLB ;
 	Field3D_MPI  MPI_fieldPMLE = 	( pthis )->MPI_fieldPMLE ;
@@ -222,6 +252,11 @@ int  split_pass_xyz_zyx_mpi_shell (Particle_in_Cell_MPI *  pthis ,double  dt0 ,i
 	long  allzmax = 	( pthis )->allzmax ;
 	double  use_pml_sigma_max = 	( pthis )->use_pml_sigma_max ;
 	double  dt = 	( pthis )->dt ;
+	int  o_N_l = 	( pthis )->o_N_l ;
+	int  o_N_M = 	( pthis )->o_N_M ;
+	double *  o_pmass = 	( pthis )->o_pmass ;
+	double *  o_pcharge = 	( pthis )->o_pcharge ;
+	int *  o_particle_type = 	( pthis )->o_particle_type ;
 	double  curt_profile_only = 	wclk_now (  ) ;
 	blas_yiszero_synced_Field3D_MPI ( pMPI_FoutJ , pMPI_FoutJ );
 	if (  USE_PROFILE  ){  
@@ -496,9 +531,9 @@ int  split_pass_xyz_zyx_mpi_shell (Particle_in_Cell_MPI *  pthis ,double  dt0 ,i
 	 }
 	sync_main_data_d2h ( pMPI_FoutJ );
 	sync_main_data_d2h ( 	& ( pthis->MPI_LFoutJ ) );
-	init_parallel_file_for_mpi_fields ( pMPI_FoutJ , pgid , "tmpJ1" , -1 , 0 );
+	init_parallel_file_for_mpi_fields ( pMPI_FoutJ , pgid , "tmpJ1" , -1 , 0 , 0 );
 	mpi_field_write_to_file ( pMPI_FoutJ , pgid , 0 );
-	init_parallel_file_for_mpi_fields ( 	& ( pthis->MPI_LFoutJ ) , pgid , "tmpJdbg" , -1 , 0 );
+	init_parallel_file_for_mpi_fields ( 	& ( pthis->MPI_LFoutJ ) , pgid , "tmpJdbg" , -1 , 0 , 0 );
 	mpi_field_write_to_file ( 	& ( pthis->MPI_LFoutJ ) , pgid , 0 );
 	fprintf ( stderr , "end dump\n" );
 
@@ -578,7 +613,7 @@ int  split_pass_xyz_zyx_mpi_shell (Particle_in_Cell_MPI *  pthis ,double  dt0 ,i
 		0;
 
 	 }
-	if (  	(  USE_FILTER == 2 )  ){  
+	if (  	(  USE_FILTER == 1 )  ){  
 			blas_mulxy_Field3D_MPI ( pMPI_FoutJ , pMPI_FoutJ , 	& ( pthis->MPI_fieldE_filter ) );
 
 	}else{

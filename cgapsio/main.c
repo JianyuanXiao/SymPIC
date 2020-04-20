@@ -48,9 +48,28 @@ int main(int argc,char * * argv) {
 		int64_t *plocalid = malloc((sizeof(int64_t) * dim)) ;
 		int64_t *pallid = malloc((sizeof(int64_t) * dim)) ;
 		int64_t *palldim = malloc((sizeof(int64_t) * dim)) ;
+		char *min_env_str = "GAPS_IO_MIN_TIME_STEP" ;
+		char *max_env_str = "GAPS_IO_MAX_TIME_STEP" ;
+		char *min_numt = getenv(min_env_str) ;
+		char *max_numt = getenv(max_env_str) ;
+		long t_min = 0 ;
+		long t_max = numsteps ;
+		if(min_numt) {
+			sscanf(min_numt, "%ld", & (t_min));
+		} else {
+			0;
+		}
+		(t_min = ((t_min + numsteps) % numsteps));
+		if(max_numt) {
+			sscanf(max_numt, "%ld", & (t_max));
+		} else {
+			0;
+		}
+		(t_max = (((t_max + (numsteps + -1)) % numsteps) + 1));
+		GAPS_IO_DataSeek(pgi, t_min, 0);
 		{
 			long t ;
-			for((t = 0) ; (t < numsteps) ; (t = (t + 1))) {
+			for((t = t_min) ; (t < t_max) ; (t = (t + 1))) {
 				{
 					long b ;
 					for((b = 0) ; (b < numblocks) ; (b = (b + 1))) {
@@ -110,6 +129,8 @@ int main(int argc,char * * argv) {
 						}
 					}
 				}
+				fprintf(stderr, "t=%d done\n", t);
+				GAPS_IO_DataSeek(pgo, t, 0);
 				GAPS_IO_FWrite(pgo, ptmpdata, numperstep);
 			}
 		}
@@ -120,6 +141,10 @@ int main(int argc,char * * argv) {
 		GAPS_IO_DeleteDataInfo(pgo);
 	} else {
 		fprintf(stderr, "File %s is version 0\n", (argv)[1]);
+		long numstep = 0 ;
+		long resd = 0 ;
+		GAPS_IO_DataNumStepsAndResidue(pgi, & (numstep), & (resd));
+		fprintf(stdout, "%d time steps\n", numstep);
 	}
 	GAPS_IO_DeleteDataInfo(pgi);
 	MPI_Finalize();

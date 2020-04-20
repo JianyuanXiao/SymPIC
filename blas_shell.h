@@ -88,6 +88,14 @@ int  blas_yiszero_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y )
 ;
 int  blas_yiszero_Field3D_MPI (Field3D_MPI *  pthis ,Field3D_MPI *  y )
 ;
+int  c_blas_mulxy_numele3_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_Seq *  x )
+;
+int  openmp_blas_mulxy_numele3_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_Seq *  x )
+;
+int  blas_mulxy_numele3_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y ,Field3D_Seq *  x )
+;
+int  blas_mulxy_numele3_Field3D_MPI (Field3D_MPI *  pthis ,Field3D_MPI *  y ,Field3D_MPI *  x )
+;
 int  c_blas_yiszero_synced_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y )
 ;
 int  openmp_blas_yiszero_synced_Field3D_Seq (Field3D_Seq *  pthis ,Field3D_Seq *  y )
