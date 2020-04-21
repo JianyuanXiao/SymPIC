@@ -5,7 +5,7 @@ SCC=scc
 NVCC=nvcc
 BRCC=
 CXX=mpicc
-CFLAG= -O3 -ffast-math -march=skylake -fopenmp
+CFLAG= -O3 -ffast-math -fopenmp
 CPPFLAG=
 NVCCF=
 CXXFLAG= -lm -O2 -fopenmp -I../common/
