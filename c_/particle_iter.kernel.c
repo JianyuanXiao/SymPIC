@@ -11620,8 +11620,8 @@ void  c_dump_ene_num_scmc_kernel (double *  inoutput ,int *  xyzw ,double *  cu_
 	int  idy = global_idy_tmp ;
 	if (  load0  ){  
 			int  Midx = ((use_local_particle_position)?(	floor ( (particle_head_general)[0] )):(mdx)) ;
-	int  Midy = ((use_local_particle_position)?(	floor ( (particle_head_general)[0] )):(mdy)) ;
-	int  Midz = ((use_local_particle_position)?(	floor ( (particle_head_general)[0] )):(mdz)) ;
+	int  Midy = ((use_local_particle_position)?(	floor ( (particle_head_general)[1] )):(mdy)) ;
+	int  Midz = ((use_local_particle_position)?(	floor ( (particle_head_general)[2] )):(mdz)) ;
 	long  lg = 0 ;
 	double  allene0_x = 0.00000000000000000e+00 ;
 	double  allene0_y = 0.00000000000000000e+00 ;
