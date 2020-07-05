@@ -11,8 +11,8 @@ This is an MPI and OpenMP hybrid implemention of the parallel explicit
 in Ref. [1] and the 1st-order relativistic charge conservative symplectic 
 PIC scheme in Ref. [2]. We also put the recently developed charge conservative 
 symplectic PIC schemes in the cylindrical mesh [3] here. Most c files are generated 
-by a scheme-like lisp dialect PSCMC designed for multi-platform parallel programmings. 
-Source code will be opened in the near future.
+by a scheme-like lisp dialect PSCMC (https://github.com/JianyuanXiao/PSCMC) designed 
+for multi-platform parallel programmings. Source code will be opened in the near future.
 
 When using this code for research purpose, the citation of [1] and [2] are suggested.
 
@@ -26,46 +26,41 @@ sudo apt-get install libopenmpi-dev openmpi-bin
 
 Then use the following command to build the whole program
 
+```bash
 ./compile.sh
+```
 
 Currently we have only tested the clang5.0/6.0, gcc-7.3.1 and icc-11 compiler.
-
-The program can be also compiled under the cygwin environment on Windows 
-systems. In this case, zlib-devel, openmpi-devel, clang, gcc should be 
-installed. Using the following command to compile under the cygwin:
-
-./compile_cygwin.sh
 
 Configuration files are executable scheme (a dialect of lisp) codes. To run
 the example, 
 
+```bash
 cd example
-
 export STDLIB=../stdlib.scm
-
 mpirun -n 4 ../sympic x_ebw.ss
+```
 
 Note that this operation requires the number of MPI processes equals to 4. To modify
 it you may edit the x_ebw.ss file and change the NUM_PROCESS parameter. We may also
 use the MPI-OpenMP hybrid runtime:
 
+```
 cd example
-
 export STDLIB=../stdlib.scm
-
 export OMP_NUM_THREADS=2
-
 mpirun -n 2 ../sympic x_ebw_openmp.ss
+```
 
 After it exits, three files (tmpEB tmpEN and tmpJ) will be generated. 
 These files are in the GAPS-IO format. We can use the matplotlib (ipython) to 
 show the spectrum of the extraordinary and electron Bernstein wave.
 
+```python
 execfile("../cgapsio/pygapsio.py")
-
 Ey_field=reshape(GAPS_IO_Load("tmpEB"),[512,2,512,3])[:,0,:,1]
-
 contour(abs(fftn(Ey_field))[:60,:256])
+```
 
 The tmpEB file stores the electromagnetic fields, its shape
 is 2Nt * Nz * Ny * Nx * 3, where for 0, 2, 4, ... time step the 
@@ -79,11 +74,11 @@ where 7 components are
 There is also a GUI based on Tkinter(python2) for generating and 
 modifying the configuration files, it is located at gui/gui.py
 
+```bash
 cd gui
-
 export STDLIB=../stdlib.scm
-
 python2 gui.py
+```
 
 The manual is also available at http://staff.ustc.edu.cn/~xiaojy/sympic_doc.html
 
