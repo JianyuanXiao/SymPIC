@@ -21,9 +21,9 @@ used.
 
 To build the program, a workable mpicc is required. For example in the 
 Debian system, we may use the following command to install openmpi:
-
+```bash
 sudo apt-get install libopenmpi-dev openmpi-bin
-
+```
 Then use the following command to build the whole program
 
 ```bash
