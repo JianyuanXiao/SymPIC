@@ -12,7 +12,7 @@ in Ref. [1] and the 1st-order relativistic charge conservative symplectic
 PIC scheme in Ref. [2]. We also put the recently developed charge conservative 
 symplectic PIC schemes in the cylindrical mesh [3] here. Most c files are generated 
 by a scheme-like lisp dialect PSCMC (https://github.com/JianyuanXiao/PSCMC) designed 
-for multi-platform parallel programmings. Source code will be opened in the near future.
+for multi-platform parallel programmings. Source code is located at https://github.com/JianyuanXiao/SymPIC_PSCMC.
 
 When using this code for research purpose, the citation of [1] and [2] are suggested.
 
@@ -87,4 +87,4 @@ The manual is also available at http://staff.ustc.edu.cn/~xiaojy/sympic_doc.html
 
 [2] Plasma Science and Technology 20, 110501 (2018); https://iopscience.iop.org/article/10.1088/2058-6272/aac3d1
 
-[3] https://arxiv.org/abs/2004.08150
+[3] Plasma Sci. Technol. 23 055102; https://iopscience.iop.org/article/10.1088/2058-6272/abf125/meta
